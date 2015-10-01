@@ -10,7 +10,7 @@
     <div class="col-md-3 col-sm-3">
       <h4>Resources</h4>
       {% for resource in player.resources %}
-        <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px;"><span> id="resource-{{resource.name}}">  {{ resource.name }}: {{ resource.count }}</span><br><br>
+        <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px;"><span id="resource-{{resource.name}}">  {{ resource.name }}: {{ resource.count }}</span><br><br>
       {% endfor %}
     </div>
     <div class="col-sm-6 col-md-6">
