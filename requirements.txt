@@ -5,3 +5,4 @@ mock==1.0.1
 pep8==1.6.2
 pytz==2015.4
 requests==2.3.0
+setuptools==18.1

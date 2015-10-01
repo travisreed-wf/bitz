@@ -1,8 +1,10 @@
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import polymodel
 
+from src.helpers import LongIntegerProperty
+
 class Resource(polymodel.PolyModel):
-    count = ndb.IntegerProperty(indexed=False)
+    count = LongIntegerProperty(indexed=False)
     tool_needed = ndb.StringProperty()
 
     @property

@@ -1,4 +1,4 @@
-from src.locations.location import Location, Tile, Trees, River, Plains
+from src.locations.location import Location, Trees, River, Plains
 
 class Map:
     pass
@@ -16,15 +16,14 @@ class Earth(Map):
         tile7 = Trees.get_trees_sparse()
         tile8 = River.get_river()
         tile9 = Plains.get_plains()
-        tiles = [
-            tile1.key,
-            tile2.key,
-            tile3.key,
-            tile4.key,
-            tile5.key,
-            tile6.key,
-            tile7.key,
-            tile8.key,
-            tile9.key
+        tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7, tile8, tile9]
+        Location.get_or_insert("E0000x0000",type="Woods", tiles=tiles)
+
+    @staticmethod
+    def get():
+        location1 = Location.get_by_id("E0000x0000")
+        return [
+            [
+                location1
+            ]
         ]
-        Location.get_or_insert("0000x0000",type="Woods", tiles=tiles)
