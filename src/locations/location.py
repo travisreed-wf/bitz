@@ -60,7 +60,7 @@ class Tile(polymodel.PolyModel):
                 return resource
 
     def consume_resource(self, resource):
-        resource_available = self.get_resource_available(self, resource.name)
+        resource_available = self.get_resource_available(resource.name)
         if not resource_available:
             raise AttributeError
 
@@ -73,23 +73,25 @@ class Tile(polymodel.PolyModel):
 class Trees(Tile):
 
     def gather_wood(self, worker_resources):
-        print "HERE"
         resource = copy(self.get_resource_production("Wood"))
 
-        used_worker_resource = None
-        gained_worker_resource = None
+        used_worker_resources = []
+        gained_worker_resources = []
         for worker_resource in worker_resources:
             if worker_resource.name == "Axe":
-                used_worker_resource = worker_resource
+                used_worker_resources.append(worker_resource)
                 resource.count = resource.count * 3
-            elif worker_resource.name == "Health" and not used_worker_resource:
-                used_worker_resource = worker_resource
+            elif worker_resource.name == "Health" and not used_worker_resources:
+                used_worker_resources.append(worker_resource)
             elif worker_resource.name == "Wood":
-                gained_worker_resource = worker_resource
+                gained_worker_resources.append(worker_resource)
 
-        used_worker_resource.count -= 1
-        gained_worker_resource.count += resource.count
+        for used_resource in used_worker_resources:
+            used_resource.count -= 1
+        for gained_resource in gained_worker_resources:
+            gained_resource.count += resource.count
         self.consume_resource(resource)
+        return gained_worker_resources, used_worker_resources
 
 
     @staticmethod

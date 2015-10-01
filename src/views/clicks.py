@@ -1,6 +1,7 @@
 from flask import render_template, request
 from flask.views import MethodView
 import traceback
+import json
 
 from src.locations.location import Location
 from src.workers.worker import Player
@@ -12,19 +13,21 @@ class ClicksView(MethodView):
         if not location:
             return "Invalid location", 404
 
-        tile = location.tiles[int(tile_index)]
-        print tile
+        tile = location.tiles[int(tile_index)].get()
         try:
             player = Player.get_by_id("Travis Reed")
             resources = player.resources
             action = "tile.%s(resources)" % action_name
-            eval(action)
+            gained_resources, used_resources = eval(action)
             player.put()
         except:
             print traceback.format_exc()
             return "Failed", 500
 
-        return "Success", 200
+        return json.dumps({
+            'gained_resources': [r.serialize for r in gained_resources],
+            'used_resources': [r.serialize for r in used_resources]
+        })
 
 
 def setup_urls(app):

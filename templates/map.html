@@ -17,7 +17,7 @@
       <table id="location-table" class="center" style="height: 700px;" border="1" data-location-id="{{ location.key.id()}}">
         <tr>
           {% set tiles_per_row = location.tiles_per_row %}
-          {% for tile in location.tiles %}
+          {% for tile in tiles %}
             {% if loop.index != 1 and loop.index % tiles_per_row == 1 %}
               </tr><tr>
             {% endif %}

@@ -1,5 +1,7 @@
 from flask import render_template, request
 from flask.views import MethodView
+from google.appengine.ext import ndb
+
 
 from src.locations import map
 from src.locations.location import Location
@@ -11,8 +13,14 @@ class MapView(MethodView):
         location = Location.get_by_id(location_id)
         if not location:
             return "Invalid location", 404
+        print location.tiles
+        print ndb.get_multi(location.tiles)
+        print 2
+        tiles = ndb.get_multi(location.tiles)
+        print "1"
         player = Player.get_by_id("Travis Reed")
-        return render_template('map.html', location=location, player=player)
+        return render_template('map.html', location=location, player=player,
+                               tiles=tiles)
 
 
 def setup_urls(app):

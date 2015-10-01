@@ -11,6 +11,12 @@ class Resource(polymodel.PolyModel):
     def name(self):
         return self._class_name()
 
+    @property
+    def serialize(self):
+        d = self.to_dict()
+        d['name'] = self.name
+        return d
+
 
 class Axe(Resource):
     pass
