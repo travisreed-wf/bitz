@@ -73,25 +73,37 @@ class Tile(polymodel.PolyModel):
 class Trees(Tile):
 
     def gather_wood(self, worker_resources):
-        resource = copy(self.get_resource_production("Wood"))
+        produced_wood = copy(self.get_resource_production("Wood"))
 
-        used_worker_resources = []
-        gained_worker_resources = []
+        worker_health = None
+        worker_wood = None
+        worker_axe = None
+        consumed_resources = []
+        produced_resources = [produced_wood]
         for worker_resource in worker_resources:
-            if worker_resource.name == "Axe":
-                used_worker_resources.append(worker_resource)
-                resource.count = resource.count * 3
-            elif worker_resource.name == "Health" and not used_worker_resources:
-                used_worker_resources.append(worker_resource)
+            if worker_resource.name == "Axe" and worker_resource.count > 1:
+                worker_axe = worker_resource
+            elif worker_resource.name == "Health":
+                worker_health = worker_resource
             elif worker_resource.name == "Wood":
-                gained_worker_resources.append(worker_resource)
+                worker_wood = worker_resource
 
-        for used_resource in used_worker_resources:
-            used_resource.count -= 1
-        for gained_resource in gained_worker_resources:
-            gained_resource.count += resource.count
-        self.consume_resource(resource)
-        return gained_worker_resources, used_worker_resources
+        if worker_axe:
+            worker_axe.count -= 1
+            consumed_axe = copy(worker_axe)
+            consumed_axe.count = 1
+            consumed_resources.append(consumed_axe)
+            produced_wood.count = produced_wood.count * 3
+        else:
+            consumed_health = copy(worker_health)
+            consumed_health.count = 1
+            consumed_resources.append(consumed_health)
+            worker_health.count -= 1
+        worker_wood.count += produced_wood.count
+
+        for produced_resource in produced_resources:
+            self.consume_resource(produced_resource)
+        return produced_resources, consumed_resources
 
 
     @staticmethod

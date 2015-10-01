@@ -25,8 +25,8 @@ class ClicksView(MethodView):
             return "Failed", 500
 
         return json.dumps({
-            'gained_resources': [r.serialize for r in gained_resources],
-            'used_resources': [r.serialize for r in used_resources]
+            'gained_resources': {r.name: r.count for r in gained_resources},
+            'used_resources': {r.name: r.count for r in used_resources}
         })
 
 
