@@ -14,7 +14,7 @@
       {% endfor %}
     </div>
     <div class="col-sm-6 col-md-6">
-      <table class="center" style="height: 700px;" border="1">
+      <table id="location-table" class="center" style="height: 700px;" border="1" data-location-id="{{ location.key.id()}}">
         <tr>
           {% set tiles_per_row = location.tiles_per_row %}
           {% for tile in location.tiles %}
@@ -25,7 +25,8 @@
               {{ tile.name }}<br>
               {% for action in tile.actions %}
               <button class="{{ action.button_class }} btn-xs {{ action.icon_class }}" type='button' data-toggle='tooltip'
-                   title='{{ action.name }}' data-action="{{ action.name }}" data-tile-position="{{ loop.index - 1 }}"></button>
+                   title='{{ action.name }}' data-action="{{ action.name }}" data-tile-position="{{ loop.index - 1 }}"
+                   onclick="tileActionClick(this);"></button>
               {% endfor %}
             </td>
           {% endfor %}
@@ -37,4 +38,7 @@
 {% endblock body %}
 {% block js_bottom %}
   {{ super() }}
+  <script type="application/javascript">
+    {% include '/js/map.js' %}
+  </script>
 {% endblock js_bottom %}

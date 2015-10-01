@@ -2,6 +2,7 @@ from copy import copy
 import math
 
 from google.appengine.ext import ndb
+from google.appengine.ext.ndb import polymodel
 
 from src.resources import resource
 
@@ -39,7 +40,7 @@ class Action(ndb.Model):
 
 
 
-class Tile(ndb.Model):
+class Tile(polymodel.PolyModel):
     name = ndb.StringProperty(indexed=False)
     type = ndb.StringProperty(indexed=False)
     production = ndb.LocalStructuredProperty(
@@ -72,6 +73,7 @@ class Tile(ndb.Model):
 class Trees(Tile):
 
     def gather_wood(self, worker_resources):
+        print "HERE"
         resource = copy(self.get_resource_production("Wood"))
 
         used_worker_resource = None
@@ -145,6 +147,6 @@ class River(Tile):
 class Location(ndb.Model):
     name = ndb.StringProperty(indexed=True)
     type = ndb.StringProperty(indexed=True)
-    tiles = ndb.LocalStructuredProperty(Tile, repeated=True)
+    tiles = ndb.KeyProperty(kind=Tile, repeated=True)
     tiles_per_row = ndb.ComputedProperty(
         lambda self: round(math.sqrt(len(self.tiles))))
