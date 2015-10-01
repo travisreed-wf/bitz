@@ -10,8 +10,8 @@ class Worker(polymodel.PolyModel):
     production = ndb.LocalStructuredProperty(kind="Resource", repeated=True,
                                              indexed=False)
     production_rate = ndb.IntegerProperty(indexed=False)
-    resoures = ndb.LocalStructuredProperty(kind="Resource", repeated=True,
-                                           indexed=False)
+    resources = ndb.LocalStructuredProperty(kind="Resource", repeated=True,
+                                            indexed=False)
 
 
 class Player(Worker):
