@@ -1,15 +1,18 @@
 from google.appengine.ext import ndb
-
+from google.appengine.ext.ndb import polymodel
 
 class Resource(polymodel.PolyModel):
-    name = ndb.StringProperty()
-    count = ndb.IntegerProperty(indexed=False)
+
+    @property
+    def name(self):
+        return self._class_name()
 
 
 class Dollar(Resource):
     pass
 
 class Food(Resource):
+    freshness = ndb.FloatProperty()
     pass
 
 class Gold(Resource):
@@ -19,6 +22,9 @@ class Health(Resource):
     pass
 
 class Iron(Resource):
+    pass
+
+class Water(Resource):
     pass
 
 class Wood(Resource):
