@@ -2,11 +2,16 @@ from google.appengine.ext import ndb
 from google.appengine.ext.ndb import polymodel
 
 class Resource(polymodel.PolyModel):
+    count = ndb.IntegerProperty(indexed=False)
+    tool_needed = ndb.StringProperty()
 
     @property
     def name(self):
         return self._class_name()
 
+
+class Axe(Resource):
+    pass
 
 class Dollar(Resource):
     pass

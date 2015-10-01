@@ -1,73 +1,92 @@
+from copy import copy
+
 from google.appengine.ext import ndb
 
 from src.resources import resource
 
+
 class Tile(ndb.Model):
     name = ndb.StringProperty(indexed=False)
     type = ndb.StringProperty(indexed=False)
-    production_when_clicked = ndb.JsonProperty
-    resources_available = ndb.KeyProperty(
+    production = ndb.LocalStructuredProperty(
         kind="Resource", repeated=True, indexed=False)
+    resources_available = ndb.LocalStructuredProperty(
+        kind="Resource", repeated=True, indexed=False)
+
+    def get_resource_production(self, resource_name):
+        for resource in self.production:
+            if resource.name == resource_name:
+                return resource
+
+    def get_resource_available(self, resource_name):
+        for resource in self.resources_available:
+            if resource.name == resource_name:
+                return resource
+
+    def consume_resource(self, resource):
+        resource_available = self.get_resource_available(self, resource.name)
+        if not resource_available:
+            raise AttributeError
+
+        resource_available.count -= resource.count
+        if resource_available.count < 0:
+            raise AttributeError
+        self.put()
 
 
 class Trees(Tile):
+    def gather(self, resource_name, resources_used):
+        resources_used = [r.name for r in resources_used]
+        resource = None
+        if resource_name == "Wood":
+            resource = self.gather_wood(resources_used)
 
-    def gather_wood(self, tools=None):
-        if not tools:
-            health = resource.Health()
-            return self.production_when_clicked,
+        self.consume_resource(resource)
 
+    def gather_wood(self, resources_used):
+        resource = copy(self.get_resource_production("Wood"))
 
+        if "Axe" in resources_used:
+            resource.count = resource.count * 3
 
-    def click(self, resources_provided={}, click_count=1):
-        """Returns resources, and cost"""
-        production = ndb.get_multi(self.production_when_clicked)
-        cost = ndb.get_multi(self.cost_when_clicked)
-        for c in cost:
-            for r in resources_provided:
-                if r.name == c.name:
-
-            c.count = c.count * click_count
-        available = ndb.get_multi(self.resources_available)
-        for p in production:
-            p.count = p.count * click_count
-            found = False
-            for r in available:
-                if r.name == p.name:
-                    r.count -= p.count
-                    found = True
-                    break
-            if not found:
-                raise AttributeError()
-
-        ndb.put_multi(available)
-        return production
-
-
-    @staticmethod
-    def get_plains():
-        water = resource.Water(count=2).put()
-        return Tile(name="River", type="Base", production=water)
-
-    @staticmethod
-    def get_river():
-        water = resource.Water(count=2).put()
-        return Tile(name="River", type="Base", production=water)
+        return resource
 
     @staticmethod
     def get_trees_dense():
-        wood = resource.Wood(count=3).put()
-        return Tile(name="Dense Trees", type="Base", production=wood)
+        wood = resource.Wood(count=1).put()
+        wood2 = resource.Wood(count=100000)
+        return Trees(name="Dense Trees", type="Base", production=[wood],
+                     resources_available=[wood2])
 
     @staticmethod
     def get_trees():
-        wood = resource.Wood(count=2).put()
-        return Tile(name="Trees", type="Base", production=wood)
+        wood = resource.Wood(count=1).put()
+        wood2 = resource.Wood(count=10000)
+        return Trees(name="Trees", type="Base", production=[wood],
+                     resources_available=[wood2])
 
     @staticmethod
     def get_trees_sparse():
         wood = resource.Wood(count=1).put()
-        return Tile(name="Sparse Trees", type="Base", production=wood)
+        wood2 = resource.Wood(count=1000)
+        return Trees(name="Sparse Trees", type="Base", production=[wood],
+                     resources_available=[wood2])
+
+class Plains(Tile):
+
+    @staticmethod
+    def get_plains():
+        return Plains(name="Plains", type="Base", production=[])
+
+
+class River(Tile):
+
+    @staticmethod
+    def get_river():
+        water = resource.Water(count=1)
+        water2 = resource.Water(count=100000000000000000000)
+        return River(name="River", type="Base", production=[water],
+                     resources_available=[water2])
 
 
 class Location(ndb.Model):
