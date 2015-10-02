@@ -50,11 +50,33 @@ class Health(Resource):
     def create(count=0):
         return Health(type="basic", count=count)
 
+class HearthstoneCard(Resource):
+
+    @staticmethod
+    def create(count=0):
+        return HearthstoneCard(type="earned", count=count)
+
+    @staticmethod
+    def create_based_on_results(arean_wins=0, play_mode_wins=0, legendaries=0):
+        count = arean_wins * 2 + play_mode_wins * 1 + legendaries * 10
+        return HearthstoneCard.create(count)
+
 class Iron(Resource):
 
     @staticmethod
     def create(count=0):
         return Iron(type="basic", count=count)
+
+class PoolBall(Resource):
+
+    @staticmethod
+    def create(count=0):
+        return PoolBall(type="earned", count=count)
+
+    @staticmethod
+    def create_based_on_results(wins=0, balls=0, lags=0):
+        count = wins * 5 + balls * 1 + lags * 1
+        return PoolBall.create(count)
 
 class Step(Resource):
 
