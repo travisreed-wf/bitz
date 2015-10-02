@@ -39,7 +39,7 @@ class Tile(polymodel.PolyModel):
     def perform_action(self, action_name, worker_resources, clicks):
         for action in self.actions:
             if action.name == action_name:
-                return action.perform(worker_resources, clicks)
+                return action.perform(self, worker_resources, clicks)
 
 
 class Trees(Tile):

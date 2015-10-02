@@ -8,8 +8,8 @@ class Action(ndb.Model):
     icon_class = ndb.StringProperty(indexed=False)
     button_class = ndb.StringProperty(indexed=False)
 
-    def perform(self, worker_resources, clicks):
-        func = "self._%s(worker_resources, clicks)" % self.name
+    def perform(self, tile, worker_resources, clicks):
+        func = "self._%s(tile, worker_resources, clicks)" % self.name
         return eval(func)
 
     @staticmethod
@@ -39,8 +39,9 @@ class Action(ndb.Model):
         )
 
 
-    def _gather_wood(self, worker_resources, clicks):
-        produced_wood = copy(self.get_resource_production("Wood"))
+    def _gather_wood(self, tile, worker_resources, clicks):
+        produced_wood = copy(tile.get_resource_production("Wood"))
+        produced_wood.count = produced_wood.count * clicks
 
         worker_health = None
         worker_wood = None
@@ -60,7 +61,7 @@ class Action(ndb.Model):
             consumed_axe = copy(worker_axe)
             consumed_axe.count = 1 * clicks
             consumed_resources.append(consumed_axe)
-            produced_wood.count = produced_wood.count * 3 * clicks
+            produced_wood.count = produced_wood.count * 3
         else:
             consumed_health = copy(worker_health)
             consumed_health.count = 1 * clicks
@@ -69,5 +70,5 @@ class Action(ndb.Model):
         worker_wood.count += produced_wood.count
 
         for produced_resource in produced_resources:
-            self.consume_resource(produced_resource)
+            tile.consume_resource(produced_resource)
         return produced_resources, consumed_resources
