@@ -47,9 +47,8 @@ class Trees(Tile):
     @staticmethod
     def get_trees_dense():
         gather_wood = Action.get_gather_wood_action()
-        gather_food = Action.get_gather_food_action()
         hunt = Action.get_hunt_action()
-        actions = [gather_wood, gather_food, hunt]
+        actions = [gather_wood, hunt]
         wood = resource.Wood.create(count=1)
         wood2 = resource.Wood.create(count=100000)
         return Trees(name="Dense Trees", type="Base", production=[wood],
@@ -70,12 +69,13 @@ class Trees(Tile):
     def get_trees_sparse():
         gather_wood = Action.get_gather_wood_action()
         gather_food = Action.get_gather_food_action()
-        hunt = Action.get_hunt_action()
-        actions = [gather_wood, gather_food, hunt]
+        actions = [gather_wood, gather_food]
         wood = resource.Wood.create(count=1)
         wood2 = resource.Wood.create(count=1000)
-        return Trees(name="Sparse Trees", type="Base", production=[wood],
-                     resources_available=[wood2], actions=actions)
+        food = resource.Food.create(count=2)
+        food2 = resource.Food.create(count=20000)
+        return Trees(name="Sparse Trees", type="Base", production=[wood, food],
+                     resources_available=[wood2, food2], actions=actions)
 
 class Plains(Tile):
 

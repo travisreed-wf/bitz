@@ -26,7 +26,7 @@
             {% if loop.index != 1 and loop.index % tiles_per_row == 1 %}
               </tr><tr>
             {% endif %}
-            <td width="25%" style="padding:10px" background="/static/img/tiles/{{tile.name}}.png">
+            <td width="25%" style="padding:10px" background="/static/img/tiles/{{ tile.name | replace(' ', '') }}.png">
               {% for action in tile.actions %}
                 <button class="{{ action.button_class }} btn-xs {{ action.icon_class }}" type='button' data-toggle='tooltip'
                    title='{{ action.name }}' data-action="{{ action.name }}" data-tile-position="{{ loop.index - 1 }}"

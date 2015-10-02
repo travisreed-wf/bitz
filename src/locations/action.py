@@ -39,6 +39,24 @@ class Action(ndb.Model):
             button_class="btn btn-info"
         )
 
+    def _gather_food(self, tile, worker, clicks):
+        produced_food = copy(tile.get_resource_production("Food"))
+        produced_food.count = produced_food.count * clicks
+
+        worker_bucket = None
+        consumed_resources = []
+        produced_resources = [produced_food]
+        for worker_resource in worker.resources:
+            if worker_resource.name == "Bucket" and worker_resource.count >= 1:
+                worker_bucket = worker_resource
+
+        if worker_bucket:
+            produced_food.count = produced_food.count * 3
+        worker.add_resource(produced_food)
+
+        for produced_resource in produced_resources:
+            tile.consume_resource(produced_resource)
+        return produced_resources, consumed_resources
 
     def _gather_wood(self, tile, worker, clicks):
         produced_wood = copy(tile.get_resource_production("Wood"))
@@ -48,7 +66,7 @@ class Action(ndb.Model):
         consumed_resources = []
         produced_resources = [produced_wood]
         for worker_resource in worker.resources:
-            if worker_resource.name == "Axe" and worker_resource.count > 1:
+            if worker_resource.name == "Axe" and worker_resource.count >= 1:
                 worker_axe = worker_resource
 
         if worker_axe:
@@ -63,6 +81,25 @@ class Action(ndb.Model):
             consumed_resources.append(consumed_health)
             worker.remove_resource(consumed_health)
         worker.add_resource(produced_wood)
+
+        for produced_resource in produced_resources:
+            tile.consume_resource(produced_resource)
+        return produced_resources, consumed_resources
+
+    def _gather_water(self, tile, worker, clicks):
+        produced_water = copy(tile.get_resource_production("Water"))
+        produced_water.count = produced_water.count * clicks
+
+        worker_bucket = None
+        consumed_resources = []
+        produced_resources = [produced_water]
+        for worker_resource in worker.resources:
+            if worker_resource.name == "Bucket" and worker_resource.count >= 1:
+                worker_bucket = worker_resource
+
+        if worker_bucket:
+            produced_water.count = produced_water.count * 20
+        worker.add_resource(produced_water)
 
         for produced_resource in produced_resources:
             tile.consume_resource(produced_resource)
