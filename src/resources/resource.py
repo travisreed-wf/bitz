@@ -6,6 +6,7 @@ from src.helpers import LongIntegerProperty
 class Resource(polymodel.PolyModel):
     count = LongIntegerProperty(indexed=False)
     tool_needed = ndb.StringProperty()
+    type = ndb.StringProperty()
 
     @property
     def name(self):
@@ -19,26 +20,56 @@ class Resource(polymodel.PolyModel):
 
 
 class Axe(Resource):
-    pass
+
+    @staticmethod
+    def create(count=0):
+        return Axe(type="tool", count=count)
 
 class Dollar(Resource):
-    pass
+
+    @staticmethod
+    def create(count=0):
+        return Health(type="financial", count=count)
 
 class Food(Resource):
     freshness = ndb.FloatProperty()
-    pass
+
+    @staticmethod
+    def create(count=0):
+        return Food(type="basic", count=count)
 
 class Gold(Resource):
-    pass
+
+    @staticmethod
+    def create(count=0):
+        return Gold(type="basic", count=count)
 
 class Health(Resource):
-    pass
+
+    @staticmethod
+    def create(count=0):
+        return Health(type="basic", count=count)
 
 class Iron(Resource):
-    pass
+
+    @staticmethod
+    def create(count=0):
+        return Iron(type="basic", count=count)
+
+class Step(Resource):
+
+    @staticmethod
+    def create(count=0):
+        return Step(type="earned", count=count)
 
 class Water(Resource):
-    pass
+
+    @staticmethod
+    def create(count=0):
+        return Water(type="basic", count=count)
 
 class Wood(Resource):
-    pass
+
+    @staticmethod
+    def create(count=0):
+        return Wood(type="basic", count=count)

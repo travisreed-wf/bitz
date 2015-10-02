@@ -1,6 +1,7 @@
 from copy import copy
 
 from google.appengine.ext import ndb
+from src.resources.resource import Health
 
 
 class Action(ndb.Model):
@@ -8,8 +9,8 @@ class Action(ndb.Model):
     icon_class = ndb.StringProperty(indexed=False)
     button_class = ndb.StringProperty(indexed=False)
 
-    def perform(self, tile, worker_resources, clicks):
-        func = "self._%s(tile, worker_resources, clicks)" % self.name
+    def perform(self, tile, worker, clicks):
+        func = "self._%s(tile, worker, clicks)" % self.name
         return eval(func)
 
     @staticmethod
@@ -39,22 +40,16 @@ class Action(ndb.Model):
         )
 
 
-    def _gather_wood(self, tile, worker_resources, clicks):
+    def _gather_wood(self, tile, worker, clicks):
         produced_wood = copy(tile.get_resource_production("Wood"))
         produced_wood.count = produced_wood.count * clicks
 
-        worker_health = None
-        worker_wood = None
         worker_axe = None
         consumed_resources = []
         produced_resources = [produced_wood]
-        for worker_resource in worker_resources:
+        for worker_resource in worker.resources:
             if worker_resource.name == "Axe" and worker_resource.count > 1:
                 worker_axe = worker_resource
-            elif worker_resource.name == "Health":
-                worker_health = worker_resource
-            elif worker_resource.name == "Wood":
-                worker_wood = worker_resource
 
         if worker_axe:
             worker_axe.count -= 1 * clicks
@@ -63,11 +58,11 @@ class Action(ndb.Model):
             consumed_resources.append(consumed_axe)
             produced_wood.count = produced_wood.count * 3
         else:
-            consumed_health = copy(worker_health)
+            consumed_health = Health.create()
             consumed_health.count = 1 * clicks
             consumed_resources.append(consumed_health)
-            worker_health.count -= 1 * clicks
-        worker_wood.count += produced_wood.count
+            worker.remove_resource(consumed_health)
+        worker.add_resource(produced_wood)
 
         for produced_resource in produced_resources:
             tile.consume_resource(produced_resource)

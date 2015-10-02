@@ -9,8 +9,13 @@
   <div class="row">
     <div class="col-md-3 col-sm-3">
       <h4>Resources</h4>
-      {% for resource in player.resources %}
-        <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px;">  {{ resource.name }}: <span id="resource-{{resource.name}}">{{ resource.count }}</span><br><br>
+      {% set organized_resources = player.organized_resources %}
+      {% for type in ["basic", "tool", "earned"] %}
+        {% set resources = organized_resources.get(type, []) %}
+        <h5>{{ type | capitalize }}s</h5>
+        {% for resource in resources %}
+          <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px;">  {{ resource.name }}: <span id="resource-{{resource.name}}">{{ resource.count }}</span><br>
+        {% endfor %}
       {% endfor %}
     </div>
     <div class="col-sm-6 col-md-6">

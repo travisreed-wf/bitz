@@ -36,10 +36,10 @@ class Tile(polymodel.PolyModel):
             raise AttributeError
         self.put()
 
-    def perform_action(self, action_name, worker_resources, clicks):
+    def perform_action(self, action_name, worker, clicks):
         for action in self.actions:
             if action.name == action_name:
-                return action.perform(self, worker_resources, clicks)
+                return action.perform(self, worker, clicks)
 
 
 class Trees(Tile):
@@ -50,8 +50,8 @@ class Trees(Tile):
         gather_food = Action.get_gather_food_action()
         hunt = Action.get_hunt_action()
         actions = [gather_wood, gather_food, hunt]
-        wood = resource.Wood(count=1)
-        wood2 = resource.Wood(count=100000)
+        wood = resource.Wood.create(count=1)
+        wood2 = resource.Wood.create(count=100000)
         return Trees(name="Dense Trees", type="Base", production=[wood],
                      resources_available=[wood2], actions=actions)
 
@@ -61,8 +61,8 @@ class Trees(Tile):
         gather_food = Action.get_gather_food_action()
         hunt = Action.get_hunt_action()
         actions = [gather_wood, gather_food, hunt]
-        wood = resource.Wood(count=1)
-        wood2 = resource.Wood(count=10000)
+        wood = resource.Wood.create(count=1)
+        wood2 = resource.Wood.create(count=10000)
         return Trees(name="Trees", type="Base", production=[wood],
                      resources_available=[wood2], actions=actions)
 
@@ -72,8 +72,8 @@ class Trees(Tile):
         gather_food = Action.get_gather_food_action()
         hunt = Action.get_hunt_action()
         actions = [gather_wood, gather_food, hunt]
-        wood = resource.Wood(count=1)
-        wood2 = resource.Wood(count=1000)
+        wood = resource.Wood.create(count=1)
+        wood2 = resource.Wood.create(count=1000)
         return Trees(name="Sparse Trees", type="Base", production=[wood],
                      resources_available=[wood2], actions=actions)
 
@@ -90,8 +90,8 @@ class River(Tile):
     def get_river():
         gather_water = Action.get_gather_water_action()
         actions = [gather_water]
-        water = resource.Water(count=1)
-        water2 = resource.Water(count=100000000000000000000)
+        water = resource.Water.create(count=1)
+        water2 = resource.Water.create(count=100000000000000000000)
         return River(name="River", type="Base", production=[water],
                      resources_available=[water2], actions=actions)
 

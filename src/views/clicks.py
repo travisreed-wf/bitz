@@ -17,9 +17,8 @@ class ClicksView(MethodView):
         tile = location.tiles[int(tile_index)].get()
         try:
             player = Player.get_by_id("Travis Reed")
-            resources = player.resources
             gained_resources, used_resources = tile.perform_action(
-                action_name, resources, clicks)
+                action_name, player, clicks)
             player.put()
         except:
             print traceback.format_exc()
