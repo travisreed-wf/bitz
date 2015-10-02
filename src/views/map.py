@@ -13,11 +13,7 @@ class MapView(MethodView):
         location = Location.get_by_id(location_id)
         if not location:
             return "Invalid location", 404
-        print location.tiles
-        print ndb.get_multi(location.tiles)
-        print 2
         tiles = ndb.get_multi(location.tiles)
-        print "1"
         player = Player.get_by_id("Travis Reed")
         return render_template('map.html', location=location, player=player,
                                tiles=tiles)

@@ -9,6 +9,7 @@ from src.workers.worker import Player
 class ClicksView(MethodView):
 
     def put(self, location_id, tile_index, action_name):
+        clicks = int(request.args.get('clicks'))
         location = Location.get_by_id(location_id)
         if not location:
             return "Invalid location", 404
@@ -17,7 +18,7 @@ class ClicksView(MethodView):
         try:
             player = Player.get_by_id("Travis Reed")
             resources = player.resources
-            action = "tile.%s(resources)" % action_name
+            action = "tile.%s(resources, clicks)" % action_name
             gained_resources, used_resources = eval(action)
             player.put()
         except:

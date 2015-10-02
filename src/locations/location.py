@@ -72,7 +72,8 @@ class Tile(polymodel.PolyModel):
 
 class Trees(Tile):
 
-    def gather_wood(self, worker_resources):
+    def gather_wood(self, worker_resources, clicks):
+        # TODO implement clicks
         produced_wood = copy(self.get_resource_production("Wood"))
 
         worker_health = None
@@ -89,16 +90,16 @@ class Trees(Tile):
                 worker_wood = worker_resource
 
         if worker_axe:
-            worker_axe.count -= 1
+            worker_axe.count -= 1 * clicks
             consumed_axe = copy(worker_axe)
-            consumed_axe.count = 1
+            consumed_axe.count = 1 * clicks
             consumed_resources.append(consumed_axe)
-            produced_wood.count = produced_wood.count * 3
+            produced_wood.count = produced_wood.count * 3 * clicks
         else:
             consumed_health = copy(worker_health)
-            consumed_health.count = 1
+            consumed_health.count = 1 * clicks
             consumed_resources.append(consumed_health)
-            worker_health.count -= 1
+            worker_health.count -= 1 * clicks
         worker_wood.count += produced_wood.count
 
         for produced_resource in produced_resources:

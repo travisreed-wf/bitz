@@ -6,11 +6,11 @@
   {{ super() }}
 {% endblock %}
 {% block body %}
-  <span class="row">
+  <div class="row">
     <div class="col-md-3 col-sm-3">
       <h4>Resources</h4>
       {% for resource in player.resources %}
-        <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px;"><span id="resource-{{resource.name}}">  {{ resource.name }}: {{ resource.count }}</span><br><br>
+        <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px;">  {{ resource.name }}: <span id="resource-{{resource.name}}">{{ resource.count }}</span><br><br>
       {% endfor %}
     </div>
     <div class="col-sm-6 col-md-6">
@@ -24,7 +24,7 @@
             <td width="25%" style="padding:10px">
               {{ tile.name }}<br>
               {% for action in tile.actions %}
-              <button class="{{ action.button_class }} btn-xs {{ action.icon_class }}" type='button' data-toggle='tooltip'
+                <button class="{{ action.button_class }} btn-xs {{ action.icon_class }}" type='button' data-toggle='tooltip'
                    title='{{ action.name }}' data-action="{{ action.name }}" data-tile-position="{{ loop.index - 1 }}"
                    onclick="tileActionClick(this);"></button>
               {% endfor %}
