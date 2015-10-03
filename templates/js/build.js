@@ -2,10 +2,8 @@
 var build_data = [];
 
 var build = function(btn){
-  console.log("HI");
   btn = $(btn);
   var toolName = btn.data('tool');
-  console.log(build_data);
   var data = build_data[toolName];
   if (data){
     update_resources(data);
@@ -15,21 +13,20 @@ var build = function(btn){
     build_data[toolName] = data;
 
   }
-  if (data['outstandingClicks']){
+  if (typeof(data['outstandingClicks']) !== "undefined"){
     data['outstandingClicks'] += 1;
     outstandingClicks = data['outstandingClicks'];
   }
   else{
     outstandingClicks = 1
   }
-  console.log(data);
-  if (!data['outstandingClicks'] || outstandingClicks >= 10){
-    console.log("HERE");
+
+  if (typeof(data['outstandingClicks']) === 'undefined' || outstandingClicks >= 10){
     $.ajax({
       url: '/build/tools/' + toolName + "/?clicks=" + outstandingClicks,
       method: 'PUT',
       success: function(resp) {
-        if (!data){
+        if (!data['gained_resources']){
           resp = $.parseJSON(resp);
           data = resp;
           update_resources(resp);

@@ -21,6 +21,7 @@ class BuildToolsView(MethodView):
             player = Player.get_by_id("Travis Reed")
             action = "resource.%s.build(player, count=clicks)" % tool_name
             gained_resources, used_resources = eval(action)
+            print gained_resources, used_resources
             player.put()
         except:
             print traceback.format_exc()
