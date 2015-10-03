@@ -1,4 +1,5 @@
 from copy import copy
+import logging
 
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import polymodel
@@ -22,9 +23,29 @@ class Worker(polymodel.PolyModel):
             if r.name == resource.name:
                 r.count += resource.count
                 return
-
         r_copy = copy(resource)
         self.resources.append(r_copy)
+        self.put()
+
+    def check_basic_needs(self):
+        food_check_passed = False
+        water_check_passed = False
+        health = None
+        for resource in self.resources:
+            if resource.name == "Food":
+                if resource.count >= 1:
+                    food_check_passed = True
+                    resource.count -= 1
+            elif resource.name == "Water":
+                if resource.count >= 1:
+                    water_check_passed = True
+                    resource.count -= 1
+            elif resource.name == "Health":
+                health = resource
+        if not water_check_passed or not food_check_passed:
+            health.count -= 1
+        if health.count <= 0:
+            logging.warning("Your health dropped too low, you should be dead!")
         self.put()
 
     def remove_resource(self, resource):
@@ -47,13 +68,14 @@ class Player(Worker):
 
     @property
     def ordered_resources(self):
-        return sorted(self.resources, key=lambda resource: resource.type)
+        return sorted(
+            self.resources, key=lambda resource: resource.resource_type)
 
     @property
     def organized_resources(self):
         ret = {}
         for resource in self.resources:
-            if not ret.get(resource.type):
-                ret[resource.type] = []
-            ret[resource.type].append(resource)
+            if not ret.get(resource.resource_type):
+                ret[resource.resource_type] = []
+            ret[resource.resource_type].append(resource)
         return ret

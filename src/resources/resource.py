@@ -6,7 +6,7 @@ from src.helpers import LongIntegerProperty
 class Resource(polymodel.PolyModel):
     count = LongIntegerProperty(indexed=False)
     tool_needed = ndb.StringProperty()
-    type = ndb.StringProperty()
+    resource_type = ndb.StringProperty()
 
     @property
     def name(self):
@@ -23,38 +23,38 @@ class Axe(Resource):
 
     @staticmethod
     def create(count=0):
-        return Axe(type="tool", count=count)
+        return Axe(resource_type="tool", count=count)
 
 class Dollar(Resource):
 
     @staticmethod
     def create(count=0):
-        return Health(type="financial", count=count)
+        return Health(resource_type="financial", count=count)
 
 class Food(Resource):
     freshness = ndb.FloatProperty()
 
     @staticmethod
     def create(count=0):
-        return Food(type="basic", count=count)
+        return Food(resource_type="basic", count=count)
 
 class Gold(Resource):
 
     @staticmethod
     def create(count=0):
-        return Gold(type="basic", count=count)
+        return Gold(resource_type="basic", count=count)
 
 class Health(Resource):
 
     @staticmethod
     def create(count=0):
-        return Health(type="basic", count=count)
+        return Health(resource_type="basic", count=count)
 
 class HearthstoneCard(Resource):
 
     @staticmethod
     def create(count=0):
-        return HearthstoneCard(type="earned", count=count)
+        return HearthstoneCard(resource_type="earned", count=count)
 
     @staticmethod
     def create_based_on_results(arean_wins=0, play_mode_wins=0, legendaries=0):
@@ -65,13 +65,13 @@ class Iron(Resource):
 
     @staticmethod
     def create(count=0):
-        return Iron(type="basic", count=count)
+        return Iron(resource_resource_type="basic", count=count)
 
 class PoolBall(Resource):
 
     @staticmethod
     def create(count=0):
-        return PoolBall(type="earned", count=count)
+        return PoolBall(resource_type="earned", count=count)
 
     @staticmethod
     def create_based_on_results(wins=0, balls=0, lags=0):
@@ -82,16 +82,16 @@ class Step(Resource):
 
     @staticmethod
     def create(count=0):
-        return Step(type="earned", count=count)
+        return Step(resource_type="earned", count=count)
 
 class Water(Resource):
 
     @staticmethod
     def create(count=0):
-        return Water(type="basic", count=count)
+        return Water(resource_type="basic", count=count)
 
 class Wood(Resource):
 
     @staticmethod
     def create(count=0):
-        return Wood(type="basic", count=count)
+        return Wood(resource_type="basic", count=count)

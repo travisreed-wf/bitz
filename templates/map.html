@@ -10,9 +10,9 @@
     <div class="col-md-3 col-sm-3">
       <h4>Resources</h4>
       {% set organized_resources = player.organized_resources %}
-      {% for type in ["basic", "tool", "earned"] %}
-        {% set resources = organized_resources.get(type, []) %}
-        <h5>{{ type | capitalize }}s</h5>
+      {% for resource_type in ["basic", "tool", "earned"] %}
+        {% set resources = organized_resources.get(resource_type, []) %}
+        <h5>{{ resource_type | capitalize }}s</h5>
         {% for resource in resources %}
           <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px;">  {{ resource.name }}: <span id="resource-{{resource.name}}">{{ resource.count }}</span><br>
         {% endfor %}
@@ -23,13 +23,14 @@
         <tr>
           {% set tiles_per_row = location.tiles_per_row %}
           {% for tile in tiles %}
-            {% if loop.index != 1 and loop.index % tiles_per_row == 1 %}
+            {% set index = loop.index - 1 %}
+            {% if index != 0 and index % tiles_per_row == 0 %}
               </tr><tr>
             {% endif %}
             <td width="25%" style="padding:10px" background="/static/img/tiles/{{ tile.name | replace(' ', '') }}.png">
               {% for action in tile.actions %}
                 <button class="{{ action.button_class }} btn-xs {{ action.icon_class }}" type='button' data-toggle='tooltip'
-                   title='{{ action.name }}' data-action="{{ action.name }}" data-tile-position="{{ loop.index - 1 }}"
+                   title='{{ action.name }}' data-action="{{ action.name }}" data-tile-position="{{ index }}"
                    onclick="tileActionClick(this);"></button>
               {% endfor %}
             </td>

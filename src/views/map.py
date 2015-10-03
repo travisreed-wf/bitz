@@ -15,6 +15,7 @@ class MapView(MethodView):
             return "Invalid location", 404
         tiles = ndb.get_multi(location.tiles)
         player = Player.get_by_id("Travis Reed")
+        print player.organized_resources
         return render_template('map.html', location=location, player=player,
                                tiles=tiles)
 

@@ -1,0 +1,5 @@
+cron:
+- description: cron that runs every minute
+  url: /crons/minute/
+  schedule: every 1 minutes
+  timezone: America/Chicago
