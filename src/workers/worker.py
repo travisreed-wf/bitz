@@ -22,6 +22,7 @@ class Worker(polymodel.PolyModel):
         for r in self.resources:
             if r.name == resource.name:
                 r.count += resource.count
+                self.put()
                 return
         r_copy = copy(resource)
         self.resources.append(r_copy)

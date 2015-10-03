@@ -39,6 +39,14 @@ class Action(ndb.Model):
             button_class="btn btn-info"
         )
 
+    @staticmethod
+    def get_gather_rocks_action():
+        return Action(
+            name="gather_rocks",
+            icon_class="glyphicon glyphicon glyphicon-picture",
+            button_class="btn btn-primary"
+        )
+
     def _gather_food(self, tile, worker, clicks):
         produced_food = copy(tile.get_resource_production("Food"))
         produced_food.count = produced_food.count * clicks
@@ -81,6 +89,29 @@ class Action(ndb.Model):
             consumed_resources.append(consumed_health)
             worker.remove_resource(consumed_health)
         worker.add_resource(produced_wood)
+
+        for produced_resource in produced_resources:
+            tile.consume_resource(produced_resource)
+        return produced_resources, consumed_resources
+
+    def _gather_rocks(self, tile, worker, clicks):
+        produced_rock = copy(tile.get_resource_production("Rock"))
+        produced_rock.count = produced_rock.count * clicks
+
+        worker_axe = None
+        consumed_resources = []
+        produced_resources = [produced_rock]
+        for worker_resource in worker.resources:
+            if worker_resource.name == "Axe" and worker_resource.count >= 1:
+                worker_axe = worker_resource
+
+        if worker_axe:
+            worker_axe.count -= 1 * clicks
+            consumed_axe = copy(worker_axe)
+            consumed_axe.count = 1 * clicks
+            consumed_resources.append(consumed_axe)
+            produced_rock.count = produced_rock.count * 3
+        worker.add_resource(produced_rock)
 
         for produced_resource in produced_resources:
             tile.consume_resource(produced_resource)

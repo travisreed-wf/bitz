@@ -81,7 +81,12 @@ class Plains(Tile):
 
     @staticmethod
     def get_plains():
-        return Plains(name="Plains", type="Base", production=[])
+        gather_rocks = Action.get_gather_rocks_action()
+        actions = [gather_rocks]
+        rocks = resource.Rock.create(count=2)
+        rocks2 = resource.Rock.create(count=10000)
+        return Plains(name="Plains", type="Base", production=[rocks],
+                      resources_available=[rocks2], actions=actions)
 
 
 class River(Tile):

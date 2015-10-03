@@ -18,8 +18,18 @@ class Resource(polymodel.PolyModel):
         d['name'] = self.name
         return d
 
-
 class Axe(Resource):
+
+    @staticmethod
+    def build(worker, count=0):
+        axe = Axe.create(count=count)
+        rock = Rock.create(count=count)
+        wood = Wood.create(count=count)
+        worker.add_resource(axe)
+        worker.remove_resource(wood)
+        worker.remove_resource(rock)
+
+        return [axe], [rock, wood]
 
     @staticmethod
     def create(count=0):
@@ -77,6 +87,12 @@ class PoolBall(Resource):
     def create_based_on_results(wins=0, balls=0, lags=0):
         count = wins * 5 + balls * 1 + lags * 1
         return PoolBall.create(count)
+
+class Rock(Resource):
+
+    @staticmethod
+    def create(count=0):
+        return Rock(resource_type="basic", count=count)
 
 class Step(Resource):
 
