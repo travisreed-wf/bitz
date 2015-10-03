@@ -9,12 +9,17 @@ from src.workers.worker import Player
 
 class BuildToolsView(MethodView):
 
+    def get(self):
+        player = Player.get_by_id("Travis Reed")
+
+        return render_template('build_tools.html', player=player)
+
     def put(self, tool_name):
         clicks = int(request.args.get('clicks'))
 
         try:
             player = Player.get_by_id("Travis Reed")
-            action = "resource.%s.build(worker, count=clicks)" % tool_name
+            action = "resource.%s.build(player, count=clicks)" % tool_name
             gained_resources, used_resources = eval(action)
             player.put()
         except:
@@ -28,5 +33,6 @@ class BuildToolsView(MethodView):
 
 
 def setup_urls(app):
+    app.add_url_rule('/build/tools/', view_func=BuildToolsView.as_view('build_tools_get'))
     app.add_url_rule('/build/tools/<tool_name>/',
-                     view_func=BuildToolsView.as_view('clicks'))
+                     view_func=BuildToolsView.as_view('build_tools_put'))

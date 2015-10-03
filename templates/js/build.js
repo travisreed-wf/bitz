@@ -1,26 +1,30 @@
 
 var build_data = [];
 
-var tileActionClick = function(btn){
+var build = function(btn){
+  console.log("HI");
   btn = $(btn);
   var toolName = btn.data('tool');
+  console.log(build_data);
   var data = build_data[toolName];
   if (data){
-    update_resources(action);
+    update_resources(data);
   }
   else {
     data = [];
     build_data[toolName] = data;
 
   }
-  if (data){
+  if (data['outstandingClicks']){
     data['outstandingClicks'] += 1;
     outstandingClicks = data['outstandingClicks'];
   }
   else{
     outstandingClicks = 1
   }
-  if (!data || outstandingClicks >= 10){
+  console.log(data);
+  if (!data['outstandingClicks'] || outstandingClicks >= 10){
+    console.log("HERE");
     $.ajax({
       url: '/build/tools/' + toolName + "/?clicks=" + outstandingClicks,
       method: 'PUT',

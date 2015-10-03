@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
-from src.views import clicks, map
+from src.views import build, clicks, map
 from src.crons import hourly
 
 
@@ -14,3 +14,4 @@ toolbar = DebugToolbarExtension(app)
 clicks.setup_urls(app)
 map.setup_urls(app)
 hourly.setup_urls(app)
+build.setup_urls(app)
