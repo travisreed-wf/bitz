@@ -21,9 +21,14 @@ class Worker(polymodel.PolyModel):
     def add_resource(self, resource):
         for r in self.resources:
             if r.name == resource.name:
+                if r.count >= 0 and r.count + resource.count < 0:
+                    raise ValueError
                 r.count += resource.count
                 self.put()
                 return
+
+        if resource.count < 0:
+            raise ValueError
         r_copy = copy(resource)
         self.resources.append(r_copy)
         self.put()

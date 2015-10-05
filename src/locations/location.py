@@ -16,7 +16,7 @@ class Tile(polymodel.PolyModel):
     resources_available = ndb.LocalStructuredProperty(
         resource.Resource, repeated=True, indexed=False)
     actions = ndb.LocalStructuredProperty(Action, repeated=True, indexed=False)
-    building = ndb.KeyProperty(Producer, indexed=True)
+    building = ndb.StringProperty(indexed=False)
     available_building_names = ndb.StringProperty(repeated=True, indexed=False)
 
     def build_building(self, building_name):

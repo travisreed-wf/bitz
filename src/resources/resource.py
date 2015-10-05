@@ -25,10 +25,9 @@ class Axe(Resource):
         axe = Axe.create(count=count)
         rock = Rock.create(count=count)
         wood = Wood.create(count=count)
-        worker.add_resource(axe)
         worker.remove_resource(wood)
         worker.remove_resource(rock)
-
+        worker.add_resource(axe)
         return [axe], [rock, wood]
 
     @staticmethod
