@@ -33,10 +33,32 @@
                    title='{{ action.name }}' data-action="{{ action.name }}" data-tile-position="{{ index }}"
                    onclick="tileActionClick(this);"></button>
               {% endfor %}
+              <br><br>
+              {% if not tile.building and tile.available_building_names %}
+                <button class="btn btn-xs btn-primary glyphicon glyphicon-wrench" type='button' data-toggle='modal'
+                   title='build' data-tile-position="{{ index }}" data-available-buildings="{{tile.available_building_names | join(',') }}"
+                   data-toggle="modal" data-target="#buildModal"></button>
+              {% endif %}
             </td>
           {% endfor %}
         </tr>
       </table>
+      <div class="modal fade" id="buildModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Build</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="build(this)">Save changes</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
     </div>
     <div class="col-md-3 col-sm-3"></div>
   </div>

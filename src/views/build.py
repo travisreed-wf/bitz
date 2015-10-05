@@ -33,7 +33,27 @@ class BuildToolsView(MethodView):
         })
 
 
+class BuildBuildingView(MethodView):
+
+    def put(self, location_id, tile_index, building_name):
+        try:
+            location = Location.get_by_id(location_id)
+            tile = location.tiles[int(tile_index)].get()
+            tile.build_building(building_name)
+            player = Player.get_by_id("Travis Reed")
+
+            player.put()
+            return "success"
+        except:
+            print traceback.format_exc()
+            return "Failed", 500
+
+
+
+
 def setup_urls(app):
     app.add_url_rule('/build/tools/', view_func=BuildToolsView.as_view('build_tools_get'))
     app.add_url_rule('/build/tools/<tool_name>/',
                      view_func=BuildToolsView.as_view('build_tools_put'))
+    app.add_url_rule('/build/<location_id>/<tile_index>/<building_name>/',
+                 view_func=BuildBuildingView.as_view('build'))

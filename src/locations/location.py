@@ -4,6 +4,7 @@ from google.appengine.ext import ndb
 from google.appengine.ext.ndb import polymodel
 
 from src.locations.action import Action
+from src.producers.producer import Producer
 from src.resources import resource
 
 
@@ -15,6 +16,11 @@ class Tile(polymodel.PolyModel):
     resources_available = ndb.LocalStructuredProperty(
         resource.Resource, repeated=True, indexed=False)
     actions = ndb.LocalStructuredProperty(Action, repeated=True, indexed=False)
+    building = ndb.KeyProperty(Producer, indexed=True)
+    available_building_names = ndb.StringProperty(repeated=True, indexed=False)
+
+    def build_building(self, building_name):
+        print "building %s" % building_name
 
     def get_resource_production(self, resource_name):
         for resource in self.production:
@@ -49,10 +55,11 @@ class Trees(Tile):
         gather_wood = Action.get_gather_wood_action()
         hunt = Action.get_hunt_action()
         actions = [gather_wood, hunt]
-        wood = resource.Wood.create(count=1)
+        wood = resource.Wood.create(count=3)
         wood2 = resource.Wood.create(count=100000)
         return Trees(name="Dense Trees", type="Base", production=[wood],
-                     resources_available=[wood2], actions=actions)
+                     resources_available=[wood2], actions=actions,
+                     available_building_names=["Lumberyard"])
 
     @staticmethod
     def get_trees():
@@ -60,7 +67,7 @@ class Trees(Tile):
         gather_food = Action.get_gather_food_action()
         hunt = Action.get_hunt_action()
         actions = [gather_wood, gather_food, hunt]
-        wood = resource.Wood.create(count=1)
+        wood = resource.Wood.create(count=2)
         wood2 = resource.Wood.create(count=10000)
         return Trees(name="Trees", type="Base", production=[wood],
                      resources_available=[wood2], actions=actions)

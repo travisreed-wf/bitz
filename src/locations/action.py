@@ -69,6 +69,7 @@ class Action(ndb.Model):
     def _gather_wood(self, tile, worker, clicks):
         produced_wood = copy(tile.get_resource_production("Wood"))
         produced_wood.count = produced_wood.count * clicks
+        print produced_wood.count
 
         worker_axe = None
         consumed_resources = []

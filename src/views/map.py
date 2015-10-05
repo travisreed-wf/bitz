@@ -19,7 +19,7 @@ class MapView(MethodView):
         return render_template('map.html', location=location, player=player,
                                tiles=tiles)
 
-
 def setup_urls(app):
     app.add_url_rule('/map/<map_name>/<location_id>/',
                      view_func=MapView.as_view('map'))
+
