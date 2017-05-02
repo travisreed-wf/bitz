@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block header_css %}
+  <head>
+      <title>Build Buildings</title>
+  </head>
+  {{ super() }}
+  <link rel="stylesheet" href="/static/DataTables-1.10.11/media/css/dataTables.bootstrap.min.css">
+
+{% endblock %}
+{% block body %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Production per tick</th>
+        <th>Ticks per day</th>
+        <th>Cost</th>
+        <th>Count</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for building in player.ordered_buildings %}
+      <tr>
+        <td>{{ building.name }}</td>
+        <td>
+          {% for resource in building.production_per_tick %}
+            <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px; padding-bottom: 5px"> <span id="resource-{{resource.name}}">x {{ resource.count }}</span>
+          {% endfor %}
+        </td>
+        <td>{{ building.ticks_per_day }}</td>
+        <td>
+          {% for resource in building.cost %}
+            <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px; padding-bottom: 5px"> <span id="resource-{{resource.name}}">x {{ resource.count }}</span>
+          {% endfor %}
+        </td>
+        <td>{{ building.count }}</td>
+        <td> -- </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock body %}}
+{% block js_bottom %}
+  {{ super() }}
+  <script src="/static/DataTables-1.10.11/media/js/jquery.dataTables.min.js"></script>
+  <script src="/static/DataTables-1.10.11/media/js/dataTables.bootstrap.min.js"></script>
+
+  <script type='application/javascript'>
+    {% include '/js/build_buildings.js' %}
+  </script>
+{% endblock %}

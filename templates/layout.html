@@ -39,6 +39,7 @@
               Build <span class='caret'></span>
             </a>
             <ul class="dropdown-menu">
+              <li><a href="/build/buildings/">Buildings</a></li>
               <li><a href="/build/tools/">Tools</a></li>
             </ul>
           </li>
@@ -68,7 +69,7 @@
 
     <!-- Start the main page content -->
     <div class="row">
-      <div class="col-md-3 col-sm-3">
+      <div class="col-md-2 col-sm-2">
         <h4>Resources</h4>
         {% set organized_resources = player.organized_resources %}
         {% for resource_type in ["basic", "tool", "earned"] %}
@@ -82,7 +83,7 @@
           {% endfor %}
         {% endfor %}
       </div>
-      <div class="col-md-6 col-sm-6">
+      <div class="col-md-8 col-sm-8">
         {% block body %}{% endblock body%}
       </div>
     </div>

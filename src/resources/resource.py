@@ -19,6 +19,29 @@ class Resource(polymodel.PolyModel):
         d['name'] = self.name
         return d
 
+    def clone(self, **extra_args):
+        """
+        Clones the entity and returns an un-put instance of it.
+        The id of the entity being copied is not copied over to clone.
+        Usage:
+        hook = GithubHook.query(...).get()
+        cloned_hook = hook.clone()
+        cloned_hook.put()
+
+        Code taken from:
+        http://stackoverflow.com/questions/2687724/copy-an-entity-in-
+        google-app-engine-datastore-in-python-without-knowing-property
+        ?answertab=votes#tab-top
+        """
+        klass = self.__class__
+        properties = {}
+        for v in klass._properties.itervalues():
+            if type(v) is not ndb.ComputedProperty and \
+                    type(v) is not polymodel._ClassKeyProperty:
+                properties[v._code_name] = v.__get__(self, klass)
+        properties.update(extra_args)
+        return klass(**properties)
+
 
 class Axe(Resource):
 

@@ -1,9 +1,9 @@
-from copy import copy
 import logging
 
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import polymodel
 
+from src.exceptions import InsufficientResourcesException
 from src.resources import resource
 from src.transactions.transaction import Transaction
 
@@ -23,13 +23,13 @@ class Worker(polymodel.PolyModel):
         r = self.get_resource_by_name(resource_to_add.name)
         if r:
             if r.count + resource_to_add.count < 0:
-                raise ValueError
+                raise InsufficientResourcesException()
             r.count += resource_to_add.count
             self.put()
         else:
             if resource_to_add.count < 0:
-                raise ValueError
-            r_copy = copy(resource_to_add)
+                raise InsufficientResourcesException()
+            r_copy = resource_to_add.clone()
             self.resources.append(r_copy)
             self.put()
 
@@ -46,7 +46,8 @@ class Worker(polymodel.PolyModel):
             action, abs(resource_to_add.count), resource_to_add.name)
         if reason:
             description += ' because %s' % reason
-        Transaction(count=resource_to_add.count, description=description,).put()
+        Transaction(
+            count=resource_to_add.count, description=description,).put()
 
     def check_basic_needs(self):
         food = resource.Food.create(count=-1)
@@ -54,12 +55,12 @@ class Worker(polymodel.PolyModel):
         try:
             self.add_resource(food)
             self.add_resource(water)
-        except ValueError:
+        except InsufficientResourcesException:
             health = resource.Health(count=-1)
             try:
                 reason = 'not enough resources to meet basic needs'
                 self.add_resource(health, reason=reason)
-            except ValueError:
+            except InsufficientResourcesException:
                 logging.warning(
                     "Your health dropped too low, you should be dead!")
         self.put()
@@ -70,9 +71,9 @@ class Worker(polymodel.PolyModel):
                 return r
         return None
 
-    def remove_resource(self, resource):
-        r_copy = copy(resource)
-        r_copy.count = resource.count * -1
+    def remove_resource(self, resource_to_remove):
+        r_copy = resource_to_remove.clone()
+        r_copy.count = resource_to_remove.count * -1
         self.add_resource(r_copy)
 
 
@@ -88,9 +89,17 @@ class Player(Worker):
                                     resources=resources)
 
     @property
+    def buildings(self):
+        return [r for r in self.resources if r.resource_type == 'building']
+
+    @property
+    def ordered_buildings(self):
+        return sorted(self.buildings, key=lambda b: b.name)
+
+    @property
     def ordered_resources(self):
         return sorted(
-            self.resources, key=lambda resource: resource.resource_type)
+            self.resources, key=lambda r: r.resource_type)
 
     @property
     def organized_resources(self):

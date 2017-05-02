@@ -55,16 +55,16 @@ class BuildBuildingsView(MethodView):
     def get(self):
         player = Player.get_by_id("Travis Reed")
 
-        return render_template('build_tools.html', player=player)
+        return render_template('build_buildings.html', player=player)
 
 
 def setup_urls(app):
-    app.add_url_rule('/build/tools/', view_func=BuildToolsView.as_view('build_tools_get'))
+    app.add_url_rule('/build/tools/',
+                     view_func=BuildToolsView.as_view('build_tools_get'))
     app.add_url_rule('/build/tools/<tool_name>/',
                      view_func=BuildToolsView.as_view('build_tools_put'))
     app.add_url_rule('/build/<location_id>/<tile_index>/<building_name>/',
-                 view_func=BuildBuildingOnTileView.as_view('build'))
+                     view_func=BuildBuildingOnTileView.as_view('build'))
 
     app.add_url_rule('/build/buildings/', view_func=BuildBuildingsView.as_view(
         'build_buildings'))
-
