@@ -16,12 +16,6 @@
             </tr><tr>
           {% endif %}
           <td width="25%" style="padding:10px" background="/static/img/tiles/{{ tile.name | replace(' ', '') }}.png">
-            {% for action in tile.actions %}
-              <button class="{{ action.button_class }} btn-xs {{ action.icon_class }}" type='button' data-toggle='tooltip'
-                 title='{{ action.name }}' data-action="{{ action.name }}" data-tile-position="{{ index }}"
-                 onclick="tileActionClick(this);"></button>
-            {% endfor %}
-            <br><br>
             {% if not tile.building and tile.available_building_names %}
               <button class="btn btn-xs btn-primary glyphicon glyphicon-wrench" type='button' data-toggle='modal'
                  title='build' data-tile-position="{{ index }}" data-available-buildings="{{tile.available_building_names | join(',') }}"

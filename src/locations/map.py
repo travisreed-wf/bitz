@@ -1,32 +1,70 @@
-from src.locations.location import Location, Trees, River, Plains
+import random
+from src.locations.location import Location, Tile
 
 
 class Map:
-    pass
+
+    ROOT_ID = None
+    AVAILABLE_TILES = []
+
+    @classmethod
+    def create(cls):
+        location = cls._generate_location(cls.ROOT_ID)
+        return location
+
+    @classmethod
+    def get(cls, position=None):
+        if position:
+            id = cls.ROOT_ID[0] + position
+        else:
+            id = cls.ROOT_ID
+        return Location.get_by_id(id)
+
+    @classmethod
+    def _generate_location(cls, location_id):
+        tiles = []
+        while len(tiles) < 100:
+            tiles.append(cls._generate_tile().key)
+        location = Location.get_or_insert(location_id, tiles=tiles)
+        location.put()
+        return location
+
+    @classmethod
+    def _generate_tile(cls):
+        rand = random.randint(1, 100)
+        total = 0
+        for tile_type in cls.AVAILABLE_TILES:
+            total += tile_type['percent_appearance']
+            if total >= rand:
+                tile_class = Tile.get_class_by_name(tile_type['name'])
+                tile = tile_class.create()
+                tile.put()
+                return tile
+        return None
 
 
 class Earth(Map):
 
-    @staticmethod
-    def create():
-        tile1 = Trees.get_trees_dense().put()
-        tile2 = Trees.get_trees_dense().put()
-        tile3 = Trees.get_trees_dense().put()
-        tile4 = Trees.get_trees().put()
-        tile5 = Trees.get_trees().put()
-        tile6 = Trees.get_trees().put()
-        tile7 = Trees.get_trees_sparse().put()
-        tile8 = River.get_river().put()
-        tile9 = Plains.get_plains().put()
-        tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7, tile8, tile9]
-        location = Location.get_or_insert("E0000x0000", type="Woods", tiles=tiles)
-        location.put()
-
-    @staticmethod
-    def get():
-        location1 = Location.get_by_id("E0000x0000")
-        return [
-            [
-                location1
-            ]
-        ]
+    ROOT_ID = 'E0000x0000'
+    AVAILABLE_TILES = [
+        {
+            'name': 'DenseTrees',
+            'percent_appearance': 10
+        },
+        {
+            'name': 'SparseTrees',
+            'percent_appearance': 30
+        },
+        {
+            'name': 'Trees',
+            'percent_appearance': 30
+        },
+        {
+            'name': 'River',
+            'percent_appearance': 5
+        },
+        {
+            'name': 'Plains',
+            'percent_appearance': 25
+        }
+    ]

@@ -99,7 +99,8 @@ class Player(Worker):
         hearth = resource.HearthstoneCard.create()
         clash = resource.ClashRoyaleWins.create()
         rockets = resource.Rocket.create()
-        resources = [health, pool_hall, pool_ball, hearth, clash, rockets]
+        lol = resource.LeagueOfLegendsWin.create()
+        resources = [health, pool_hall, pool_ball, hearth, clash, rockets, lol]
         return Player.get_or_insert("Travis Reed", name="Travis Reed", count=1,
                                     resources=resources)
 
