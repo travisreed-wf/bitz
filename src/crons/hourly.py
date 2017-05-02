@@ -1,9 +1,4 @@
-from datetime import datetime, timedelta
-import json
-import logging
-
 from flask.views import MethodView
-from google.appengine.ext import ndb
 
 from src.workers.worker import Worker, Player
 

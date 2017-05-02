@@ -48,7 +48,7 @@ class Building(resource.Resource):
         ten_minute_sections_between_ticks = (
             ten_minute_sections_per_day / self.ticks_per_day)
         now = datetime.now().replace(second=0, microsecond=0)
-        seconds_passed_today = now - now.replace(hour=0, minute=0)
+        seconds_passed_today = (now - now.replace(hour=0, minute=0)).seconds
         ten_minute_sections_passed_today = seconds_passed_today / 600
         return (ten_minute_sections_passed_today %
                 ten_minute_sections_between_ticks == 0)
