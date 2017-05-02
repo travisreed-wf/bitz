@@ -7,3 +7,8 @@ cron:
   url: /crons/buildings/
   schedule: every 10 mins
   timezone: America/Chicago
+
+- description: cron manages data refresh
+  url: /crons/dataRefresh/
+  schedule: every 60 mins
+  timezone: America/Chicago

@@ -4,6 +4,7 @@ from google.appengine.ext import ndb
 from google.appengine.ext.ndb import polymodel
 
 from src.exceptions import InsufficientResourcesException
+from src.producers import building
 from src.resources import resource
 from src.transactions.transaction import Transaction
 
@@ -93,9 +94,12 @@ class Player(Worker):
     @staticmethod
     def create():
         health = resource.Health.create(count=10000)
-        axe = resource.Axe.create(count=0)
-        wood = resource.Wood.create(count=0)
-        resources = [health, axe, wood]
+        pool_hall = building.PoolHall.create()
+        pool_ball = resource.PoolBall.create()
+        hearth = resource.HearthstoneCard.create()
+        clash = resource.ClashRoyaleWins.create()
+        rockets = resource.Rocket.create()
+        resources = [health, pool_hall, pool_ball, hearth, clash, rockets]
         return Player.get_or_insert("Travis Reed", name="Travis Reed", count=1,
                                     resources=resources)
 

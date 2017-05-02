@@ -60,6 +60,13 @@ class Axe(Resource):
         return Axe(resource_type="tool", count=count)
 
 
+class ClashRoyaleWins(Resource):
+
+    @staticmethod
+    def create(count=0):
+        return ClashRoyaleWins(resource_type="earned", count=count)
+
+
 class Dollar(Resource):
 
     @staticmethod
@@ -106,6 +113,13 @@ class Iron(Resource):
     @staticmethod
     def create(count=0):
         return Iron(resource_resource_type="basic", count=count)
+
+
+class LeagueOfLegendsWin(Resource):
+
+    @staticmethod
+    def create(count=0):
+        return LeagueOfLegendsWin(resource_type="earned", count=count)
 
 
 class PoolBall(Resource):
