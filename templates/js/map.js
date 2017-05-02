@@ -2,7 +2,7 @@
 var tile_data = [];
 
 var build = function(btn){
-  var btn = $(btn);
+  btn = $(btn);
   var modal = $('#buildModal');
   var location = $("#location-table").data('location-id');
   var tilePosition = $('#tileID').data('tile-position');
@@ -14,19 +14,19 @@ var build = function(btn){
         modal.modal('hide');
       }
     });
-}
+};
 
 $('#buildModal').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget);
   var modal = $(this);
   var html = '';
   var tilePosition = button.data('tile-position');
-  availableBuildings = button.data('available-buildings').split(',');
+  var building;
+  var availableBuildings = button.data('available-buildings').split(',');
   for (var i = 0; i < availableBuildings.length; i++){
     building = availableBuildings[i];
-    html += '<span id="tileID" data-tile-position="' + tilePosition + '"></span><div class="radio"><label><input type="radio" name="' + building + '">' + building + '</label></div>'
+    html += '<span id="' + tileID + '"data-tile-position="' + tilePosition + '"></span><div class="radio"><label><input type="radio" name="' + building + '">' + building + '</label></div>'
   }
-  console.log(html);
   modal.find('.modal-body').html(html);
 });
 
@@ -75,13 +75,14 @@ var tileActionClick = function(btn){
 };
 
 var update_resources = function(data){
-  for (var resourceName in data['gained_resources']){
-    var span = $('#resource-' + resourceName);
+  var resourceName;
+  for (resourceName in data['gained_resources']){
+    span = $('#resource-' + resourceName);
     currentCount = parseInt(span.text());
     currentCount += data['gained_resources'][resourceName];
     span.text(currentCount);
   }
-  for (var resourceName in data['used_resources']){
+  for (resourceName in data['used_resources']){
     var span = $('#resource-' + resourceName);
     currentCount = parseInt(span.text());
     currentCount -= data['used_resources'][resourceName];
@@ -91,7 +92,8 @@ var update_resources = function(data){
 
 window.onbeforeunload = function() {
   var location = $("#location-table").data('location-id');
-  for (var tilePosition in tile_data){
+  var tilePosition;
+  for (tilePosition in tile_data){
     var tile = tile_data[tilePosition];
     for (var actionName in tile){
       var action = tile[actionName];
