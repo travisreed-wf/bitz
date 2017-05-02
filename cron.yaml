@@ -1,5 +1,5 @@
 cron:
-- description: cron that runs every minute
-  url: /crons/minute/
-  schedule: every 5 minutes
-  timezone: America/Chicago
+#- description: cron that checks if workers have their basic needs met
+#  url: /crons/worker/
+#  schedule:
+#  timezone: America/Chicago

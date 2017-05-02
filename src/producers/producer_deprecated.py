@@ -5,7 +5,7 @@ from src.locations.action import Action
 from src.resources import resource
 
 
-class Producer(polymodel.PolyModel):
+class DeprecatedProducer(polymodel.PolyModel):
     name = ndb.StringProperty(indexed=True)
     daily_trigger_count = ndb.IntegerProperty(indexed=True)
     actions = ndb.LocalStructuredProperty(Action, repeated=True, indexed=False)
@@ -14,15 +14,16 @@ class Producer(polymodel.PolyModel):
     cost = ndb.LocalStructuredProperty(resource.Resource, indexed=False,
                                        repeated=True)
 
-    def build_lumberyard(self, tile, builder):
+    def build_lumberyard_on_tile(self, tile, builder):
         wood = resource.Wood.create(count=10000)
         builder.remove_resource(wood)
         action = Action.get_gather_wood_action()
         worker_info = {
             'gather_wood': [builder.key]
         }
-        producer = Producer(
-            name="Lumberyard", cost=wood, worker_info=worker_info, tile=tile.key,
+        producer = DeprecatedProducer(
+            name="Lumberyard", cost=wood, worker_info=worker_info,
+            tile=tile.key,
             actions=[action], daily_trigger_count=1440)
         producer.put()
 
@@ -38,16 +39,16 @@ class Producer(polymodel.PolyModel):
         pass
 
 
-class BaseProducer(Producer):
+class DeprecatedBaseProducer(DeprecatedProducer):
     def cost(self, current_count, to_add=1):
         raise NotImplementedError("Subclass must implement abstract method")
 
 
-class DailyProducer(Producer):
+class DeprecatedDailyProducer(DeprecatedProducer):
     def cost(self, current_count, to_add=1):
         raise NotImplementedError("Subclass must implement abstract method")
 
 
-class Lumberyard(BaseProducer):
+class Lumberyard(DeprecatedBaseProducer):
     def cost(self, current_count, to_add=1):
         pass

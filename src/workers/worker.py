@@ -42,7 +42,7 @@ class Worker(polymodel.PolyModel):
             action = 'Add'
         else:
             action = 'Remove'
-        description = "%s %s %s's" % (
+        description = "%s %s %s" % (
             action, abs(resource_to_add.count), resource_to_add.name)
         if reason:
             description += ' because %s' % reason
