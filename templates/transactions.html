@@ -23,7 +23,7 @@
         <td>{{ transaction.key.id() }}</td>
         <td>{{ transaction.description }}</td>
         <td>{{ transaction.count }}</td>
-        <td>{{ transaction.date.isoformat() }}</td>
+        <td>{{ transaction.date.strftime('%m-%d-%Y %H:%M:%S') }}</td>
       </tr>
     {% endfor %}
     </tbody>

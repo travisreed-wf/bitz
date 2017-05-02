@@ -3,7 +3,9 @@ from flask.views import MethodView
 import traceback
 import json
 
+from src.exceptions import InsufficientResourcesException
 from src.locations.location import Location
+from src.producers import building
 from src.resources import resource
 from src.workers.worker import Player
 
@@ -56,6 +58,27 @@ class BuildBuildingsView(MethodView):
         player = Player.get_by_id("Travis Reed")
 
         return render_template('build_buildings.html', player=player)
+
+    def post(self):
+        data = request.get_json()
+        player = Player.get_by_id("Travis Reed")
+        class_name = data.get('building')
+        count = data.get('count', 1)
+        try:
+            used_resources = eval(
+                'building.%s.build(player, count)' % class_name)
+            player.put()
+        except InsufficientResourcesException as e:
+            return e.message, 400
+
+        print {
+            'used_resources': {r.name: r.count for r in used_resources},
+            'gained_resources': {class_name: count}
+        }
+        return json.dumps({
+            'used_resources': {r.name: r.count for r in used_resources},
+            'gained_resources': {class_name: count}
+        })
 
 
 def setup_urls(app):

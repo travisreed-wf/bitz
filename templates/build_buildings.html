@@ -22,20 +22,24 @@
     <tbody>
     {% for building in player.ordered_buildings %}
       <tr>
-        <td>{{ building.name }}</td>
-        <td>
+        <td style="vertical-align:middle">
+          <img src="/static/img/resources/{{ building.name }}.png" style="width:50px;height:50px; padding-bottom: 5px"> <span>{{ building.name }}</span>
+        </td>
+        <td style="vertical-align:middle">
           {% for resource in building.production_per_tick %}
-            <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px; padding-bottom: 5px"> <span id="resource-{{resource.name}}">x {{ resource.count }}</span>
+            <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px; padding-bottom: 5px"> <span>x {{ resource.count }}</span>
           {% endfor %}
         </td>
-        <td>{{ building.ticks_per_day }}</td>
-        <td>
+        <td style="vertical-align:middle">{{ building.ticks_per_day }}</td>
+        <td style="vertical-align:middle">
           {% for resource in building.cost %}
-            <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px; padding-bottom: 5px"> <span id="resource-{{resource.name}}">x {{ resource.count }}</span>
+            <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px; padding-bottom: 5px"> <span>x {{ resource.count }}</span>
           {% endfor %}
         </td>
-        <td>{{ building.count }}</td>
-        <td> -- </td>
+        <td style="vertical-align:middle">
+          <span id="resource-{{building.name}}">{{ building.count }}</span>
+        </td>
+        <td style="vertical-align:middle"><button class="btn btn-primary btn-default" type='button' data-count=1 data-building="{{ building.name }}" data-toggle='tooltip' onclick='build(this);'>Build {{ building.name }}</button></td>
       </tr>
     {% endfor %}
     </tbody>

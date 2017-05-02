@@ -20,20 +20,24 @@ class Worker(polymodel.PolyModel):
                                             indexed=False)
 
     def add_resource(self, resource_to_add, reason=''):
-        r = self.get_resource_by_name(resource_to_add.name)
-        if r:
-            if r.count + resource_to_add.count < 0:
-                raise InsufficientResourcesException()
-            r.count += resource_to_add.count
-            self.put()
-        else:
-            if resource_to_add.count < 0:
-                raise InsufficientResourcesException()
-            r_copy = resource_to_add.clone()
-            self.resources.append(r_copy)
-            self.put()
+        self.add_resources([resource_to_add], reason=reason)
 
-        self._add_transaction(resource_to_add, reason)
+    def add_resources(self, resources_to_add, reason=''):
+        for resource_to_add in resources_to_add:
+            r = self.get_resource_by_name(resource_to_add.name)
+            if r:
+                if r.count + resource_to_add.count < 0:
+                    raise InsufficientResourcesException()
+                r.count += resource_to_add.count
+            else:
+                if resource_to_add.count < 0:
+                    raise InsufficientResourcesException()
+                r_copy = resource_to_add.clone()
+                self.resources.append(r_copy)
+
+        self.put()
+        for resource_to_add in resources_to_add:
+            self._add_transaction(resource_to_add, reason)
 
     def _add_transaction(self, resource_to_add, reason):
         if resource_to_add.count == 0:
@@ -71,10 +75,17 @@ class Worker(polymodel.PolyModel):
                 return r
         return None
 
+    def remove_resources(self, resources_to_remove):
+        copies = []
+        for resource_to_remove in resources_to_remove:
+            r_copy = resource_to_remove.clone()
+            r_copy.count = resource_to_remove.count * -1
+            copies.append(r_copy)
+
+        self.add_resources(copies)
+
     def remove_resource(self, resource_to_remove):
-        r_copy = resource_to_remove.clone()
-        r_copy.count = resource_to_remove.count * -1
-        self.add_resource(r_copy)
+        self.add_resources([resource_to_remove])
 
 
 class Player(Worker):

@@ -16,13 +16,16 @@ class Building(resource.Resource):
     @classmethod
     def build(cls, player, count=0):
         building = cls.create(count=count)
-        player.remove_resource(building.total_cost)
+        cost = building.total_cost
+        player.remove_resources(cost)
         player.add_resource(building)
+        return cost
 
     @staticmethod
     def create(count=0):
         raise NotImplementedError('subclass must implement')
 
+    @property
     def total_cost(self):
         total = []
         for r in self.cost:
