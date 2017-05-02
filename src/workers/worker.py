@@ -19,50 +19,50 @@ class Worker(polymodel.PolyModel):
     resources = ndb.LocalStructuredProperty(resource.Resource, repeated=True,
                                             indexed=False)
 
-    def add_resource(self, resource):
-        r = self.get_resource_by_name(resource.name)
+    def add_resource(self, resource_to_add, reason=''):
+        logging.info('trying to add resource %s' % resource_to_add)
+        r = self.get_resource_by_name(resource_to_add.name)
         if r:
-            if r.count >= 0 and r.count + resource.count < 0:
+            if r.count + resource_to_add.count < 0:
                 raise ValueError
-            r.count += resource.count
+            r.count += resource_to_add.count
             self.put()
-            return
         else:
-            if resource.count < 0:
+            if resource_to_add.count < 0:
                 raise ValueError
-            r_copy = copy(resource)
+            r_copy = copy(resource_to_add)
             self.resources.append(r_copy)
             self.put()
 
-        self._add_transaction(resource)
+        self._add_transaction(resource_to_add, reason)
 
-    def _add_transaction(self, resource):
-        if resource.count > 0:
+    def _add_transaction(self, resource_to_add, reason):
+        if resource_to_add.count == 0:
+            return
+        if resource_to_add.count > 0:
             action = 'Add'
         else:
             action = 'Remove'
-        description = "%s %s %s's" % (action, resource.count, resource.name)
-        Transaction(count=resource.count, description=description).put()
+        description = "%s %s %s's" % (
+            action, resource_to_add.count, resource_to_add.name)
+        if reason:
+            description += ' because %s' % reason
+        Transaction(count=resource_to_add.count, description=description,).put()
 
     def check_basic_needs(self):
-        food_check_passed = False
-        water_check_passed = False
-        health = None
-        for resource in self.resources:
-            if resource.name == "Food":
-                if resource.count >= 1:
-                    food_check_passed = True
-                    resource.count -= 1
-            elif resource.name == "Water":
-                if resource.count >= 1:
-                    water_check_passed = True
-                    resource.count -= 1
-            elif resource.name == "Health":
-                health = resource
-        if not water_check_passed or not food_check_passed:
-            health.count -= 1
-        if health.count <= 0:
-            logging.warning("Your health dropped too low, you should be dead!")
+        food = resource.Food.create(count=-1)
+        water = resource.Water.create(count=-1)
+        try:
+            self.add_resource(food)
+            self.add_resource(water)
+        except ValueError:
+            health = resource.Health(count=-1)
+            try:
+                reason = 'not enough resources to meet basic needs'
+                self.add_resource(health, reason=reason)
+            except ValueError:
+                logging.warning(
+                    "Your health dropped too low, you should be dead!")
         self.put()
 
     def get_resource_by_name(self, name):

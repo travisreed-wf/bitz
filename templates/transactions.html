@@ -4,22 +4,37 @@
       <title>Transactions</title>
   </head>
   {{ super() }}
+  <link rel="stylesheet" href="/static/DataTables-1.10.11/media/css/dataTables.bootstrap.min.css">
+
 {% endblock %}
 {% block body %}
-  <table>
+  <table class="table table-bordered table-striped">
     <thead>
-      <th>ID</th>
-      <th>Description</th>
-      <th>Count</th>
-      <th>Date</th>
+      <tr>
+        <th>ID</th>
+        <th>Description</th>
+        <th>Count</th>
+        <th>Date</th>
+      </tr>
     </thead>
+    <tbody>
     {% for transaction in transactions %}
       <tr>
-        <td>transaction.key.id()</td>
-        <td>transaction.description</td>
-        <td>transaction.count</td>
-        <td>transaction.date.isoformat()</td>
+        <td>{{ transaction.key.id() }}</td>
+        <td>{{ transaction.description }}</td>
+        <td>{{ transaction.count }}</td>
+        <td>{{ transaction.date.isoformat() }}</td>
       </tr>
     {% endfor %}
+    </tbody>
   </table>
 {% endblock body %}}
+{% block js_bottom %}
+  {{ super() }}
+  <script src="/static/DataTables-1.10.11/media/js/jquery.dataTables.min.js"></script>
+  <script src="/static/DataTables-1.10.11/media/js/dataTables.bootstrap.min.js"></script>
+
+  <script type='application/javascript'>
+    {% include '/js/transactions.js' %}
+  </script>
+{% endblock %}
