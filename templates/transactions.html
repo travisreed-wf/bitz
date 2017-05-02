@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block header_css %}
+  <head>
+      <title>Transactions</title>
+  </head>
+  {{ super() }}
+{% endblock %}
+{% block body %}
+  <table>
+    <thead>
+      <th>ID</th>
+      <th>Description</th>
+      <th>Count</th>
+      <th>Date</th>
+    </thead>
+    {% for transaction in transactions %}
+      <tr>
+        <td>transaction.key.id()</td>
+        <td>transaction.description</td>
+        <td>transaction.count</td>
+        <td>transaction.date.isoformat()</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock body %}}

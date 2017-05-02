@@ -5,6 +5,7 @@ from google.appengine.ext import ndb
 from google.appengine.ext.ndb import polymodel
 
 from src.resources import resource
+from src.transactions.transaction import Transaction
 
 
 class Worker(polymodel.PolyModel):
@@ -32,6 +33,16 @@ class Worker(polymodel.PolyModel):
             r_copy = copy(resource)
             self.resources.append(r_copy)
             self.put()
+
+        self._add_transaction(resource)
+
+    def _add_transaction(self, resource):
+        if resource.count > 0:
+            action = 'Add'
+        else:
+            action = 'Remove'
+        description = "%s %s %s's" % (action, resource.count, resource.name)
+        Transaction(count=resource.count, description=description).put()
 
     def check_basic_needs(self):
         food_check_passed = False
