@@ -1,7 +1,9 @@
 from src.locations.location import Location, Trees, River, Plains
 
+
 class Map:
     pass
+
 
 class Earth(Map):
 

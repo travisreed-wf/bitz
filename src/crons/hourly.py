@@ -7,6 +7,7 @@ from google.appengine.ext import ndb
 
 from src.workers.worker import Worker
 
+
 class MinuteCron(MethodView):
 
     def get(self):
@@ -19,6 +20,7 @@ class MinuteCron(MethodView):
         workers = Worker.query().fetch()
         for worker in workers:
             worker.check_basic_needs()
+
 
 def setup_urls(app):
     app.add_url_rule('/crons/minute/',

@@ -19,19 +19,19 @@ class Worker(polymodel.PolyModel):
                                             indexed=False)
 
     def add_resource(self, resource):
-        for r in self.resources:
-            if r.name == resource.name:
-                if r.count >= 0 and r.count + resource.count < 0:
-                    raise ValueError
-                r.count += resource.count
-                self.put()
-                return
-
-        if resource.count < 0:
-            raise ValueError
-        r_copy = copy(resource)
-        self.resources.append(r_copy)
-        self.put()
+        r = self.get_resource_by_name(resource.name)
+        if r:
+            if r.count >= 0 and r.count + resource.count < 0:
+                raise ValueError
+            r.count += resource.count
+            self.put()
+            return
+        else:
+            if resource.count < 0:
+                raise ValueError
+            r_copy = copy(resource)
+            self.resources.append(r_copy)
+            self.put()
 
     def check_basic_needs(self):
         food_check_passed = False
@@ -54,11 +54,16 @@ class Worker(polymodel.PolyModel):
             logging.warning("Your health dropped too low, you should be dead!")
         self.put()
 
+    def get_resource_by_name(self, name):
+        for r in self.resources:
+            if r.name == name:
+                return r
+        return None
+
     def remove_resource(self, resource):
         r_copy = copy(resource)
         r_copy.count = resource.count * -1
         self.add_resource(r_copy)
-
 
 
 class Player(Worker):

@@ -7,6 +7,7 @@ from src.locations.location import Location
 from src.resources import resource
 from src.workers.worker import Player
 
+
 class BuildToolsView(MethodView):
 
     def get(self):
@@ -47,8 +48,6 @@ class BuildBuildingView(MethodView):
         except:
             print traceback.format_exc()
             return "Failed", 500
-
-
 
 
 def setup_urls(app):
