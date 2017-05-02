@@ -6,6 +6,7 @@ import json
 from src.locations.location import Location
 from src.workers.worker import Player
 
+
 class ClicksView(MethodView):
 
     def put(self, location_id, tile_index, action_name):

@@ -20,7 +20,6 @@ class Worker(polymodel.PolyModel):
                                             indexed=False)
 
     def add_resource(self, resource_to_add, reason=''):
-        logging.info('trying to add resource %s' % resource_to_add)
         r = self.get_resource_by_name(resource_to_add.name)
         if r:
             if r.count + resource_to_add.count < 0:

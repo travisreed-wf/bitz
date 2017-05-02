@@ -26,13 +26,6 @@ class Action(ndb.Model):
             button_class="btn btn-success")
 
     @staticmethod
-    def get_hunt_action():
-        return Action(
-            name="hunt", icon_class="glyphicon glyphicon-tree-conifer",
-            button_class="btn btn-danger"
-        )
-
-    @staticmethod
     def get_gather_water_action():
         return Action(
             name="gather_water", icon_class="glyphicon glyphicon glyphicon-tint",

@@ -1,17 +1,57 @@
 {% extends "layout.html" %}
 {% block header_css %}
   <head>
-      <title>Game Room Tracker</title>
+      <title>Map</title>
   </head>
   {{ super() }}
 {% endblock %}
 {% block body %}
   <div class="row">
-    <div class="col-md-12 col-sm-12">
-      <h4>Game Room Tracker</h4>
-    </div>
+    <table id="location-table" class="center" style="height: 700px;" border="1" bordercolor="FFFFFF" data-location-id="{{ location.key.id()}}">
+      <tr>
+        {% set tiles_per_row = location.tiles_per_row %}
+        {% for tile in tiles %}
+          {% set index = loop.index - 1 %}
+          {% if index != 0 and index % tiles_per_row == 0 %}
+            </tr><tr>
+          {% endif %}
+          <td width="25%" style="padding:10px" background="/static/img/tiles/{{ tile.name | replace(' ', '') }}.png">
+            {% for action in tile.actions %}
+              <button class="{{ action.button_class }} btn-xs {{ action.icon_class }}" type='button' data-toggle='tooltip'
+                 title='{{ action.name }}' data-action="{{ action.name }}" data-tile-position="{{ index }}"
+                 onclick="tileActionClick(this);"></button>
+            {% endfor %}
+            <br><br>
+            {% if not tile.building and tile.available_building_names %}
+              <button class="btn btn-xs btn-primary glyphicon glyphicon-wrench" type='button' data-toggle='modal'
+                 title='build' data-tile-position="{{ index }}" data-available-buildings="{{tile.available_building_names | join(',') }}"
+                 data-toggle="modal" data-target="#buildModal"></button>
+            {% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+    </table>
+    <div class="modal fade" id="buildModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Build</h4>
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="build(this)">Save changes</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
   </div>
 {% endblock body %}
 {% block js_bottom %}
   {{ super() }}
+  <script type="application/javascript">
+    {% include '/js/map.js' %}
+  </script>
 {% endblock js_bottom %}

@@ -4,6 +4,7 @@ from google.appengine.ext.ndb import polymodel
 from src.locations.action import Action
 from src.resources import resource
 
+
 class Producer(polymodel.PolyModel):
     name = ndb.StringProperty(indexed=True)
     daily_trigger_count = ndb.IntegerProperty(indexed=True)
@@ -33,7 +34,6 @@ class Producer(polymodel.PolyModel):
                 worker = worker.get()
                 action.perform(self.tile.get(), worker, clicks=worker.count)
 
-
     def upgrade(self, upgraded_name):
         pass
 
@@ -42,9 +42,11 @@ class BaseProducer(Producer):
     def cost(self, current_count, to_add=1):
         raise NotImplementedError("Subclass must implement abstract method")
 
+
 class DailyProducer(Producer):
     def cost(self, current_count, to_add=1):
         raise NotImplementedError("Subclass must implement abstract method")
+
 
 class Lumberyard(BaseProducer):
     def cost(self, current_count, to_add=1):

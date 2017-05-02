@@ -19,7 +19,7 @@ class Earth(Map):
         tile8 = River.get_river().put()
         tile9 = Plains.get_plains().put()
         tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7, tile8, tile9]
-        location = Location.get_or_insert("E0000x0000",type="Woods", tiles=tiles)
+        location = Location.get_or_insert("E0000x0000", type="Woods", tiles=tiles)
         location.put()
 
     @staticmethod
