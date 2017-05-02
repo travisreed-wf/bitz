@@ -3,3 +3,7 @@ cron:
 #  url: /crons/worker/
 #  schedule:
 #  timezone: America/Chicago
+- description: cron manages building production
+  url: /crons/buildings/
+  schedule: every 10 mins
+  timezone: America/Chicago

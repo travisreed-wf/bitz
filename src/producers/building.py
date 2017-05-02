@@ -1,3 +1,4 @@
+from datetime import datetime
 from google.appengine.ext import ndb
 
 from src.resources import resource
@@ -33,6 +34,24 @@ class Building(resource.Resource):
             r_copy.count *= self.count
             total.append(r_copy)
         return total
+
+    def produce(self):
+        production = []
+        for r in self.production_per_tick:
+            r_copy = r.clone()
+            r_copy.count *= self.count
+            production.append(r_copy)
+        return production
+
+    def should_produce(self):
+        ten_minute_sections_per_day = 24 * 6
+        ten_minute_sections_between_ticks = (
+            ten_minute_sections_per_day / self.ticks_per_day)
+        now = datetime.now().replace(second=0, microsecond=0)
+        seconds_passed_today = now - now.replace(hour=0, minute=0)
+        ten_minute_sections_passed_today = seconds_passed_today / 600
+        return (ten_minute_sections_passed_today %
+                ten_minute_sections_between_ticks == 0)
 
 
 class PoolHall(Building):

@@ -72,7 +72,7 @@
       <div class="col-md-2 col-sm-2">
         <h4>Resources</h4>
         {% set organized_resources = player.organized_resources %}
-        {% for resource_type in ["basic", "tool", "earned"] %}
+        {% for resource_type in ["basic", "tool", "earned", 'skill_point'] %}
           {% set resources = organized_resources.get(resource_type, []) %}
           <h5>{{ resource_type | capitalize }}s</h5>
           {% for resource in resources %}

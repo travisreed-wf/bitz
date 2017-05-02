@@ -85,7 +85,7 @@ class Worker(polymodel.PolyModel):
         self.add_resources(copies)
 
     def remove_resource(self, resource_to_remove):
-        self.add_resources([resource_to_remove])
+        self.remove_resources([resource_to_remove])
 
 
 class Player(Worker):
