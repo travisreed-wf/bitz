@@ -24,7 +24,6 @@ class BuildToolsView(MethodView):
             player = Player.get_by_id("Travis Reed")
             action = "resource.%s.build(player, count=clicks)" % tool_name
             gained_resources, used_resources = eval(action)
-            print gained_resources, used_resources
             player.put()
         except:
             print traceback.format_exc()
@@ -71,10 +70,6 @@ class BuildBuildingsView(MethodView):
         except InsufficientResourcesException as e:
             return e.message, 400
 
-        print {
-            'used_resources': {r.name: r.count for r in used_resources},
-            'gained_resources': {class_name: count}
-        }
         return json.dumps({
             'used_resources': {r.name: r.count for r in used_resources},
             'gained_resources': {class_name: count}

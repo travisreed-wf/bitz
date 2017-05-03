@@ -7,19 +7,34 @@
 {% endblock %}
 {% block body %}
   <div class="row">
-    <table id="location-table" class="center" style="height: 700px;" border="1" bordercolor="FFFFFF" data-location-id="{{ location.key.id()}}">
+    <div class="row center">
+      <h2>Map - {{location.name }}</h2>
+    </div>
+    <table id="location-table" class="center" style="height: 700px; background-color:#8d8989" border="1" bordercolor="FFFFFF" data-location-id="{{ location.key.id()}}">
       <tr>
         {% set tiles_per_row = location.tiles_per_row %}
+        {% set width = 80 / tiles_per_row %}
         {% for tile in tiles %}
           {% set index = loop.index - 1 %}
+          {% if tile.is_explored %}
+            {% set background = "/static/img/tiles/" + tile.name | replace(' ', '') + ".png" %}
+          {% else %}
+            {% set background =  "" %}
+          {% endif %}
           {% if index != 0 and index % tiles_per_row == 0 %}
             </tr><tr>
           {% endif %}
-          <td width="25%" style="padding:10px" background="/static/img/tiles/{{ tile.name | replace(' ', '') }}.png">
+          <td width='{{ width }}%' style="padding:10px; background-size: 100%;" background="{{ background }}" id="td-{{ tile.key.id()}}">
             {% if not tile.building and tile.available_building_names %}
               <button class="btn btn-xs btn-primary glyphicon glyphicon-wrench" type='button' data-toggle='modal'
                  title='build' data-tile-position="{{ index }}" data-available-buildings="{{tile.available_building_names | join(',') }}"
-                 data-toggle="modal" data-target="#buildModal"></button>
+                 data-target="#buildModal"></button>
+            {% endif %}
+            {% if not tile.is_explored %}
+              <button class="btn btn-xs btn-primary glyphicon glyphicon-search center" type='button' data-toggle='modal'
+                 title='explore' data-tile-str-coord="{{ tile.str_coordinate }}"
+                 data-tile-id="{{ tile.key.id() }}"
+                 data-target="#exploreModal"></button>
             {% endif %}
           </td>
         {% endfor %}
@@ -37,6 +52,22 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" onclick="build(this)">Save changes</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div class="modal fade" id="exploreModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Explore</h4>
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Take me back!</button>
+            <button type="button" class="btn btn-primary" onclick="explore(this)">Lets do it!</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
