@@ -23,14 +23,15 @@ class Tile(polymodel.PolyModel):
 
     def explore(self, player):
         cost = self.cost_to_explore
-        player.remove_resource(cost)
+        player.remove_resources(cost)
         self.is_explored = True
         self.put()
+        return cost
 
     @property
     def cost_to_explore(self):
         count = 5 * 10 ** self.distance_from_middle
-        return resource.Food.create(int(count))
+        return [resource.Food.create(int(count))]
 
     @property
     def distance_from_middle(self):

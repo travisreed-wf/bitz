@@ -29,11 +29,15 @@ class ExploreView(MethodView):
         tile = Tile.get_by_id(tile_id)
         player = Player.get_by_id("Travis Reed")
         try:
-            tile.explore(player)
+            used_resources = tile.explore(player)
         except InsufficientResourcesException as e:
             return e.message, 400
-
-        return json.dumps({'tile_name': tile.name})
+        data = {
+            'tile_name': tile.name,
+            'gained_resources': {},
+            'used_resources': {r.name: r.count for r in used_resources}
+        }
+        return json.dumps(data)
 
 
 def setup_urls(app):

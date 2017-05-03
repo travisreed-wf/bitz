@@ -77,6 +77,7 @@ var explore = function(btn){
         var td = $('#td-' + tileID);
         td.attr('background', imagePath);
         td.find('button').hide();
+        update_resources(data);
       },
       error: function(resp) {
         window.alert(resp.responseText || 'Unknown Error');

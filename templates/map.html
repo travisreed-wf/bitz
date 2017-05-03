@@ -31,7 +31,7 @@
               <div class="text-center">
                 <button style='background-color: #6B6A68; border: none' class="btn btn-xs btn-default glyphicon glyphicon-search" type='button' data-toggle='modal'
                  title='explore' data-tile-str-coord="{{ tile.str_coordinate }}"
-                 data-tile-id="{{ tile.key.id() }}" data-tile-cost="{{ tile.cost_to_explore.count }}"
+                 data-tile-id="{{ tile.key.id() }}" data-tile-cost="{{ tile.cost_to_explore[0].count }}"
                  data-tile-distance=" {{ tile.distance_from_middle }}"
                  data-target="#exploreModal"></button>
               </div>
