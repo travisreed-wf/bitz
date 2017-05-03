@@ -61,9 +61,11 @@ class BuildBuildingsView(MethodView):
         player = Player.get_by_id("Travis Reed")
         class_name = data.get('building')
         count = data.get('count', 1)
+        map_class = Earth
         try:
             used_resources = eval(
-                'building.%s.build(player, count)' % class_name)
+                'building.%s.build(player, map_class, count=count)' %
+                class_name)
             player.put()
         except InsufficientResourcesException as e:
             return e.message, 400
