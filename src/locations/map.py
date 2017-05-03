@@ -16,6 +16,7 @@ class Map:
         location = cls._generate_location(cls.ROOT_ID)
         middle_tile = cls.get_middle_tile()
         middle_tile.is_explored = True
+        middle_tile.building = 'Capital'
         middle_tile.put()
         return location
 

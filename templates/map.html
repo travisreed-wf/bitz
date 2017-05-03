@@ -19,7 +19,7 @@
           {% if tile.is_explored %}
             {% set background = "/static/img/tiles/" + tile.name | replace(' ', '') + ".png" %}
           {% else %}
-            {% set background =  "" %}
+            {% set background =  "/static/img/tiles/Fog.png" %}
           {% endif %}
           {% if index != 0 and index % tiles_per_row == 0 %}
             </tr><tr>
@@ -31,10 +31,13 @@
                  data-target="#buildModal"></button>
             {% endif %}
             {% if not tile.is_explored %}
-              <button class="btn btn-xs btn-primary glyphicon glyphicon-search center" type='button' data-toggle='modal'
+              <div class="text-center">
+                <button style='background-color: #6B6A68; border: none' class="btn btn-xs btn-default glyphicon glyphicon-search" type='button' data-toggle='modal'
                  title='explore' data-tile-str-coord="{{ tile.str_coordinate }}"
-                 data-tile-id="{{ tile.key.id() }}"
+                 data-tile-id="{{ tile.key.id() }}" data-tile-cost="{{ tile.cost_to_explore.count }}"
+                 data-tile-distance=" {{ tile.distance_from_middle }}"
                  data-target="#exploreModal"></button>
+              </div>
             {% endif %}
           </td>
         {% endfor %}

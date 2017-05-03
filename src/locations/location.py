@@ -21,8 +21,23 @@ class Tile(polymodel.PolyModel):
         print "building %s" % building_name
 
     def explore(self, player):
+        cost = self.cost_to_explore
+        player.remove_resource(cost)
         self.is_explored = True
         self.put()
+
+    @property
+    def cost_to_explore(self):
+        count = 5 * 10 ** self.distance_from_middle
+        return resource.Food.create(int(count))
+
+    @property
+    def distance_from_middle(self):
+        middle_coordinate = 4, 4
+
+        x_distance = abs(middle_coordinate[0] - self.coordinate[0])
+        y_distance = abs(middle_coordinate[1] - self.coordinate[1])
+        return math.sqrt(x_distance ^ 2 + y_distance ^ 2)
 
     @property
     def name(self):

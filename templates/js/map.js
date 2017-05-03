@@ -34,10 +34,18 @@ $('#buildModal').on('show.bs.modal', function (event) {
 $('#exploreModal').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget);
   var modal = $(this);
+  modal.find('button').show();
   var html = '';
   var tileCoord = button.data('tile-str-coord');
+  var tileCost = button.data('tile-cost');
+  var tileDistance = button.data('tile-distance');
   var tileID = button.data('tile-id');
-    html += '<span id="tileSpan" data-tile-id="' + tileID + '">Are you sure that you want to build explore the tile at ' + tileCoord + '?</span>';
+    html += (
+    '<span id="tileSpan" data-tile-id="' + tileID + '">' +
+    'Are you sure that you want to build explore the tile at ' + tileCoord + '?' +
+    '<br>Because it is ' + tileDistance + ' tiles from the middle, it will cost ' +
+    '<img src="/static/img/resources/Food.png" style="width:30px;height:30px; padding-bottom: 5px"> <span>x ' + tileCost + '</span> ' +
+    'to explore.</span>');
 
   modal.find('.modal-body').html(html);
 });
@@ -53,7 +61,7 @@ var explore = function(btn){
       success: function(resp) {
         var data = $.parseJSON(resp);
         var tileName = data['tile_name'];
-        var imagePath = '/static/img/tiles/' + tileName+ '.png'
+        var imagePath = '/static/img/tiles/' + tileName+ '.png';
         var html = (
           '<div class="row">' +
             '<div class="col-md-2">' +
@@ -68,6 +76,9 @@ var explore = function(btn){
         var td = $('#td-' + tileID);
         td.attr('background', imagePath);
         td.find('button').hide();
+      },
+      error: function(resp) {
+        window.alert(resp.responseText || 'Unknown Error');
       }
     });
 };

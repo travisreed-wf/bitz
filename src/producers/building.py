@@ -1,4 +1,6 @@
 from datetime import datetime
+import sys
+
 from google.appengine.ext import ndb
 
 from src.resources import resource
@@ -66,3 +68,17 @@ class PoolHall(Building):
         return PoolHall(count=count, resource_type="building",
                         ticks_per_day=6 * 24,
                         production_per_tick=ppt)
+
+
+class Capital(Building):
+
+    @property
+    def cost(self):
+        return [resource.Gold.create(sys.maxint)]
+
+    @staticmethod
+    def create(count=0):
+        ppt = [resource.Food.create(count=15)]
+        return Capital(count=count, resource_type="building",
+                       ticks_per_day=6 * 24,
+                       production_per_tick=ppt)
