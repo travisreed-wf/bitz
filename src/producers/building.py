@@ -96,6 +96,38 @@ class PoolHall(Building):
             return [resource.PoolBall.create(250)]
 
 
+class DartShack(Building):
+
+    @staticmethod
+    def create(count=0):
+        ppt = [skill_point.DartSkillPoint.create(count=1)]
+        return DartShack(count=count, resource_type="building",
+                         ticks_per_day=6 * 24,
+                         production_per_tick=ppt)
+
+    def get_cost(self, map_class):
+        if self.get_max_discounted_buildings(map_class):
+            return [resource.Dart.create(100)]
+        else:
+            return [resource.Dart.create(500)]
+
+
+class SpearGoblinHut(Building):
+
+    @staticmethod
+    def create(count=0):
+        ppt = [skill_point.ClashRoyaleSkillPoint.create(count=1)]
+        return SpearGoblinHut(count=count, resource_type="building",
+                              ticks_per_day=3 * 24,
+                              production_per_tick=ppt)
+
+    def get_cost(self, map_class):
+        if self.get_max_discounted_buildings(map_class):
+            return [resource.ClashRoyaleWins.create(5)]
+        else:
+            return [resource.ClashRoyaleWins.create(15)]
+
+
 class Capital(Building):
 
     def get_cost(self, map_class):

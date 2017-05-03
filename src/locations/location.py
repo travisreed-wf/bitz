@@ -69,6 +69,7 @@ class Trees(Tile):
 
 
 class DenseTrees(Trees):
+    DEFAULT_AVAILABLE_BUILDING_NAMES = ['PoolHall', 'DartShack']
     pass
 
 
@@ -79,6 +80,7 @@ class SparseTrees(Trees):
 
 
 class Plains(Tile):
+    DEFAULT_AVAILABLE_BUILDING_NAMES = ['SpearGoblinHut']
     pass
 
 

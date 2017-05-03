@@ -10,3 +10,11 @@ class SkillPoint(resource.Resource):
 
 class PoolSkillPoint(SkillPoint):
     pass
+
+
+class DartSkillPoint(SkillPoint):
+    pass
+
+
+class ClashRoyaleSkillPoint(SkillPoint):
+    pass

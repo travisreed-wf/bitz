@@ -67,6 +67,23 @@ class ClashRoyaleWins(Resource):
         return ClashRoyaleWins(resource_type="earned", count=count)
 
 
+class Dart(Resource):
+
+    @staticmethod
+    def create(count=0):
+        return Dart(resource_type="earned", count=count)
+
+    @staticmethod
+    def create_based_on_results(wins=0, bulls=0, gotchas=0, game_type='301'):
+        if game_type == '301':
+            count = wins * 10 + gotchas * 5
+        elif game_type == 'cricket':
+            count = wins * 20 + bulls * 5
+        else:
+            count = wins * 15
+        return Dart.create(count)
+
+
 class Dollar(Resource):
 
     @staticmethod

@@ -91,35 +91,40 @@ class Player(Worker):
 
     @staticmethod
     def create():
-        health = resource.Health.create(count=10000)
-        pool_hall = building.PoolHall.create()
-        pool_ball = resource.PoolBall.create()
-        hearth = resource.HearthstoneCard.create()
-        clash = resource.ClashRoyaleWins.create()
-        rockets = resource.Rocket.create()
-        lol = resource.LeagueOfLegendsWin.create()
-        capital = building.Capital.create(1)
+
         resources = [
-            health, pool_hall, pool_ball, hearth, clash, rockets, lol, capital
+            resource.Health.create(count=10000),
+            building.PoolHall.create(),
+            resource.PoolBall.create(),
+            resource.HearthstoneCard.create(),
+            resource.ClashRoyaleWins.create(),
+            resource.Rocket.create(),
+            resource.LeagueOfLegendsWin.create(),
+            building.Capital.create(1),
+            resource.Dart.create(),
+            building.SpearGoblinHut.create(),
+            building.DartShack.create()
         ]
         return Player.get_or_insert("Travis Reed", name="Travis Reed", count=1,
                                     resources=resources)
 
     @staticmethod
     def create_god_mode():
-        health = resource.Health.create(count=1000000)
-        pool_hall = building.PoolHall.create(2)
-        pool_ball = resource.PoolBall.create(500)
-        hearth = resource.HearthstoneCard.create(5)
-        clash = resource.ClashRoyaleWins.create(600)
-        rockets = resource.Rocket.create(1)
-        lol = resource.LeagueOfLegendsWin.create(1000)
-        capital = building.Capital.create(1)
-        food = resource.Food().create(10000000)
         resources = [
-            health, pool_hall, pool_ball, hearth, clash, rockets, lol, capital,
-            food
+            resource.Health.create(count=10000000),
+            building.PoolHall.create(2),
+            resource.PoolBall.create(500),
+            resource.HearthstoneCard.create(2),
+            resource.ClashRoyaleWins.create(633),
+            resource.Rocket.create(),
+            resource.LeagueOfLegendsWin.create(336),
+            building.Capital.create(1),
+            resource.Dart.create(5),
+            building.SpearGoblinHut.create(2),
+            building.DartShack.create(1),
+            resource.Food.create(10000000)
         ]
+
         return Player.get_or_insert("Travis Reed", name="Travis Reed", count=1,
                                     resources=resources)
 
