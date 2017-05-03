@@ -21,6 +21,10 @@ class Map:
         return location
 
     @classmethod
+    def get_locations(cls):
+        return Location.query().fetch()
+
+    @classmethod
     def get_location(cls, position=None):
         if position:
             id = cls.ROOT_ID[0] + position

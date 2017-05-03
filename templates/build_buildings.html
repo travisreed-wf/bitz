@@ -16,6 +16,7 @@
         <th>Ticks per day</th>
         <th>Cost</th>
         <th>Count</th>
+        <th>Used Space</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -31,13 +32,20 @@
           {% endfor %}
         </td>
         <td style="vertical-align:middle">{{ building.ticks_per_day }}</td>
+        {% set designated_space = building.get_total_designated_space(map) %}
         <td style="vertical-align:middle">
-          {% for resource in building.cost %}
+          {% for resource in building.get_cost(map) %}
             <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px; padding-bottom: 5px"> <span>x {{ resource.count }}</span>
           {% endfor %}
+          {% if building.total_space_in_use >= designated_space %}
+            <span style="color: darkred; font-size: x-large" data-toggle="tooltip" title="Cost increased because no suitable tiles are assigned to this building">*</span>
+          {% endif %}
         </td>
         <td style="vertical-align:middle">
           <span id="resource-{{building.name}}">{{ building.count }}</span>
+        </td>
+        <td style="vertical-align:middle">
+          <span>{{ building.total_space_in_use }} / {{ designated_space }} </span>
         </td>
         <td style="vertical-align:middle"><button class="btn btn-primary btn-default" type='button' data-count=1 data-building="{{ building.name }}" data-toggle='tooltip' onclick='build(this);'>Build {{ building.name }}</button></td>
       </tr>

@@ -42,3 +42,7 @@ function update_resources(data){
     }
   }
 }
+
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});

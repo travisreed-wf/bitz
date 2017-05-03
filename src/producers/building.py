@@ -3,6 +3,8 @@ import sys
 
 from google.appengine.ext import ndb
 
+from src.exceptions import InsufficientResourcesException
+from src.locations.location import Tile
 from src.resources import resource
 from src.resources import skill_point
 
@@ -11,15 +13,15 @@ class Building(resource.Resource):
     production_per_tick = ndb.LocalStructuredProperty(
         resource.Resource, indexed=False, repeated=True)
     ticks_per_day = ndb.IntegerProperty(indexed=True, required=True)
+    size_per_building = ndb.IntegerProperty(default=1, indexed=True)
 
-    @property
-    def cost(self):
+    def get_cost(self, map_class):
         raise NotImplementedError('subclass must implement')
 
     @classmethod
-    def build(cls, player, count=0):
+    def build(cls, player, map_class, count=0):
         building = cls.create(count=count)
-        cost = building.total_cost
+        cost = building.get_total_cost(map_class)
         player.remove_resources(cost)
         player.add_resource(building)
         return cost
@@ -28,14 +30,36 @@ class Building(resource.Resource):
     def create(count=0):
         raise NotImplementedError('subclass must implement')
 
-    @property
-    def total_cost(self):
+    def get_max_discounted_buildings(self, map_class):
+        available_space = self.get_total_designated_space(map_class) - \
+            self.total_space_in_use
+        return available_space / self.size_per_building
+
+    def get_total_cost(self, map_class):
+        available_spaces = self.get_max_discounted_buildings(map_class)
+        if available_spaces and available_spaces < self.count:
+            raise InsufficientResourcesException(
+                "Trying to buy too many buildings at a discounted price")
+
         total = []
-        for r in self.cost:
+        for r in self.get_cost(map_class):
             r_copy = r.clone()
             r_copy.count *= self.count
             total.append(r_copy)
         return total
+
+    @property
+    def total_space_in_use(self):
+        return self.size_per_building * self.count
+
+    def get_total_designated_space(self, map_class):
+        locations = map_class.get_locations()
+        map_tile_keys = []
+        for location in locations:
+            map_tile_keys += location.tiles
+
+        building_tiles = Tile.query(Tile.building == self.name).fetch()
+        return sum([t.size for t in building_tiles if t.key in map_tile_keys])
 
     def produce(self):
         production = []
@@ -58,10 +82,6 @@ class Building(resource.Resource):
 
 class PoolHall(Building):
 
-    @property
-    def cost(self):
-        return [resource.PoolBall.create(50)]
-
     @staticmethod
     def create(count=0):
         ppt = [skill_point.PoolSkillPoint.create(count=1)]
@@ -69,11 +89,16 @@ class PoolHall(Building):
                         ticks_per_day=6 * 24,
                         production_per_tick=ppt)
 
+    def get_cost(self, map_class):
+        if self.get_max_discounted_buildings(map_class):
+            return [resource.PoolBall.create(50)]
+        else:
+            return [resource.PoolBall.create(250)]
+
 
 class Capital(Building):
 
-    @property
-    def cost(self):
+    def get_cost(self, map_class):
         return [resource.Gold.create(sys.maxint)]
 
     @staticmethod
@@ -81,4 +106,5 @@ class Capital(Building):
         ppt = [resource.Food.create(count=15)]
         return Capital(count=count, resource_type="building",
                        ticks_per_day=6 * 24,
-                       production_per_tick=ppt)
+                       production_per_tick=ppt,
+                       size_per_building=50)

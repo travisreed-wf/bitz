@@ -5,6 +5,7 @@ import json
 
 from src.exceptions import InsufficientResourcesException
 from src.locations.location import Location, Tile
+from src.locations.map import Earth
 from src.producers import building
 from src.resources import resource
 from src.workers.worker import Player
@@ -52,7 +53,8 @@ class BuildBuildingsView(MethodView):
     def get(self):
         player = Player.get_by_id("Travis Reed")
 
-        return render_template('build_buildings.html', player=player)
+        return render_template('build_buildings.html', player=player,
+                               map=Earth())
 
     def post(self):
         data = request.get_json()

@@ -50,6 +50,10 @@ class Tile(polymodel.PolyModel):
         x, y = self.str_coordinate.split('x')
         return int(x), int(y)
 
+    @property
+    def size(self):
+        return 50
+
     @classmethod
     def create(cls):
         available_buildings = cls.DEFAULT_AVAILABLE_BUILDING_NAMES
