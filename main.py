@@ -5,7 +5,7 @@ from src.crons import hourly
 
 
 app = Flask(__name__)
-app.debug = True
+app.debug = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.secret_key = "SecretKey"
 

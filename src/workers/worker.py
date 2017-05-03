@@ -55,11 +55,9 @@ class Worker(polymodel.PolyModel):
             count=resource_to_add.count, description=description,).put()
 
     def check_basic_needs(self):
-        food = resource.Food.create(count=-1)
-        water = resource.Water.create(count=-1)
+        food = resource.Food.create(count=1)
         try:
-            self.add_resource(food)
-            self.add_resource(water)
+            self.remove_resource(food)
         except InsufficientResourcesException:
             health = resource.Health(count=-1)
             try:
@@ -103,6 +101,24 @@ class Player(Worker):
         capital = building.Capital.create(1)
         resources = [
             health, pool_hall, pool_ball, hearth, clash, rockets, lol, capital
+        ]
+        return Player.get_or_insert("Travis Reed", name="Travis Reed", count=1,
+                                    resources=resources)
+
+    @staticmethod
+    def create_god_mode():
+        health = resource.Health.create(count=1000000)
+        pool_hall = building.PoolHall.create(2)
+        pool_ball = resource.PoolBall.create(500)
+        hearth = resource.HearthstoneCard.create(5)
+        clash = resource.ClashRoyaleWins.create(600)
+        rockets = resource.Rocket.create(1)
+        lol = resource.LeagueOfLegendsWin.create(1000)
+        capital = building.Capital.create(1)
+        food = resource.Food().create(10000000)
+        resources = [
+            health, pool_hall, pool_ball, hearth, clash, rockets, lol, capital,
+            food
         ]
         return Player.get_or_insert("Travis Reed", name="Travis Reed", count=1,
                                     resources=resources)

@@ -11,9 +11,9 @@
       <h2>Map - {{location.name }}</h2>
     </div>
     <table id="location-table" class="center" style="height: 700px; background-color:#8d8989" border="1" bordercolor="FFFFFF" data-location-id="{{ location.key.id()}}">
+      {% set tiles_per_row = location.tiles_per_row %}
+      {% set width = 80 / tiles_per_row %}
       <tr>
-        {% set tiles_per_row = location.tiles_per_row %}
-        {% set width = 80 / tiles_per_row %}
         {% for tile in tiles %}
           {% set index = loop.index - 1 %}
           {% if tile.is_explored %}
@@ -25,11 +25,6 @@
             </tr><tr>
           {% endif %}
           <td width='{{ width }}%' style="padding:10px; background-size: 100%;" background="{{ background }}" id="td-{{ tile.key.id()}}">
-            {% if not tile.building and tile.available_building_names %}
-              <button class="btn btn-xs btn-primary glyphicon glyphicon-wrench" type='button' data-toggle='modal'
-                 title='build' data-tile-position="{{ index }}" data-available-buildings="{{tile.available_building_names | join(',') }}"
-                 data-target="#buildModal"></button>
-            {% endif %}
             {% if not tile.is_explored %}
               <div class="text-center">
                 <button style='background-color: #6B6A68; border: none' class="btn btn-xs btn-default glyphicon glyphicon-search" type='button' data-toggle='modal'
@@ -38,6 +33,14 @@
                  data-tile-distance=" {{ tile.distance_from_middle }}"
                  data-target="#exploreModal"></button>
               </div>
+            {% elif tile.building %}
+              <div class="text-center">
+                <img src="/static/img/resources/{{ tile.building }}.png" width=90% style="background-color:white;">
+              </div>
+            {% elif tile.available_building_names %}
+              <button class="btn btn-xs btn-primary glyphicon glyphicon-wrench" type='button' data-toggle='modal'
+                 title='build' data-tile-position="{{ index }}" data-available-buildings="{{tile.available_building_names | join(',') }}"
+                 data-target="#buildModal"></button>
             {% endif %}
           </td>
         {% endfor %}

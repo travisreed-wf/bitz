@@ -1,6 +1,7 @@
 
 var tile_data = [];
 
+
 var build = function(btn){
   btn = $(btn);
   var modal = $('#buildModal');
@@ -42,7 +43,7 @@ $('#exploreModal').on('show.bs.modal', function (event) {
   var tileID = button.data('tile-id');
     html += (
     '<span id="tileSpan" data-tile-id="' + tileID + '">' +
-    'Are you sure that you want to build explore the tile at ' + tileCoord + '?' +
+    'Are you sure that you want to explore the tile at ' + tileCoord + '?' +
     '<br>Because it is ' + tileDistance + ' tiles from the middle, it will cost ' +
     '<img src="/static/img/resources/Food.png" style="width:30px;height:30px; padding-bottom: 5px"> <span>x ' + tileCost + '</span> ' +
     'to explore.</span>');
@@ -65,7 +66,7 @@ var explore = function(btn){
         var html = (
           '<div class="row">' +
             '<div class="col-md-2">' +
-              '<img width="100%" src="' + imagePath + '"></img>' +
+              '<img width="100%" src="' + imagePath + '">' +
             '</div>' +
             '<div class="col-md-5">' +
               'Congratulations! You have discovered ' + tileName + '.' +
@@ -82,3 +83,15 @@ var explore = function(btn){
       }
     });
 };
+
+$(document).ready(function() {
+  var td;
+  $('td').find('img').each(function(){
+    var currentWidth = $(this).width();
+    $(this).attr('width', currentWidth * .9);
+    $(this).attr('height', currentWidth * .9);
+    td = $(this).closest('td');
+    td.attr('height', currentWidth / .9);
+    td.attr('width', currentWidth / .9);
+  })
+});
