@@ -4,7 +4,7 @@ import traceback
 import json
 
 from src.exceptions import InsufficientResourcesException
-from src.locations.location import Location
+from src.locations.location import Location, Tile
 from src.producers import building
 from src.resources import resource
 from src.workers.worker import Player
@@ -37,15 +37,11 @@ class BuildToolsView(MethodView):
 
 class BuildBuildingOnTileView(MethodView):
 
-    def put(self, location_id, tile_index, building_name):
+    def put(self, tile_id, building_name):
         try:
-            location = Location.get_by_id(location_id)
-            tile = location.tiles[int(tile_index)].get()
+            tile = Tile.get_by_id(int(tile_id))
             tile.build_building(building_name)
-            player = Player.get_by_id("Travis Reed")
-
-            player.put()
-            return "success"
+            return "Success"
         except:
             print traceback.format_exc()
             return "Failed", 500
@@ -81,7 +77,7 @@ def setup_urls(app):
                      view_func=BuildToolsView.as_view('build_tools_get'))
     app.add_url_rule('/build/tools/<tool_name>/',
                      view_func=BuildToolsView.as_view('build_tools_put'))
-    app.add_url_rule('/build/<location_id>/<tile_index>/<building_name>/',
+    app.add_url_rule('/build/<tile_id>/<building_name>/',
                      view_func=BuildBuildingOnTileView.as_view('build'))
 
     app.add_url_rule('/build/buildings/', view_func=BuildBuildingsView.as_view(

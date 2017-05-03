@@ -1,34 +1,33 @@
 
 var tile_data = [];
 
-
-var build = function(btn){
-  btn = $(btn);
-  var modal = $('#buildModal');
-  var location = $("#location-table").data('location-id');
-  var tilePosition = $('#tileID').data('tile-position');
-  var building = modal.find('input:checked')[0].name;
+var build = function(){
+  var tileID = $('#buildTileID').data('tile-id');
+  var s = $('#building-select');
+  var building = s.val();
   $.ajax({
-      url: '/build/' + location + "/" + tilePosition + "/" + building + '/',
+      url: '/build/' + tileID + "/" + building + '/',
       method: 'PUT',
-      success: function(resp) {
-        modal.modal('hide');
+      success: function() {
+        window.location.reload();
       }
     });
 };
 
 $('#buildModal').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget);
-  var modal = $(this);
-  var html = '';
-  var tilePosition = button.data('tile-position');
+  var select = $('#building-select');
   var building;
   var availableBuildings = button.data('available-buildings').split(',');
   for (var i = 0; i < availableBuildings.length; i++){
     building = availableBuildings[i];
-    html += '<span id="' + tileID + '"data-tile-position="' + tilePosition + '"></span><div class="radio"><label><input type="radio" name="' + building + '">' + building + '</label></div>'
+    select.append('<option value="' + building + '">' + building + '</option>');
   }
-  modal.find('.modal-body').html(html);
+  var modal = $(this);
+  var tileID = button.data('tile-id');
+  var html = '<span id="buildTileID" data-tile-id="' + tileID + '">Assigning a building to this tile will reduce the costs of constructing that building</span>';
+  modal.find('.modal-body').append(html);
+  select.select2();
 });
 
 
@@ -38,7 +37,8 @@ $('#exploreModal').on('show.bs.modal', function (event) {
   modal.find('button').show();
   var html = '';
   var tileCoord = button.data('tile-str-coord');
-  var tileCost = button.data('tile-cost');
+  var tileCost = parseInt(button.data('tile-cost'));
+  tileCost = numberWithCommas(tileCost);
   var tileDistance = button.data('tile-distance');
   var tileID = button.data('tile-id');
     html += (

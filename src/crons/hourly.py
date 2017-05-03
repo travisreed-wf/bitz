@@ -66,3 +66,5 @@ def setup_urls(app):
                      view_func=BuildingCron.as_view('crons.building'))
     app.add_url_rule('/crons/dataRefresh/',
                      view_func=DataRefreshCron.as_view('crons.data'))
+    app.add_url_rule('/crons/worker/',
+                     view_func=WorkerCron.as_view('crons.worker'))

@@ -11,14 +11,15 @@ class Tile(polymodel.PolyModel):
 
     DEFAULT_AVAILABLE_BUILDING_NAMES = []
     available_building_names = ndb.StringProperty(repeated=True, indexed=False)
-    building = ndb.StringProperty(indexed=False)
+    building = ndb.StringProperty(indexed=True)
     enemies = ndb.LocalStructuredProperty(resource.Resource, repeated=True,
                                           indexed=False)
     is_explored = ndb.BooleanProperty(indexed=False, default=False)
     str_coordinate = ndb.StringProperty(indexed=True)
 
     def build_building(self, building_name):
-        print "building %s" % building_name
+        self.building = building_name
+        self.put()
 
     def explore(self, player):
         cost = self.cost_to_explore
@@ -37,7 +38,7 @@ class Tile(polymodel.PolyModel):
 
         x_distance = abs(middle_coordinate[0] - self.coordinate[0])
         y_distance = abs(middle_coordinate[1] - self.coordinate[1])
-        return math.sqrt(x_distance ^ 2 + y_distance ^ 2)
+        return round(math.sqrt(x_distance ** 2 + y_distance ** 2), 2)
 
     @property
     def name(self):
@@ -67,6 +68,8 @@ class DenseTrees(Trees):
 
 
 class SparseTrees(Trees):
+    DEFAULT_AVAILABLE_BUILDING_NAMES = ['PoolHall']
+
     pass
 
 

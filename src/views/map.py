@@ -39,7 +39,14 @@ class ExploreView(MethodView):
 def setup_urls(app):
     app.add_url_rule('/home/',
                      view_func=MapView.as_view('home'),
-                     defaults={'map_name': 'Earth', 'location_id': 'E0000x0000'})
+                     defaults={
+                         'map_name': 'Earth', 'location_id': 'E0000x0000'
+                     })
+    app.add_url_rule('/',
+                     view_func=MapView.as_view('empty_route'),
+                     defaults={
+                         'map_name': 'Earth', 'location_id': 'E0000x0000'
+                     })
 
     app.add_url_rule('/map/<map_name>/<location_id>/',
                      view_func=MapView.as_view('map'))

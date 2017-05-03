@@ -4,6 +4,8 @@
       <title>Map</title>
   </head>
   {{ super() }}
+  <link rel="stylesheet" href="/static/select2-3.5.4/select2.css"/>
+  <link rel="stylesheet" href="/static/select2-3.5.4/select2-bootstrap.css"/>
 {% endblock %}
 {% block body %}
   <div class="row">
@@ -39,7 +41,7 @@
               </div>
             {% elif tile.available_building_names %}
               <button class="btn btn-xs btn-primary glyphicon glyphicon-wrench" type='button' data-toggle='modal'
-                 title='build' data-tile-position="{{ index }}" data-available-buildings="{{tile.available_building_names | join(',') }}"
+                 title='build' data-tile-id="{{ tile.key.id() }}" data-available-buildings="{{tile.available_building_names | join(',') }}"
                  data-target="#buildModal"></button>
             {% endif %}
           </td>
@@ -54,6 +56,8 @@
             <h4 class="modal-title">Build</h4>
           </div>
           <div class="modal-body">
+            <select class="form-control" id="building-select">
+            </select>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -82,6 +86,7 @@
 {% endblock body %}
 {% block js_bottom %}
   {{ super() }}
+  <script src="/static/select2-3.5.4/select2.min.js"></script>
   <script type="application/javascript">
     {% include '/js/map.js' %}
   </script>
