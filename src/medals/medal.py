@@ -18,9 +18,7 @@ class Medal(object):
         return self.__class__.__name__
 
     def calculate_progress(self, player):
-        raise NotImplementedError('must be implemented by subclass')
-
-    def _calculate_progress_from_count(self, count):
+        count = self.get_count(player)
         next_tier = self.TIERS[0]
         previous_tier = 0
         level = 1
@@ -31,6 +29,9 @@ class Medal(object):
 
         total_in_tier = next_tier - previous_tier
         return level, int(100 * float(count - previous_tier) / total_in_tier)
+
+    def get_count(self, player):
+        raise NotImplementedError('must be implemented by subclass')
 
     @staticmethod
     def create_medals():
@@ -76,11 +77,13 @@ class TotalResourceMedal(Medal):
         1000000000
     ]
 
-    def calculate_progress(self, player):
+    def get_count(self, player):
+        if hasattr(self, "_count"):
+            return self._count
+
         r = player.get_resource_by_name(self.resource_name)
-        count = r.count if r else 0
-        return super(TotalResourceMedal, self)._calculate_progress_from_count(
-            count)
+        self._count = r.count if r else 0
+        return self._count
 
 
 class TotalEarnedResourceMedal(TotalResourceMedal):
@@ -128,8 +131,10 @@ class ExplorationMedal(Medal):
         600
     ]
 
-    def calculate_progress(self, player):
+    def get_count(self, player):
+        if hasattr(self, "_count"):
+            return self._count
+
         tile_class = eval('location.%s' % self.tile_name)
-        count = tile_class.query(tile_class.is_explored==True).count()
-        return super(ExplorationMedal, self)._calculate_progress_from_count(
-            count)
+        self._count = tile_class.query(tile_class.is_explored==True).count()
+        return self._count

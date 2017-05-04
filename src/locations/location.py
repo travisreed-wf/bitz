@@ -30,7 +30,19 @@ class Tile(polymodel.PolyModel):
 
     @property
     def cost_to_explore(self):
-        count = 5 * 10 ** self.distance_from_middle
+        RADIUS_OF_FIRST_TILE = 4
+        TILES_PER_LOCATION = 9
+
+        dst = self.distance_from_middle
+        if dst <= 5:
+            count = 5 * 10 ** self.distance_from_middle
+        else:
+            dst_into_tile = (dst - RADIUS_OF_FIRST_TILE) % TILES_PER_LOCATION
+            locations_from_middle = 1 + ((dst - RADIUS_OF_FIRST_TILE) / 9)
+            location_cost = (50000 * 10 ** locations_from_middle)
+            adj_dst_into_tile = int(dst_into_tile * 100)
+            count = location_cost * float('1.%s' % adj_dst_into_tile)
+
         return [resource.Food.create(int(count))]
 
     @property

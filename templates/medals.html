@@ -19,6 +19,8 @@
             </tr><tr>
           {% endif %}
           {% set level, progress = medal.calculate_progress(player) %}
+          {% set count = medal.get_count(player) %}
+          {% set needed_count = medal.TIERS[level - 1] %}
           <td width='{{ width }}%' align="center" style="padding: 10px">
             <img src="/static/img/medals/{{ medal.class_name }}-{{ level}}.png" width="80%">
             <br>
@@ -26,7 +28,7 @@
               <div style='height: 40px; display: block'>
                 {{ medal.name }} (lvl {{ level}})
               </div>
-              <div class="progress">
+              <div class="progress" data-toggle="tooltip" title="{{ count }} / {{ needed_count }}">
                 <div class="progress-bar" role="progressbar" aria-valuenow="{{ progress }}"
                   aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%">
                   {{ progress }}%

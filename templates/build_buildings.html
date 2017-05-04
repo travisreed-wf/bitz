@@ -52,7 +52,7 @@
         </td>
         <td style="vertical-align:middle">
           {% if designated_space > 0 %}
-            {% set percent_of_space_in_use = building.total_space_in_use / designated_space %}
+            {% set percent_of_space_in_use = 100 * building.total_space_in_use / designated_space %}
           {% else %}
             {% set percent_of_space_in_use = 100 %}
           {% endif %}
