@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block header_css %}
+  <head>
+      <title>Add Darts</title>
+  </head>
+  {{ super() }}
+{% endblock %}
+{% block body %}
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label for=wins class="col-sm-2 control-label">Wins</label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" id="wins" placeholder="Wins">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for=gotchas class="col-sm-2 control-label">Gotchas</label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" id="gotchas" placeholder="Gotchas">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for=bulls class="col-sm-2 control-label">Bulls</label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" id="bulls" placeholder="Bullss">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for=game_type class="col-sm-2 control-label">Game</label>
+      <div class="col-sm-10">
+        <select class="form-control" id="game_type">
+          <option selected>301</option>
+          <option>Cricket</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-default">Submit</button>
+      </div>
+    </div>
+  </form>
+{% endblock body %}

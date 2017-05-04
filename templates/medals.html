@@ -20,7 +20,7 @@
           {% endif %}
           {% set level, progress = medal.calculate_progress(player) %}
           {% set count = medal.get_count(player) %}
-          {% set needed_count = medal.TIERS[level - 1] %}
+          {% set needed_count = medal.tiers[level - 1] %}
           <td width='{{ width }}%' align="center" style="padding: 10px">
             <img src="/static/img/medals/{{ medal.class_name }}-{{ level}}.png" width="80%">
             <br>

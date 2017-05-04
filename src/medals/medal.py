@@ -1,29 +1,12 @@
 from src.locations import location
 from src.locations.map import Earth
+from src.medals import config
 
 
 class Medal(object):
 
-    TIERS = []
-    LEAGUE_TIERS = [
-        1,
-        5,
-        10,
-        25,
-        50,
-        75,
-        100,
-        150,
-        200,
-        250,
-        300,
-        350,
-        400,
-        450,
-        500
-    ]
-
     def __init__(self):
+        self.tiers = []
         pass
 
     @property
@@ -36,12 +19,12 @@ class Medal(object):
 
     def calculate_progress(self, player):
         count = self.get_count(player)
-        next_tier = self.TIERS[0]
+        next_tier = self.tiers[0]
         previous_tier = 0
         level = 1
         while count >= next_tier:
             previous_tier = next_tier
-            next_tier = self.TIERS[level]
+            next_tier = self.tiers[level]
             level += 1
 
         total_in_tier = next_tier - previous_tier
@@ -53,17 +36,17 @@ class Medal(object):
     @staticmethod
     def create_medals():
         medals = []
-        for resource_name in ['Production', 'Science', 'Food']:
+        for resource_name in config.STANDARD_BASIC_RESOURCES:
             medal = TotalResourceMedal(resource_name)
             medals.append(medal)
 
-        earned = ['Dart', 'PoolBall', 'ClashRoyaleWins']
+        earned = config.STANDARD_EARNED_RESOURCES
         for resource_name in earned:
             medal = TotalEarnedResourceMedal(resource_name)
             medals.append(medal)
 
         league_medal = TotalEarnedResourceMedal(
-            'LeagueOfLegendsWin', tiers=Medal.LEAGUE_TIERS)
+            'LeagueOfLegendsWin', tiers=config.LEAGUE_TIERS)
         medals.append(league_medal)
 
         for d in Earth.AVAILABLE_TILES:
@@ -79,20 +62,7 @@ class TotalResourceMedal(Medal):
         super(TotalResourceMedal, self).__init__()
         self.resource_name = resource_name
         if not tiers:
-            tiers = [
-                1500,
-                10000,
-                50000,
-                100000,
-                500000,
-                1000000,
-                5000000,
-                10000000,
-                50000000,
-                100000000,
-                500000000,
-                1000000000
-            ]
+            tiers = config.STANDARD_TOTAL_RESOURCE_TIERS
         self.tiers = tiers
 
     @property
@@ -104,7 +74,7 @@ class TotalResourceMedal(Medal):
             return self._count
 
         r = player.get_resource_by_name(self.resource_name)
-        self._count = r.count if r else 0
+        self._count = r.lifespan_count if r else 0
         return self._count
 
 
@@ -112,23 +82,7 @@ class TotalEarnedResourceMedal(TotalResourceMedal):
 
     def __init__(self, resource_name, tiers=None):
         if not tiers:
-            tiers = [
-                1,
-                5,
-                10,
-                25,
-                50,
-                100,
-                200,
-                300,
-                400,
-                500,
-                600,
-                700,
-                800,
-                900,
-                1000
-            ]
+            tiers = config.STANDARD_TOTAL_EARNED_RESOURCE_TIERS
 
         super(TotalEarnedResourceMedal, self).__init__(
             resource_name, tiers=tiers)
@@ -139,24 +93,11 @@ class ExplorationMedal(Medal):
     def __init__(self, tile_name):
         super(ExplorationMedal, self).__init__()
         self.tile_name = tile_name
+        self.tiers = config.STANDARD_EXPLORATION_TIERS
 
     @property
     def name(self):
         return '%s: %s' % (self.class_name, self.tile_name)
-
-    TIERS = [
-        1,
-        5,
-        10,
-        25,
-        50,
-        100,
-        200,
-        300,
-        400,
-        500,
-        600
-    ]
 
     def get_count(self, player):
         if hasattr(self, "_count"):

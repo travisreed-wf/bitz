@@ -33,11 +33,11 @@ class Worker(polymodel.PolyModel):
                     raise InsufficientResourcesException()
                 r.count += resource_to_add.count
                 if resource_to_add.count >= 0:
-                    resource_to_add.lifespan_count += resource_to_add.count
+                    r.lifespan_count += resource_to_add.count
             else:
                 if resource_to_add.count < 0:
                     raise InsufficientResourcesException()
-                r_copy = resource_to_add.clone()
+                r_copy = r.clone()
                 fresh_worker.resources.append(r_copy)
 
         fresh_worker.put()
