@@ -5,6 +5,6 @@ from src.helpers import LongIntegerProperty
 
 
 class Transaction(model.Model):
-    count = LongIntegerProperty(indexed=False)
+    count = ndb.FloatProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
     description = ndb.StringProperty()

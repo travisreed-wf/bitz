@@ -5,7 +5,8 @@ from src.helpers import LongIntegerProperty
 
 
 class Resource(polymodel.PolyModel):
-    count = LongIntegerProperty(indexed=False)
+    count = ndb.FloatProperty(indexed=False)
+    lifespan_count = ndb.FloatProperty(indexed=False, default=0)
     tool_needed = ndb.StringProperty()
     resource_type = ndb.StringProperty()
 

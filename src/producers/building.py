@@ -84,7 +84,7 @@ class Library(Building):
 
     @staticmethod
     def create(count=0):
-        ppt = [resource.Science.create(count=1)]
+        ppt = [resource.Science.create(count=2)]
         return Library(count=count, resource_type="building",
                        ticks_per_day=6 * 24,
                        production_per_tick=ppt)
@@ -136,7 +136,7 @@ class Capital(Building):
     @staticmethod
     def create(count=0):
         ppt = [
-            resource.Food.create(count=15),
+            resource.Food.create(count=5),
             resource.Production.create(count=1),
             resource.Science.create(count=1)
         ]

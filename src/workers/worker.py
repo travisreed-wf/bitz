@@ -14,7 +14,6 @@ class Worker(polymodel.PolyModel):
     count = ndb.IntegerProperty(indexed=False)
     daily_cost = ndb.LocalStructuredProperty(resource.Resource, repeated=True,
                                              indexed=False)
-    lifespan_count = ndb.IntegerProperty(indexed=False)
     production = ndb.LocalStructuredProperty(resource.Resource, repeated=True,
                                              indexed=False)
     production_rate = ndb.IntegerProperty(indexed=False)
@@ -58,7 +57,7 @@ class Worker(polymodel.PolyModel):
             count=resource_to_add.count, description=description,).put()
 
     def check_basic_needs(self):
-        food = resource.Food.create(count=1)
+        food = resource.Food.create(count=10)
         try:
             self.remove_resource(food)
         except InsufficientResourcesException:

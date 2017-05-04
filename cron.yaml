@@ -1,8 +1,8 @@
 cron:
-- description: cron that checks if workers have their basic needs met
-  url: /crons/worker/
-  schedule: every 1 mins
-  timezone: America/Chicago
+#- description: cron that checks if workers have their basic needs met
+#  url: /crons/worker/
+#  schedule: every 10 mins
+#  timezone: America/Chicago
 
 - description: cron manages building production
   url: /crons/buildings/
