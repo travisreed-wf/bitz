@@ -75,7 +75,7 @@ var explore = function(btn){
         );
         modal.find('.modal-body').html(html);
         var td = $('#td-' + tileID);
-        td.attr('background', imagePath);
+        td.css('background-image', 'url(' + imagePath + ')');
         td.find('button').hide();
         update_resources(data);
       },

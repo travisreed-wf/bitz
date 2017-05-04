@@ -30,6 +30,15 @@ class Building(resource.Resource):
     def create(count=0):
         raise NotImplementedError('subclass must implement')
 
+    @property
+    def total_space_in_use(self):
+        return self.size_per_building * self.count
+
+    @property
+    def minutes_between_ticks(self):
+        minutes_per_day = 1440
+        return minutes_per_day / self.ticks_per_day
+
     def get_max_discounted_buildings(self, map_class):
         available_space = self.get_total_designated_space(map_class) - \
             self.total_space_in_use
@@ -47,10 +56,6 @@ class Building(resource.Resource):
             r_copy.count *= self.count
             total.append(r_copy)
         return total
-
-    @property
-    def total_space_in_use(self):
-        return self.size_per_building * self.count
 
     def get_total_designated_space(self, map_class):
         locations = map_class.get_locations()
@@ -70,23 +75,19 @@ class Building(resource.Resource):
         return production
 
     def should_produce(self):
-        ten_minute_sections_per_day = 24 * 6
-        ten_minute_sections_between_ticks = (
-            ten_minute_sections_per_day / self.ticks_per_day)
         now = datetime.now().replace(second=0, microsecond=0)
         seconds_passed_today = (now - now.replace(hour=0, minute=0)).seconds
-        ten_minute_sections_passed_today = seconds_passed_today / 600
-        return (ten_minute_sections_passed_today %
-                ten_minute_sections_between_ticks == 0)
+        minutes_passed_today = seconds_passed_today / 60
+        return (minutes_passed_today % self.minutes_between_ticks == 0)
 
 
 class Library(Building):
 
     @staticmethod
     def create(count=0):
-        ppt = [resource.Science.create(count=2)]
+        ppt = [resource.Science.create(count=25)]
         return Library(count=count, resource_type="building",
-                       ticks_per_day=6 * 24,
+                       ticks_per_day=24,
                        production_per_tick=ppt)
 
     def get_cost(self, map_class):
@@ -116,7 +117,7 @@ class Granary(Building):
 
     @staticmethod
     def create(count=0):
-        ppt = [resource.Food.create(count=5)]
+        ppt = [resource.Food.create(count=1)]
         return Granary(count=count, resource_type='building',
                        ticks_per_day=6 * 24,
                        production_per_tick=ppt)
@@ -136,11 +137,11 @@ class Capital(Building):
     @staticmethod
     def create(count=0):
         ppt = [
-            resource.Food.create(count=5),
+            resource.Food.create(count=1),
             resource.Production.create(count=1),
             resource.Science.create(count=1)
         ]
         return Capital(count=count, resource_type="building",
-                       ticks_per_day=6 * 24,
+                       ticks_per_day=60 * 24,
                        production_per_tick=ppt,
                        size_per_building=50)

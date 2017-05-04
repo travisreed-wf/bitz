@@ -6,7 +6,7 @@ cron:
 
 - description: cron manages building production
   url: /crons/buildings/
-  schedule: every 10 mins
+  schedule: every 1 mins
   timezone: America/Chicago
 
 - description: cron manages data refresh

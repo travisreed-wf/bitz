@@ -58,6 +58,22 @@ class Worker(polymodel.PolyModel):
         Transaction(
             count=resource_to_add.count, description=description,).put()
 
+    def percent_of_cost_available(self, cost):
+        total_cost_count = 0
+        available_count = 0
+        for resource_to_remove in cost:
+            if resource_to_remove.count <= 0:
+                continue
+            total_cost_count += resource_to_remove.count
+            r = self.get_resource_by_name(resource_to_remove.name)
+            if r and r.count:
+                if r.count > resource_to_remove.count:
+                    available_count += resource_to_remove.count
+                else:
+                    available_count += r.count
+
+        return int(100 * float(available_count) / total_cost_count)
+
     def check_basic_needs(self):
         food = resource.Food.create(count=10)
         try:

@@ -13,11 +13,12 @@
       <tr>
         <th>Name</th>
         <th>Production per tick</th>
-        <th>Ticks per day</th>
+        <th>Minutes between ticks</th>
+        <th>Production per day</th>
         <th>Cost</th>
         <th>Count</th>
         <th>Used Space</th>
-        <th>Actions</th>
+        <th>Build</th>
       </tr>
     </thead>
     <tbody>
@@ -31,7 +32,12 @@
             <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px; padding-bottom: 5px"> <span>x {{ resource.count }}</span>
           {% endfor %}
         </td>
-        <td style="vertical-align:middle">{{ building.ticks_per_day }}</td>
+        <td style="vertical-align:middle">{{ building.minutes_between_ticks }}</td>
+        <td style="vertical-align:middle">
+          {% for resource in building.production_per_tick %}
+            <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px; padding-bottom: 5px"> <span>x {{ resource.count * building.ticks_per_day }}</span>
+          {% endfor %}
+        </td>
         {% set designated_space = building.get_total_designated_space(map) %}
         <td style="vertical-align:middle">
           {% for resource in building.get_cost(map) %}
@@ -47,7 +53,19 @@
         <td style="vertical-align:middle">
           <span>{{ building.total_space_in_use }} / {{ designated_space }} </span>
         </td>
-        <td style="vertical-align:middle"><button class="btn btn-primary btn-default" type='button' data-count=1 data-building="{{ building.name }}" data-toggle='tooltip' onclick='build(this);'>Build {{ building.name }}</button></td>
+        <td style="vertical-align:middle">
+          {% set percent_of_cost_available = player.percent_of_cost_available(building.get_cost(map)) %}
+          {% if percent_of_cost_available >= 100 %}
+            <button class="btn btn-success" type='button' style="width: 100%" data-count=1 data-building="{{ building.name }}" data-toggle='tooltip' onclick='build(this);'>Build {{ building.name }}</button>
+          {% else %}
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="{{ percent_of_cost_available }}"
+              aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_of_cost_available }}%">
+              {{ percent_of_cost_available }}%
+            </div>
+          </div>
+          {% endif %}
+        </td>
       </tr>
     {% endfor %}
     </tbody>

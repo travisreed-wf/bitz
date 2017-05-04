@@ -13,6 +13,8 @@ handlers:
   script: google.appengine.ext.admin.application
   login: admin
 
-
 - url: /.*
   script: main.app
+
+builtins:
+- deferred: on
