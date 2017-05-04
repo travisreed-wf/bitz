@@ -80,52 +80,52 @@ class Building(resource.Resource):
                 ten_minute_sections_between_ticks == 0)
 
 
-class PoolHall(Building):
+class Library(Building):
 
     @staticmethod
     def create(count=0):
-        ppt = [skill_point.PoolSkillPoint.create(count=1)]
-        return PoolHall(count=count, resource_type="building",
-                        ticks_per_day=6 * 24,
-                        production_per_tick=ppt)
+        ppt = [resource.Science.create(count=1)]
+        return Library(count=count, resource_type="building",
+                       ticks_per_day=6 * 24,
+                       production_per_tick=ppt)
 
     def get_cost(self, map_class):
-        if self.get_max_discounted_buildings(map_class):
-            return [resource.PoolBall.create(50)]
+        if self.get_max_discounted_buildings(map_class) > 0:
+            return [resource.Production.create(72)]
         else:
-            return [resource.PoolBall.create(250)]
+            return [resource.Production.create(144)]
 
 
-class DartShack(Building):
+class Mine(Building):
 
     @staticmethod
     def create(count=0):
-        ppt = [skill_point.DartSkillPoint.create(count=1)]
-        return DartShack(count=count, resource_type="building",
-                         ticks_per_day=6 * 24,
-                         production_per_tick=ppt)
+        ppt = [resource.Production.create(count=1)]
+        return Mine(count=count, resource_type='building',
+                    ticks_per_day=6 * 24,
+                    production_per_tick=ppt)
 
     def get_cost(self, map_class):
-        if self.get_max_discounted_buildings(map_class):
-            return [resource.Dart.create(100)]
+        if self.get_max_discounted_buildings(map_class) > 0:
+            return [resource.Production.create(72)]
         else:
-            return [resource.Dart.create(500)]
+            return [resource.Production.create(500)]
 
 
-class SpearGoblinHut(Building):
+class Granary(Building):
 
     @staticmethod
     def create(count=0):
-        ppt = [skill_point.ClashRoyaleSkillPoint.create(count=1)]
-        return SpearGoblinHut(count=count, resource_type="building",
-                              ticks_per_day=3 * 24,
-                              production_per_tick=ppt)
+        ppt = [resource.Food.create(count=5)]
+        return Granary(count=count, resource_type='building',
+                       ticks_per_day=6 * 24,
+                       production_per_tick=ppt)
 
     def get_cost(self, map_class):
-        if self.get_max_discounted_buildings(map_class):
-            return [resource.ClashRoyaleWins.create(5)]
+        if self.get_max_discounted_buildings(map_class) > 0:
+            return [resource.Production.create(50)]
         else:
-            return [resource.ClashRoyaleWins.create(15)]
+            return [resource.Production.create(100)]
 
 
 class Capital(Building):
@@ -135,7 +135,11 @@ class Capital(Building):
 
     @staticmethod
     def create(count=0):
-        ppt = [resource.Food.create(count=15)]
+        ppt = [
+            resource.Food.create(count=15),
+            resource.Production.create(count=1),
+            resource.Science.create(count=1)
+        ]
         return Capital(count=count, resource_type="building",
                        ticks_per_day=6 * 24,
                        production_per_tick=ppt,

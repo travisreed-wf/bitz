@@ -70,15 +70,11 @@ class Earth(Map):
     ROOT_ID = 'E0000x0000'
     AVAILABLE_TILES = [
         {
-            'name': 'DenseTrees',
-            'percent_appearance': 10
-        },
-        {
-            'name': 'SparseTrees',
-            'percent_appearance': 30
-        },
-        {
             'name': 'Trees',
+            'percent_appearance': 50
+        },
+        {
+            'name': 'Grassland',
             'percent_appearance': 30
         },
         {
@@ -86,7 +82,11 @@ class Earth(Map):
             'percent_appearance': 5
         },
         {
-            'name': 'Plains',
-            'percent_appearance': 25
+            'name': 'Hills',
+            'percent_appearance': 10
+        },
+        {
+            'name': 'Mountain',
+            'percent_appearance': 5
         }
     ]

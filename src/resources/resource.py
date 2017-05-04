@@ -43,23 +43,6 @@ class Resource(polymodel.PolyModel):
         return klass(**properties)
 
 
-class Axe(Resource):
-
-    @staticmethod
-    def build(worker, count=0):
-        axe = Axe.create(count=count)
-        rock = Rock.create(count=count)
-        wood = Wood.create(count=count)
-        worker.remove_resource(wood)
-        worker.remove_resource(rock)
-        worker.add_resource(axe)
-        return [axe], [rock, wood]
-
-    @staticmethod
-    def create(count=0):
-        return Axe(resource_type="tool", count=count)
-
-
 class ClashRoyaleWins(Resource):
 
     @staticmethod
@@ -82,13 +65,6 @@ class Dart(Resource):
         else:
             count = wins * 15
         return Dart.create(count)
-
-
-class Dollar(Resource):
-
-    @staticmethod
-    def create(count=0):
-        return Health(resource_type="financial", count=count)
 
 
 class Food(Resource):
@@ -125,13 +101,6 @@ class HearthstoneCard(Resource):
         return HearthstoneCard.create(count)
 
 
-class Iron(Resource):
-
-    @staticmethod
-    def create(count=0):
-        return Iron(resource_resource_type="basic", count=count)
-
-
 class LeagueOfLegendsWin(Resource):
 
     @staticmethod
@@ -151,6 +120,13 @@ class PoolBall(Resource):
         return PoolBall.create(count)
 
 
+class Production(Resource):
+
+    @staticmethod
+    def create(count=0):
+        return Production(resource_type='basic', count=count)
+
+
 class Rocket(Resource):
 
     @staticmethod
@@ -158,11 +134,11 @@ class Rocket(Resource):
         return Rocket(resource_type='earned', count=count)
 
 
-class Rock(Resource):
+class Science(Resource):
 
     @staticmethod
     def create(count=0):
-        return Rock(resource_type="basic", count=count)
+        return Science(resource_type='basic', count=count)
 
 
 class Step(Resource):
@@ -170,17 +146,3 @@ class Step(Resource):
     @staticmethod
     def create(count=0):
         return Step(resource_type="earned", count=count)
-
-
-class Water(Resource):
-
-    @staticmethod
-    def create(count=0):
-        return Water(resource_type="basic", count=count)
-
-
-class Wood(Resource):
-
-    @staticmethod
-    def create(count=0):
-        return Wood(resource_type="basic", count=count)

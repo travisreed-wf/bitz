@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 
+
 class LongIntegerProperty(ndb.StringProperty):
   def _validate(self, value):
     if not isinstance(value, (int, long)):

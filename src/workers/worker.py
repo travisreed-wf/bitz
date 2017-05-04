@@ -14,6 +14,7 @@ class Worker(polymodel.PolyModel):
     count = ndb.IntegerProperty(indexed=False)
     daily_cost = ndb.LocalStructuredProperty(resource.Resource, repeated=True,
                                              indexed=False)
+    lifespan_count = ndb.IntegerProperty(indexed=False)
     production = ndb.LocalStructuredProperty(resource.Resource, repeated=True,
                                              indexed=False)
     production_rate = ndb.IntegerProperty(indexed=False)
@@ -30,6 +31,8 @@ class Worker(polymodel.PolyModel):
                 if r.count + resource_to_add.count < 0:
                     raise InsufficientResourcesException()
                 r.count += resource_to_add.count
+                if resource_to_add.count >= 0:
+                    resource_to_add.lifespan_count += resource_to_add.count
             else:
                 if resource_to_add.count < 0:
                     raise InsufficientResourcesException()
@@ -94,7 +97,7 @@ class Player(Worker):
 
         resources = [
             resource.Health.create(count=10000),
-            building.PoolHall.create(),
+            building.Granary.create(),
             resource.PoolBall.create(),
             resource.HearthstoneCard.create(),
             resource.ClashRoyaleWins.create(),
@@ -102,8 +105,10 @@ class Player(Worker):
             resource.LeagueOfLegendsWin.create(),
             building.Capital.create(1),
             resource.Dart.create(),
-            building.SpearGoblinHut.create(),
-            building.DartShack.create()
+            building.Library.create(),
+            building.Mine.create(),
+            resource.Production.create(),
+            resource.Science.create()
         ]
         return Player.get_or_insert("Travis Reed", name="Travis Reed", count=1,
                                     resources=resources)
@@ -112,7 +117,7 @@ class Player(Worker):
     def create_god_mode():
         resources = [
             resource.Health.create(count=10000000),
-            building.PoolHall.create(2),
+            building.Granary.create(2),
             resource.PoolBall.create(500),
             resource.HearthstoneCard.create(2),
             resource.ClashRoyaleWins.create(633),
@@ -120,9 +125,11 @@ class Player(Worker):
             resource.LeagueOfLegendsWin.create(336),
             building.Capital.create(1),
             resource.Dart.create(5),
-            building.SpearGoblinHut.create(2),
-            building.DartShack.create(1),
-            resource.Food.create(10000000)
+            building.Mine.create(2),
+            building.Library.create(1),
+            resource.Food.create(10000000),
+            resource.Science.create(500000),
+            resource.Production.create(50000)
         ]
 
         return Player.get_or_insert("Travis Reed", name="Travis Reed", count=1,

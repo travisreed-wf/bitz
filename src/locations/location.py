@@ -65,22 +65,23 @@ class Tile(polymodel.PolyModel):
 
 
 class Trees(Tile):
-    pass
-
-
-class DenseTrees(Trees):
-    DEFAULT_AVAILABLE_BUILDING_NAMES = ['PoolHall', 'DartShack']
-    pass
-
-
-class SparseTrees(Trees):
-    DEFAULT_AVAILABLE_BUILDING_NAMES = ['PoolHall']
+    DEFAULT_AVAILABLE_BUILDING_NAMES = ['Library']
 
     pass
 
 
-class Plains(Tile):
-    DEFAULT_AVAILABLE_BUILDING_NAMES = ['SpearGoblinHut']
+class Hills(Tile):
+    DEFAULT_AVAILABLE_BUILDING_NAMES = ['Mine']
+    pass
+
+
+class Grassland(Tile):
+    DEFAULT_AVAILABLE_BUILDING_NAMES = ['Granary']
+    pass
+
+
+class Mountain(Tile):
+    DEFAULT_AVAILABLE_BUILDING_NAMES = []
     pass
 
 
