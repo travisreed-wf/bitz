@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block header_css %}
   <head>
-      <title>Add Darts</title>
+      <title>Add Pool</title>
   </head>
   {{ super() }}
 {% endblock %}
@@ -14,25 +14,15 @@
       </div>
     </div>
     <div class="form-group">
-      <label for=gotchas class="col-sm-2 control-label">Gotchas</label>
+      <label for=balls class="col-sm-2 control-label">Balls</label>
       <div class="col-sm-10">
-        <input type="number" class="form-control" id="gotchas" placeholder="Gotchas" name="gotchas">
+        <input type="number" class="form-control" id="balls" placeholder="Balls" name="balls">
       </div>
     </div>
     <div class="form-group">
-      <label for=bulls class="col-sm-2 control-label">Bulls</label>
+      <label for=lags class="col-sm-2 control-label">Lags</label>
       <div class="col-sm-10">
-        <input type="number" class="form-control" id="bulls" placeholder="Bulls" name="bulls">
-      </div>
-    </div>
-    <div class="form-group">
-      <label for=game_type class="col-sm-2 control-label">Game</label>
-      <div class="col-sm-10">
-        <select class="form-control" id="game_type" name="game_type">
-          <option selected>301</option>
-          <option>Cricket</option>
-          <option>Other</option>
-        </select>
+        <input type="number" class="form-control" id="lags" placeholder="Lags" name="lags">
       </div>
     </div>
     <div class="form-group">

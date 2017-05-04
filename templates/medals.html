@@ -1,8 +1,27 @@
 {% extends "layout.html" %}
 {% block header_css %}
   <head>
-      <title>Medals</title>
+    <title>Medals</title>
+    <style>
+      .total-resource-medal-icon {
+        filter: invert(100%);
+        left: 43%;
+        top: 27%;
+        max-width: 30px;
+      }
+      .total-earned-resource-medal-icon {
+        left: 40%;
+        top: 27%;
+        max-width: 50px;
+      }
+      .exploration-medal-icon {
+        left: 25%;
+        top: 18%;
+        max-width: 40px;
+      }
+    </style>
   </head>
+
   {{ super() }}
 {% endblock %}
 {% block body %}
@@ -10,7 +29,7 @@
     <div class="row center">
       <h2>Medals - {{ player.name }}</h2>
     </div>
-    <table id="medals-table" class="center" style="height: 700px; border="1" bordercolor="FFFFFF">
+    <table id="medals-table" class="center" style="height: 700px;">
       {% set width = 95 / medals_per_row %}
       <tr>
         {% for medal in medals %}
@@ -21,8 +40,17 @@
           {% set level, progress = medal.calculate_progress(player) %}
           {% set count = medal.get_count(player) %}
           {% set needed_count = medal.tiers[level - 1] %}
-          <td width='{{ width }}%' align="center" style="padding: 10px">
-            <img src="/static/img/medals/{{ medal.class_name }}-{{ level}}.png" width="80%">
+          <td width='{{ width }}%' align="center" style="padding: 10px; position: relative">
+            {% if medal.class_name == 'TotalResourceMedal' %}
+              {% set icon_class = 'total-resource-medal-icon' %}
+            {% elif medal.class_name == 'ExplorationMedal' %}
+              {% set icon_class = 'exploration-medal-icon' %}
+            {% else %}
+              {% set icon_class = 'total-earned-resource-medal-icon' %}
+            {% endif %}
+            <img src="/static/img/medals/{{ medal.class_name }}-{{ level}}.png" width="80%" style="position: relative; top: 0; left: 0">
+            <img src="/static/img/{{ medal.icon_path }}" style="position: absolute; width: 17%;" class="{{ icon_class }}">
+            <span style="position: absolute; top: 13px; right:50px; font-size:large; font-weight: bold">{{ level }}</span>
             <br>
             <div class="text-center">
               <div style='height: 40px; display: block'>

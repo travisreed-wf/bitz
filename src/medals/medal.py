@@ -69,6 +69,10 @@ class TotalResourceMedal(Medal):
     def name(self):
         return '%s: %s' % (self.class_name, self.resource_name)
 
+    @property
+    def icon_path(self):
+        return "resources/%s.png" % self.resource_name
+
     def get_count(self, player):
         if hasattr(self, "_count"):
             return self._count
@@ -94,6 +98,10 @@ class ExplorationMedal(Medal):
         super(ExplorationMedal, self).__init__()
         self.tile_name = tile_name
         self.tiers = config.STANDARD_EXPLORATION_TIERS
+
+    @property
+    def icon_path(self):
+        return "tiles/%s.png" % self.tile_name
 
     @property
     def name(self):
