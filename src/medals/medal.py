@@ -5,6 +5,23 @@ from src.locations.map import Earth
 class Medal(object):
 
     TIERS = []
+    LEAGUE_TIERS = [
+        1,
+        5,
+        10,
+        25,
+        50,
+        75,
+        100,
+        150,
+        200,
+        250,
+        300,
+        350,
+        400,
+        450,
+        500
+    ]
 
     def __init__(self):
         pass
@@ -40,10 +57,14 @@ class Medal(object):
             medal = TotalResourceMedal(resource_name)
             medals.append(medal)
 
-        earned = ['Dart', 'PoolBall', 'LeagueOfLegendsWin', 'ClashRoyaleWins']
+        earned = ['Dart', 'PoolBall', 'ClashRoyaleWins']
         for resource_name in earned:
             medal = TotalEarnedResourceMedal(resource_name)
             medals.append(medal)
+
+        league_medal = TotalEarnedResourceMedal(
+            'LeagueOfLegendsWin', tiers=Medal.LEAGUE_TIERS)
+        medals.append(league_medal)
 
         for d in Earth.AVAILABLE_TILES:
             tile_name = d['name']
@@ -54,28 +75,29 @@ class Medal(object):
 
 class TotalResourceMedal(Medal):
 
-    def __init__(self, resource_name):
+    def __init__(self, resource_name, tiers=None):
         super(TotalResourceMedal, self).__init__()
         self.resource_name = resource_name
+        if not tiers:
+            tiers = [
+                1500,
+                10000,
+                50000,
+                100000,
+                500000,
+                1000000,
+                5000000,
+                10000000,
+                50000000,
+                100000000,
+                500000000,
+                1000000000
+            ]
+        self.tiers = tiers
 
     @property
     def name(self):
         return '%s: %s' % (self.class_name, self.resource_name)
-
-    TIERS = [
-        1500,
-        10000,
-        50000,
-        100000,
-        500000,
-        1000000,
-        5000000,
-        10000000,
-        50000000,
-        100000000,
-        500000000,
-        1000000000
-    ]
 
     def get_count(self, player):
         if hasattr(self, "_count"):
@@ -88,23 +110,28 @@ class TotalResourceMedal(Medal):
 
 class TotalEarnedResourceMedal(TotalResourceMedal):
 
-    TIERS = [
-        1,
-        5,
-        10,
-        25,
-        50,
-        100,
-        200,
-        300,
-        400,
-        500,
-        600,
-        700,
-        800,
-        900,
-        1000
-    ]
+    def __init__(self, resource_name, tiers=None):
+        if not tiers:
+            tiers = [
+                1,
+                5,
+                10,
+                25,
+                50,
+                100,
+                200,
+                300,
+                400,
+                500,
+                600,
+                700,
+                800,
+                900,
+                1000
+            ]
+
+        super(TotalEarnedResourceMedal, self).__init__(
+            resource_name, tiers=tiers)
 
 
 class ExplorationMedal(Medal):
