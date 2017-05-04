@@ -1,6 +1,6 @@
 import logging
 
-from google.appengine.ext import ndb
+from google.appengine.ext import ndb, deferred
 from google.appengine.ext.ndb import polymodel
 
 from src.exceptions import InsufficientResourcesException
@@ -23,7 +23,9 @@ class Worker(polymodel.PolyModel):
     def add_resource(self, resource_to_add, reason=''):
         self.add_resources([resource_to_add], reason=reason)
 
+    @ndb.transactional
     def add_resources(self, resources_to_add, reason=''):
+        self = self.key.get()
         for resource_to_add in resources_to_add:
             r = self.get_resource_by_name(resource_to_add.name)
             if r:
@@ -40,7 +42,7 @@ class Worker(polymodel.PolyModel):
 
         self.put()
         for resource_to_add in resources_to_add:
-            self._add_transaction(resource_to_add, reason)
+            deferred.defer(self._add_transaction, resource_to_add, reason)
 
     def _add_transaction(self, resource_to_add, reason):
         if resource_to_add.count == 0:
