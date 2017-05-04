@@ -25,9 +25,9 @@ class Worker(polymodel.PolyModel):
 
     @ndb.transactional
     def add_resources(self, resources_to_add, reason=''):
-        self = self.key.get()
+        fresh_worker = self.key.get()
         for resource_to_add in resources_to_add:
-            r = self.get_resource_by_name(resource_to_add.name)
+            r = fresh_worker.get_resource_by_name(resource_to_add.name)
             if r:
                 if r.count + resource_to_add.count < 0:
                     raise InsufficientResourcesException()
@@ -38,9 +38,10 @@ class Worker(polymodel.PolyModel):
                 if resource_to_add.count < 0:
                     raise InsufficientResourcesException()
                 r_copy = resource_to_add.clone()
-                self.resources.append(r_copy)
+                fresh_worker.resources.append(r_copy)
 
-        self.put()
+        fresh_worker.put()
+        self.resources = fresh_worker.resources
         for resource_to_add in resources_to_add:
             deferred.defer(self._add_transaction, resource_to_add, reason)
 

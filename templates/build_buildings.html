@@ -51,7 +51,22 @@
           <span id="resource-{{building.name}}">{{ building.count }}</span>
         </td>
         <td style="vertical-align:middle">
-          <span>{{ building.total_space_in_use }} / {{ designated_space }} </span>
+          {% if designated_space > 0 %}
+            {% set percent_of_space_in_use = building.total_space_in_use / designated_space %}
+          {% else %}
+            {% set percent_of_space_in_use = 100 %}
+          {% endif %}
+          {% if percent_of_space_in_use >= 100 %}
+            {% set extra_class = 'progress-bar-danger' %}
+          {% else %}
+            {% set extra_class = '' %}
+          {% endif %}
+          <div class="progress">
+            <div class="progress-bar {{ extra_class }}" role="progressbar" aria-valuenow="{{ percent_of_space_in_use }}"
+              aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_of_space_in_use }}%">
+              {{ building.total_space_in_use }} / {{ designated_space }}
+            </div>
+          </div>
         </td>
         <td style="vertical-align:middle">
           {% set percent_of_cost_available = player.percent_of_cost_available(building.get_cost(map)) %}

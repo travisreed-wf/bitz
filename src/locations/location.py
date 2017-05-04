@@ -14,7 +14,7 @@ class Tile(polymodel.PolyModel):
     building = ndb.StringProperty(indexed=True)
     enemies = ndb.LocalStructuredProperty(resource.Resource, repeated=True,
                                           indexed=False)
-    is_explored = ndb.BooleanProperty(indexed=False, default=False)
+    is_explored = ndb.BooleanProperty(indexed=True, default=False)
     str_coordinate = ndb.StringProperty(indexed=True)
 
     def build_building(self, building_name):

@@ -1,11 +1,10 @@
 import json
 
-from flask import render_template, request
+from flask import render_template
 from flask.views import MethodView
 from google.appengine.ext import ndb
 
 from src.exceptions import InsufficientResourcesException
-from src.locations import map
 from src.locations.location import Location, Tile
 from src.workers.worker import Player
 

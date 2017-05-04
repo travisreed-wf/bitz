@@ -60,11 +60,11 @@ class Dart(Resource):
     @staticmethod
     def create_based_on_results(wins=0, bulls=0, gotchas=0, game_type='301'):
         if game_type == '301':
-            count = wins * 10 + gotchas * 5
+            count = wins * .75 + gotchas * .25
         elif game_type == 'cricket':
-            count = wins * 20 + bulls * 5
+            count = wins + bulls * .25
         else:
-            count = wins * 15
+            count = wins * .75
         return Dart.create(count)
 
 
@@ -117,7 +117,7 @@ class PoolBall(Resource):
 
     @staticmethod
     def create_based_on_results(wins=0, balls=0, lags=0):
-        count = wins * 5 + balls * 1 + lags * 1
+        count = wins + (balls * .1 + lags * .2)
         return PoolBall.create(count)
 
 

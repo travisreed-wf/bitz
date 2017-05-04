@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block header_css %}
+  <head>
+      <title>Medals</title>
+  </head>
+  {{ super() }}
+{% endblock %}
+{% block body %}
+  <div class="row">
+    <div class="row center">
+      <h2>Medals - {{ player.name }}</h2>
+    </div>
+    <table id="medals-table" class="center" style="height: 700px; border="1" bordercolor="FFFFFF">
+      {% set width = 95 / medals_per_row %}
+      <tr>
+        {% for medal in medals %}
+          {% set index = loop.index - 1 %}
+          {% if index != 0 and index % medals_per_row == 0 %}
+            </tr><tr>
+          {% endif %}
+          {% set level, progress = medal.calculate_progress(player) %}
+          <td width='{{ width }}%' align="center" style="padding: 10px">
+            <img src="/static/img/medals/{{ medal.class_name }}-{{ level}}.png" width="80%">
+            <br>
+            <div class="text-center">
+              <div style='height: 40px; display: block'>
+                {{ medal.name }} (lvl {{ level}})
+              </div>
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="{{ progress }}"
+                  aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%">
+                  {{ progress }}%
+                </div>
+              </div>
+            </div>
+          </td>
+        {% endfor %}
+        {% set total_tds = (medals_per_row * medals_per_row) | int %}
+        {% for x in range(0, total_tds - (medals|length)) %}
+          <td style="padding: 10px"></td>
+        {% endfor %}
+      </tr>
+    </table>
+
+  </div>
+{% endblock body %}
+{% block js_bottom %}
+  {{ super() }}
+
+{% endblock js_bottom %}
