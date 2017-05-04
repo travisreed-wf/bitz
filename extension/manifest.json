@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+
+  "name": "BitzGame",
+  "description": "Bitz Game",
+  "version": "0.1",
+
+  "browser_action": {
+    "default_icon": "static/images/Bitz.png",
+    "default_popup": ""
+  },
+  "icons": { "16": "static/images/Bitz16.png",
+             "48": "static/images/Bitz48.png",
+             "128": "static/images/Bitz128.png"
+    },
+  "permissions": [
+    "tabs",
+    "https://starfi.re/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://starfi.re/"],
+      "js": ["static/js/jquery-2.1.1.min.js", "updateClash.js"]
+    }
+  ]
+}
+

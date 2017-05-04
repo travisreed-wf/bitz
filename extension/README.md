@@ -1,0 +1,1 @@
+An extension to the rmconsole that is used to manipulate the chrome browser.

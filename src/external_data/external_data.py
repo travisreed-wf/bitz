@@ -25,20 +25,7 @@ class ExternalData(polymodel.PolyModel):
 
 
 class ClashRoyaleData(ExternalData):
-
-    @staticmethod
-    def update():
-        count = ClashRoyaleData._get_count()
-        entity = ClashRoyaleData(count=count)
-        entity.put()
-        return entity
-
-    @staticmethod
-    def _get_count():
-        url = 'https://starfi.re/user/id/5f15e80d-6eab-4752-91f6-86f0c55c98b9'
-        r = requests.get(url)
-        soup = BeautifulSoup(r.content, 'html.parser')
-        return int(soup.find_all(class_='value')[0].text)
+    pass
 
 
 class LeagueOfLegends(ExternalData):
