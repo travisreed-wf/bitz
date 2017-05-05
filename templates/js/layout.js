@@ -44,5 +44,5 @@ function update_resources(data){
 }
 
 $(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').tooltip({container: 'body'});
 });

@@ -7,6 +7,7 @@ class Medal(object):
 
     def __init__(self):
         self.tiers = []
+        self.rewards = []
         pass
 
     @property
@@ -33,6 +34,16 @@ class Medal(object):
     def get_count(self, player):
         raise NotImplementedError('must be implemented by subclass')
 
+    def get_reward_description(self, level):
+        title = "Rewards Earned:\n"
+        try:
+            rewards = self.rewards[level-1]
+        except IndexError:
+            return title + config.DUMMY_REWARD['description']
+
+        title += "\n".join([r['description'] for r in rewards])
+        return title
+
     @staticmethod
     def create_medals():
         medals = []
@@ -40,7 +51,8 @@ class Medal(object):
             resource_name = medal_dict['resource_name']
             tiers = medal_dict['tiers']
             cls = eval(medal_dict['class_name'])
-            medal = cls(resource_name, tiers=tiers)
+            rewards = medal_dict['rewards']
+            medal = cls(resource_name, tiers=tiers, rewards=rewards)
             medals.append(medal)
 
         for d in Earth.AVAILABLE_TILES:
@@ -52,12 +64,15 @@ class Medal(object):
 
 class TotalResourceMedal(Medal):
 
-    def __init__(self, resource_name, tiers=None):
+    def __init__(self, resource_name, tiers=None, rewards=None):
         super(TotalResourceMedal, self).__init__()
         self.resource_name = resource_name
         if not tiers:
             tiers = config.STANDARD_TOTAL_RESOURCE_TIERS
+        if not rewards:
+            rewards = [[config.DUMMY_REWARD]] * 15
         self.tiers = tiers
+        self.rewards = rewards
 
     @property
     def name(self):
@@ -78,20 +93,23 @@ class TotalResourceMedal(Medal):
 
 class TotalEarnedResourceMedal(TotalResourceMedal):
 
-    def __init__(self, resource_name, tiers=None):
+    def __init__(self, resource_name, tiers=None, rewards=None):
         if not tiers:
             tiers = config.STANDARD_TOTAL_EARNED_RESOURCE_TIERS
 
         super(TotalEarnedResourceMedal, self).__init__(
-            resource_name, tiers=tiers)
+            resource_name, tiers=tiers, rewards=rewards)
 
 
 class ExplorationMedal(Medal):
 
-    def __init__(self, tile_name):
+    def __init__(self, tile_name, rewards=None):
         super(ExplorationMedal, self).__init__()
         self.tile_name = tile_name
         self.tiers = config.STANDARD_EXPLORATION_TIERS
+        if not rewards:
+            rewards = [[config.DUMMY_REWARD]] * 15
+        self.rewards = rewards
 
     @property
     def icon_path(self):

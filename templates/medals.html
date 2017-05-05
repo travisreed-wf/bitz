@@ -40,7 +40,8 @@
           {% set level, progress = medal.calculate_progress(player) %}
           {% set count = medal.get_count(player) %}
           {% set needed_count = medal.tiers[level - 1] %}
-          <td width='{{ width }}%' align="center" style="padding: 10px; position: relative">
+          {% set reward_title = medal.get_reward_description(level) %}
+          <td width='{{ width }}%' align="center" style="padding: 10px; position: relative" data-toggle="tooltip" title="{{ reward_title }}">
             {% if medal.class_name == 'TotalResourceMedal' %}
               {% set icon_class = 'total-resource-medal-icon' %}
             {% elif medal.class_name == 'ExplorationMedal' %}

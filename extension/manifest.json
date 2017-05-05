@@ -15,7 +15,9 @@
     },
   "permissions": [
     "tabs",
-    "https://starfi.re/*"
+    "https://starfi.re/*",
+    "https://bitz-game.appspot.com/*",
+    "https://bitz-game-staging.appspot.com/*"
   ],
   "content_scripts": [
     {
