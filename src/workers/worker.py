@@ -25,6 +25,8 @@ class Worker(polymodel.PolyModel):
 
     @ndb.transactional
     def add_resources(self, resources_to_add, reason=''):
+        from src.notifications.notification import Notification
+
         fresh_worker = self.key.get()
         for resource_to_add in resources_to_add:
             r = fresh_worker.get_resource_by_name(resource_to_add.name)
@@ -45,6 +47,10 @@ class Worker(polymodel.PolyModel):
         self.resources = fresh_worker.resources
         for resource_to_add in resources_to_add:
             deferred.defer(self._add_transaction, resource_to_add, reason)
+            if resource_to_add.count > 0 and \
+                    resource_to_add.resource_type == 'earned':
+                deferred.defer(Notification.create_new_follower_notification(
+                    self.key, resource.name, resource.count))
 
     @ndb.transactional
     def add_follower(self, follower, is_free, reason=''):
@@ -193,10 +199,10 @@ class Player(Worker):
     @property
     def organized_resources(self):
         ret = {}
-        for resource in self.resources:
-            if not ret.get(resource.resource_type):
-                ret[resource.resource_type] = []
-            ret[resource.resource_type].append(resource)
+        for r in self.resources:
+            if not ret.get(r.resource_type):
+                ret[r.resource_type] = []
+            ret[r.resource_type].append(r)
         return ret
 
     def get_recent_notifications(self):

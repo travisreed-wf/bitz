@@ -22,3 +22,14 @@ class Notification(ndb.model.Model):
         notification = Notification(player_key=player_key, icon_path=icon_path,
                                     message=message, title='New Great Follower')
         notification.put()
+
+    @staticmethod
+    def create_new_earned_resource_notification(player_key, resource_name,
+                                                resource_count):
+        icon_path = 'resources/%s.png' % resource_name
+        message = 'Congrats! You have earned %s new %s' % (
+            resource_count, resource_name)
+        notification = Notification(player_key=player_key, icon_path=icon_path,
+                                    message=message,
+                                    title='New Earned Resource')
+        notification.put()
