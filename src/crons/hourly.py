@@ -1,8 +1,46 @@
 from flask.views import MethodView
 
 from src.external_data import external_data
+from src.medals.medal import Medal
 from src.resources import resource
 from src.workers.worker import Worker, Player
+
+
+class FollowerCron(MethodView):
+
+    def get(self):
+        self.player = Player.get_by_id("Travis Reed")
+        self.possible_followers = self._determine_possible_followers()
+        self.followers = self._determine_followers_to_award()
+
+    def _determine_possible_followers(self):
+        medals = Medal.create_medals()
+        followers = []
+        for medal in medals:
+            level, _ = medal.calculate_progress(self.player)
+            for achieved_level in xrange(1, level):
+                try:
+                    rewards = medal.rewards[achieved_level - 1]
+                except IndexError:
+                    rewards = []
+                for reward in rewards:
+                    if reward['reward_type'] == 'follower':
+                        followers.append(reward['name'])
+        return followers
+
+    def _determine_followers_to_award(self):
+        pattern = [float(100)]
+        current_odds = float(40)
+        for x in xrange(0, 100):
+            current_odds = current_odds / 2
+            pattern.append(current_odds)
+
+        for possible_follower in self.possible_followers:
+            current_count = self.player.get_resource_by_name(
+                possible_follower)
+
+
+
 
 
 class WorkerCron(MethodView):
