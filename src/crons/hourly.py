@@ -35,9 +35,19 @@ class FollowerCron(MethodView):
             current_odds = current_odds / 2
             pattern.append(current_odds)
 
-        for possible_follower in self.possible_followers:
+        for possible_follower in set(self.possible_followers):
             current_count = self.player.get_resource_by_name(
                 possible_follower)
+            current_count -= self.possible_followers.count(possible_follower)
+
+            if current_count < 0:
+                current_count = 0
+
+            follower_specifc_odd = pattern[int(current_count)]
+
+
+
+
 
 
 
