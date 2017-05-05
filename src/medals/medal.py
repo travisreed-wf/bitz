@@ -36,18 +36,12 @@ class Medal(object):
     @staticmethod
     def create_medals():
         medals = []
-        for resource_name in config.STANDARD_BASIC_RESOURCES:
-            medal = TotalResourceMedal(resource_name)
+        for medal_dict in config.TOTAL_RESOURCE_MEDAL_DATA:
+            resource_name = medal_dict['resource_name']
+            tiers = medal_dict['tiers']
+            cls = eval(medal_dict['class_name'])
+            medal = cls(resource_name, tiers=tiers)
             medals.append(medal)
-
-        earned = config.STANDARD_EARNED_RESOURCES
-        for resource_name in earned:
-            medal = TotalEarnedResourceMedal(resource_name)
-            medals.append(medal)
-
-        league_medal = TotalEarnedResourceMedal(
-            'LeagueOfLegendsWin', tiers=config.LEAGUE_TIERS)
-        medals.append(league_medal)
 
         for d in Earth.AVAILABLE_TILES:
             tile_name = d['name']
