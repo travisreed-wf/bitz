@@ -1,17 +1,34 @@
+import logging
+
+from random import random
 from flask.views import MethodView
 
 from src.external_data import external_data
 from src.medals.medal import Medal
 from src.resources import resource
+from src.resources.follower import Follower
 from src.workers.worker import Worker, Player
 
 
 class FollowerCron(MethodView):
 
-    def get(self):
+    def __init__(self):
         self.player = Player.get_by_id("Travis Reed")
+        self.possible_followers = []
+        self.followers = []
+        self.reason = 'attracted by medals'
+        self.is_free = False
+
+    def get(self):
         self.possible_followers = self._determine_possible_followers()
         self.followers = self._determine_followers_to_award()
+        for follower_name in self.followers:
+            logging.info("Awarding %s" % follower_name)
+            follower_cls = Follower.get_class_by_name(follower_name)
+            follower = follower_cls.create(count=1)
+            self.player.add_follower(follower, self.is_free,
+                                     reason=self.reason)
+        return "Success"
 
     def _determine_possible_followers(self):
         medals = Medal.create_medals()
@@ -29,28 +46,71 @@ class FollowerCron(MethodView):
         return followers
 
     def _determine_followers_to_award(self):
-        pattern = [float(100)]
-        current_odds = float(40)
-        for x in xrange(0, 100):
-            current_odds = current_odds / 2
-            pattern.append(current_odds)
+        raise NotImplementedError("must be implemented by subclass")
+
+
+class FollowerCronForNewMedals(FollowerCron):
+
+    def __init__(self):
+        super(FollowerCronForNewMedals, self).__init__()
+        self.reason = "awarded for new medal!"
+        self.is_free = True
+
+    def _determine_followers_to_award(self):
+        followers_to_award = []
 
         for possible_follower in set(self.possible_followers):
-            current_count = self.player.get_resource_by_name(
+            follower = self.player.get_resource_by_name(
                 possible_follower)
-            current_count -= self.possible_followers.count(possible_follower)
+            current_free_count = follower.count - follower.lifespan_count
+            exp_count = self.possible_followers.count(possible_follower)
 
-            if current_count < 0:
-                current_count = 0
+            if current_free_count < exp_count:
+                followers_to_award.append(possible_follower)
 
-            follower_specifc_odd = pattern[int(current_count)]
-
-
-
+        return followers_to_award
 
 
+class DailyFollowerCron(FollowerCron):
 
+    def _determine_followers_to_award(self):
+        pattern = self._generate_pattern()
 
+        followers_to_award = []
+
+        for possible_follower in set(self.possible_followers):
+            follower = self.player.get_resource_by_name(
+                possible_follower)
+            odds_index = follower.lifespan_count if follower else 0
+            follower_points = self.possible_followers.count(possible_follower)
+            odds_index -= follower_points
+
+            if odds_index < 0:
+                odds_index = 0
+
+            follower_specifc_odd = pattern[int(odds_index)]
+            logging.info('Because you have {current_count} {name}s and '
+                         'have earned {follower_points} {name} points, '
+                         'the odds of attracting a new {name} are {odds}'.
+                         format(current_count=follower.lifespan_count,
+                                name=follower.name,
+                                follower_points=follower_points,
+                                odds=follower_specifc_odd))
+
+            r = random()
+            logging.info('Random number generated: %s' % r)
+            if follower_specifc_odd >= r:
+                followers_to_award.append(possible_follower)
+                logging.info('Congrats on being awarded a %s!' % follower.name)
+        return followers_to_award
+
+    def _generate_pattern(self):
+        pattern = []
+        current_odds = float(.4)
+        for x in xrange(0, 100):
+            current_odds /= 2
+            pattern.append(current_odds)
+        return pattern
 
 
 class WorkerCron(MethodView):
@@ -105,3 +165,9 @@ def setup_urls(app):
                      view_func=DataRefreshCron.as_view('crons.data'))
     app.add_url_rule('/crons/worker/',
                      view_func=WorkerCron.as_view('crons.worker'))
+    app.add_url_rule('/crons/follower/daily/',
+                     view_func=DailyFollowerCron.as_view(
+                         'crons.follower.daily'))
+    app.add_url_rule('/crons/follower/new_medals/',
+                     view_func=FollowerCronForNewMedals.as_view(
+                         'crons.follower.new_medals'))

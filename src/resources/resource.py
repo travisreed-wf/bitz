@@ -1,8 +1,6 @@
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import polymodel
 
-from src.helpers import LongIntegerProperty
-
 
 class Resource(polymodel.PolyModel):
     count = ndb.FloatProperty(indexed=False)

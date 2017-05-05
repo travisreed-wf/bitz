@@ -6,10 +6,20 @@ cron:
 
 - description: cron manages building production
   url: /crons/buildings/
-  schedule: every 1 mins
+  schedule: every 1 mins from 00:00 to 23:59
   timezone: America/Chicago
 
 - description: cron manages data refresh
   url: /crons/dataRefresh/
   schedule: every 60 mins
+  timezone: America/Chicago
+
+- description: cron manages follower count
+  url: /crons/follower/daily/
+  schedule: every day 00:00
+  timezone: America/Chicago
+
+- description: cron manages followers for new medals
+  url: /crons/follower/new_medals/
+  schedule: every 15 minutes
   timezone: America/Chicago

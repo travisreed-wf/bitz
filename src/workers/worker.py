@@ -38,12 +38,35 @@ class Worker(polymodel.PolyModel):
                 if resource_to_add.count < 0:
                     raise InsufficientResourcesException()
                 r_copy = resource_to_add.clone()
+                r_copy.lifespan_count = resource_to_add.count
                 fresh_worker.resources.append(r_copy)
 
         fresh_worker.put()
         self.resources = fresh_worker.resources
         for resource_to_add in resources_to_add:
             deferred.defer(self._add_transaction, resource_to_add, reason)
+
+    @ndb.transactional
+    def add_follower(self, follower, is_free, reason=''):
+        from src.notifications.notification import Notification
+
+        fresh_worker = self.key.get()
+        r = fresh_worker.get_resource_by_name(follower.name)
+        if r:
+            r.count += follower.count
+            if not is_free:
+                r.lifespan_count += follower.count
+        else:
+            r_copy = follower.clone()
+            if not is_free:
+                r_copy.lifespan_count = follower.count
+            fresh_worker.resources.append(r_copy)
+
+        fresh_worker.put()
+        self.resources = fresh_worker.resources
+        deferred.defer(self._add_transaction, follower, reason)
+        deferred.defer(Notification.create_new_follower_notification(
+            self.key, follower.name, reason))
 
     def _add_transaction(self, resource_to_add, reason):
         if resource_to_add.count == 0:
@@ -175,3 +198,17 @@ class Player(Worker):
                 ret[resource.resource_type] = []
             ret[resource.resource_type].append(resource)
         return ret
+
+    def get_recent_notifications(self):
+        from src.notifications.notification import Notification
+        if hasattr(self, "_recent_notifications"):
+            return self._recent_notifications
+
+        self._recent_notifications = \
+            Notification.query(Notification.player_key == self.key).order(
+                Notification.time).fetch(limit=10)
+        return self._recent_notifications
+
+    def get_recent_unread_notifications(self):
+        recent = self.get_recent_notifications()
+        return [n for n in recent if not n.is_read]

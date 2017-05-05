@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block header_css %}
       <link rel="stylesheet" type="text/css" media="screen" href="/static/bootstrap3/css/bootstrap.css">
+      <link rel="stylesheet" type="text/css" media="screen" href="/static/bootstrap-notifications.css">
       <link rel="stylesheet" type="text/css" media="screen" href="/static/custom.css">
       <style type="text/css"> body { padding-top: 60px; padding-bottom: 40px; } </style>
       <link rel="icon" type="image/ico" href="/static/img/Bitz.jpg">
@@ -53,6 +54,52 @@
               <li><a href="/data_entry/pool/">Pool</a></li>
             </ul>
           </li>
+          <li class="dropdown dropdown-notifications ">
+            {% set notifications = player.get_recent_notifications() %}
+            {% set unread_notification_count = player.get_recent_unread_notifications() | length %}
+
+            <a class='dropdown-toggle' data-toggle='dropdown' role='button' id="notifications-button">
+              <i data-count="{{ unread_notification_count }}" class="glyphicon glyphicon-bell notification-icon"></i>
+            </a>
+
+            <div class="dropdown-container" id="notifications-panel">
+
+              <div class="dropdown-toolbar">
+                <!--<div class="dropdown-toolbar-actions">-->
+                  <!--<a href="#markAllNotificationsAsRead">Mark all as read</a>-->
+                <!--</div>-->
+                <h3 class="dropdown-toolbar-title">Notifications {{ unread_notification_count }}</h3>
+              </div><!-- /dropdown-toolbar -->
+
+              <ul class="dropdown-menu dropdown-menu-right">
+                  {% for notification in notifications %}
+                    <li class="notification" data-id="{{ notification.key.id() }}">
+                      <div class="media">
+                        <div class="media-left">
+                          <div class="media-object">
+                            <img src="/static/img/{{notification.icon_path}}" class="img-circle" alt="Name">
+                          </div>
+                        </div>
+                        <div class="media-body">
+                          <strong class="notification-title">{{ notification.title }}</strong>
+
+                          <p class="notification-desc">{{ notification.message }}</p>
+
+                          <div class="notification-meta">
+                            <small class="timestamp">{{ notification.time }}</small>
+                          </div>
+                        </div>
+                      </div>
+                  </li>
+                  {% endfor %}
+              </ul>
+
+              <!--<div class="dropdown-footer text-center">-->
+                <!--<a href="#">View All</a>-->
+              <!--</div>&lt;!&ndash; /dropdown-footer &ndash;&gt;-->
+
+            </div><!-- /dropdown-container -->
+          </li><!-- /dropdown -->
         </ul>
         <ul class="nav navbar-right navbar-nav">
           <li class="dropdown">

@@ -45,4 +45,25 @@ function update_resources(data){
 
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip({container: 'body'});
+
+    $('#notifications-button').click(function() {
+      var notificationIDs = [];
+      $('li.notification').each(function(){
+        notificationIDs.push($(this).data('id'))
+      });
+      console.log(notificationIDs);
+      $.ajax({
+        url: '/notifications/mark_as_read/',
+        data: JSON.stringify(notificationIDs),
+        contentType: 'application/json',
+        method: 'PUT',
+        success: function() {
+          $('.notification-icon').removeClass('notification-icon');
+        }
+      });
+    });
+
+    if ($('.notification-icon').first().data('count') == '0'){
+      $('.notification-icon').removeClass('notification-icon');
+    }
 });

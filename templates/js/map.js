@@ -6,12 +6,12 @@ var build = function(){
   var s = $('#building-select');
   var building = s.val();
   $.ajax({
-      url: '/build/' + tileID + "/" + building + '/',
-      method: 'PUT',
-      success: function() {
-        window.location.reload();
-      }
-    });
+    url: '/build/' + tileID + "/" + building + '/',
+    method: 'PUT',
+    success: function() {
+      window.location.reload();
+    }
+  });
 };
 
 $('#buildModal').on('show.bs.modal', function (event) {
