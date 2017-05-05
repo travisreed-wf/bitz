@@ -37,7 +37,7 @@ class Worker(polymodel.PolyModel):
             else:
                 if resource_to_add.count < 0:
                     raise InsufficientResourcesException()
-                r_copy = r.clone()
+                r_copy = resource_to_add.clone()
                 fresh_worker.resources.append(r_copy)
 
         fresh_worker.put()
@@ -126,7 +126,8 @@ class Player(Worker):
             building.Library.create(),
             building.Mine.create(),
             resource.Production.create(),
-            resource.Science.create()
+            resource.Science.create(),
+            resource.Food.create()
         ]
         return Player.get_or_insert("Travis Reed", name="Travis Reed", count=1,
                                     resources=resources)
