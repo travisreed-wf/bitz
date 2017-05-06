@@ -96,3 +96,7 @@ class GreatEngineer(Follower):
 
 class GreatLaborer(Follower):
     pass
+
+
+class GreatFarmer(Follower):
+    pass

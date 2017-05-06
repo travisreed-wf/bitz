@@ -154,11 +154,11 @@ class Step(Resource):
         return Step(resource_type="earned", count=count)
 
 
-class PullRequest(Resource):
+class GitCommit(Resource):
 
     @staticmethod
     def create(count=0):
-        return PullRequest(resource_type='earned', count=count)
+        return GitCommit(resource_type='earned', count=count)
 
 
 class JIRAPoint(Resource):

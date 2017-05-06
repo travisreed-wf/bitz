@@ -149,6 +149,8 @@ class DataRefreshCron(MethodView):
         self.player = Player.get_by_id('Travis Reed')
         self._update_league_of_legends()
         self._update_fitbit()
+        self._update_jira()
+        self._update_github()
         return 'success', 200
 
     def _update_league_of_legends(self):
@@ -172,6 +174,30 @@ class DataRefreshCron(MethodView):
         r = resource.Step.create(
             count=(new.count - current_count))
         self.player.add_resource(r)
+
+    def _update_jira(self):
+        current = external_data.JIRA.get_previous_entity()
+        if current:
+            current_count = current.count or 0
+        else:
+            current_count = 0
+        new = external_data.JIRA.update()
+        if new:
+            r = resource.JIRAPoint.create(
+                count=(new.count - current_count))
+            self.player.add_resource(r)
+
+    def _update_github(self):
+        current = external_data.GithubData.get_previous_entity()
+        if current:
+            current_count = current.count
+        else:
+            current_count = 0
+        new = external_data.GithubData.update()
+        if new:
+            r = resource.GitCommit.create(
+                count=(new.count - current_count))
+            self.player.add_resource(r)
 
 
 def setup_urls(app):

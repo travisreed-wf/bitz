@@ -1,7 +1,8 @@
-import requests
+import json
 
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import polymodel
+import requests
 
 from src.settings import Settings
 
@@ -79,6 +80,69 @@ class LeagueOfLegends(ExternalData):
                 self.count += int(summary['wins'])
             elif summary.get('playerStatSummaryType') in self.DOUBLE_WEIGHTING:
                 self.count += int(summary['wins'] * 2)
+
+
+class GithubData(ExternalData):
+
+    @staticmethod
+    def update():
+        data = GithubData._get_data()
+        if data:
+            entity = GithubData()
+            entity._calculate_count(data)
+            entity.put()
+            return entity
+        return None
+
+    @staticmethod
+    def _get_data():
+        import github
+
+        g = github.Github("travisreed-wf",
+                          Settings.get_setting_value("JIRA_PASS"))
+        repo = g.get_repo("Workiva/rmconsole-gae")
+        return repo.get_stats_contributors()
+
+    def _calculate_count(self, stats):
+        for stat in stats:
+            if stat.author.login == 'travisreed-wf':
+                self.count = int(stat.total)
+
+
+class JIRA(ExternalData):
+
+    @staticmethod
+    def update():
+        data = JIRA._get_data()
+        entity = JIRA()
+        entity._calculate_count(data)
+        entity.put()
+        return entity
+
+    @staticmethod
+    def _get_data():
+        jql = 'project = RMCONS and status = "Resolved" and ' \
+              '(resolution = "Work Completed" or resolution = "Done") ' \
+              'and assignee = travis.reed and resolutiondate > 2017-01-01'
+
+        jira_url = "https://jira.atl.workiva.net"
+        jira_user = "travis.reed"
+        jira_pass = Settings.get_setting_value('JIRA_PASS')
+        url = '%s/rest/api/2/search' % jira_url
+        data = {
+            'jql': jql,
+            'fields': ['customfield_10214'],
+            'maxResults': 5000
+        }
+        r = requests.post(
+            url, auth=(jira_user, jira_pass),
+            data=json.dumps(data),
+            headers={'content-type': 'application/json'}, timeout=15)
+        return r.json().get('issues') or []
+
+    def _calculate_count(self, data):
+        count = sum([i['fields']['customfield_10214'] or 0 for i in data])
+        self.count = int(count)
 
 
 class BGAData(ExternalData):

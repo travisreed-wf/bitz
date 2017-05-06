@@ -13,9 +13,23 @@ STANDARD_TOTAL_RESOURCE_TIERS = [
     1000000000
 ]
 STANDARD_TOTAL_EARNED_RESOURCE_TIERS = [
-    1,
-    5,
-    10,
+    50,
+    100,
+    200,
+    400,
+    600,
+    800,
+    1000,
+    1250,
+    1500,
+    1750,
+    2000,
+    2500,
+    3000,
+    3500
+]
+
+JIRA_TIERS = [
     25,
     50,
     100,
@@ -27,7 +41,9 @@ STANDARD_TOTAL_EARNED_RESOURCE_TIERS = [
     700,
     800,
     900,
-    1000
+    1000,
+    1250,
+    1500
 ]
 
 STEP_TIERS = [
@@ -186,12 +202,12 @@ TOTAL_RESOURCE_MEDAL_DATA = [
     },
     {
         'resource_name': 'JIRAPoint',
-        'tiers': STANDARD_TOTAL_EARNED_RESOURCE_TIERS,
+        'tiers': JIRA_TIERS,
         'class_name': 'TotalEarnedResourceMedal',
         'rewards': generate_follower_progression_two('GreatLaborer'),
     },
     {
-        'resource_name': 'PullRequest',
+        'resource_name': 'GitCommit',
         'tiers': STANDARD_TOTAL_EARNED_RESOURCE_TIERS,
         'class_name': 'TotalEarnedResourceMedal',
         'rewards': generate_follower_progression_two('GreatEngineer')
