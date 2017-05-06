@@ -1,21 +1,3 @@
-LEAGUE_TIERS = [
-    1,
-    5,
-    10,
-    25,
-    50,
-    75,
-    100,
-    150,
-    200,
-    250,
-    300,
-    350,
-    400,
-    450,
-    500
-]
-
 STANDARD_TOTAL_RESOURCE_TIERS = [
     1500,
     10000,
@@ -47,6 +29,43 @@ STANDARD_TOTAL_EARNED_RESOURCE_TIERS = [
     900,
     1000
 ]
+
+STEP_TIERS = [
+    10000,
+    50000,
+    100000,
+    150000,
+    200000,
+    250000,
+    300000,
+    350000,
+    400000,
+    500000,
+    600000,
+    700000,
+    800000,
+    900000,
+    1000000
+]
+
+LEAGUE_TIERS = [
+    1,
+    5,
+    10,
+    25,
+    50,
+    75,
+    100,
+    150,
+    200,
+    250,
+    300,
+    350,
+    400,
+    450,
+    500
+]
+
 
 STANDARD_EXPLORATION_TIERS = [
     1,
@@ -109,19 +128,19 @@ TOTAL_RESOURCE_MEDAL_DATA = [
         'resource_name': 'Production',
         'tiers': None,
         'class_name': 'TotalResourceMedal',
-        'rewards': [[DUMMY_REWARD]] * 15,
+        'rewards': generate_follower_progression_two('GreatLaborer'),
     },
     {
         'resource_name': 'Science',
         'tiers': None,
         'class_name': 'TotalResourceMedal',
-        'rewards': [[DUMMY_REWARD]] * 15,
+        'rewards': generate_follower_progression_two('GreatScientist'),
     },
     {
         'resource_name': 'Food',
         'tiers': None,
         'class_name': 'TotalResourceMedal',
-        'rewards': [[DUMMY_REWARD]] * 15,
+        'rewards': generate_follower_progression_two('GreatFarmer'),
     },
     {
         'resource_name': 'Dart',
@@ -151,5 +170,30 @@ TOTAL_RESOURCE_MEDAL_DATA = [
         'class_name': 'TotalEarnedResourceMedal',
         'rewards': _generate_follower_progression_one(
             'GreatWarrior', 'GreatSwordsman', 'GreatLongswordsman'),
+    },
+    {
+        'resource_name': 'BGAWins',
+        'tiers': LEAGUE_TIERS,
+        'class_name': 'TotalEarnedResourceMedal',
+        'rewards': _generate_follower_progression_one(
+            'Tactician', 'Strategist', 'Commander'),
+    },
+    {
+        'resource_name': 'Step',
+        'tiers': STEP_TIERS,
+        'class_name': 'TotalEarnedResourceMedal',
+        'rewards': generate_follower_progression_two('GreatScout')
+    },
+    {
+        'resource_name': 'JIRAPoint',
+        'tiers': STANDARD_TOTAL_EARNED_RESOURCE_TIERS,
+        'class_name': 'TotalEarnedResourceMedal',
+        'rewards': generate_follower_progression_two('GreatLaborer'),
+    },
+    {
+        'resource_name': 'PullRequest',
+        'tiers': STANDARD_TOTAL_EARNED_RESOURCE_TIERS,
+        'class_name': 'TotalEarnedResourceMedal',
+        'rewards': generate_follower_progression_two('GreatEngineer')
     }
 ]

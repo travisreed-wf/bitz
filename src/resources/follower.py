@@ -80,3 +80,19 @@ class GreatGrasslandScout(Follower):
 
 class GreatTreesScout(Follower):
     pass
+
+
+class GreatScout(Follower):
+    pass
+
+
+class GreatScientist(Follower):
+    pass
+
+
+class GreatEngineer(Follower):
+    pass
+
+
+class GreatLaborer(Follower):
+    pass

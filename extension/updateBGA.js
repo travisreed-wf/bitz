@@ -13,7 +13,7 @@ function checkForGameData() {
     index = gameStatsText.search('victories');
     if (index > 4) {
       var winCount = gameStatsText.substring(index - 4, index - 1);
-      winCount = winCount.trim()
+      winCount = winCount.trim();
       winCount = parseInt(winCount);
     }
     data[gameName] = winCount;
