@@ -38,7 +38,8 @@
             <div class="progress-bar tick-progress" role="progressbar" aria-valuenow="{{ progress }}"
               aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%"
               data-seconds_since_last_tick="{{building.seconds_since_last_tick}}"
-              data-seconds_between_ticks="{{ building.seconds_between_ticks}}">
+              data-seconds_between_ticks="{{ building.seconds_between_ticks}}"
+              data-production_per_tick="{{ building.production_per_tick_json_dict }}">
               {{ building.seconds_since_last_tick }} / {{ building.seconds_between_ticks }}
             </div>
           </div>

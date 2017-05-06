@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 import sys
 
 from google.appengine.ext import ndb
@@ -42,6 +43,13 @@ class Building(resource.Resource):
     def minutes_between_ticks(self):
         minutes_per_day = 1440
         return minutes_per_day / self.ticks_per_day
+
+    @property
+    def production_per_tick_json_dict(self):
+        d = {}
+        for r in self.production_per_tick:
+            d[r.name] = r.count
+        return json.dumps(d)
 
     @property
     def seconds_since_last_tick(self):

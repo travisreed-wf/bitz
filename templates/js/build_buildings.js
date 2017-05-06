@@ -39,13 +39,13 @@ $(document).ready(function(){
       intSecondsSinceLast += 1;
       $(this).data('seconds_since_last_tick', intSecondsSinceLast.toString());
       totalExp = $(this).data('seconds_between_ticks');
-      if (intSecondsSinceLast.toString() == totalExp){
-        handleFullProgressBar(self);
-      }
       progress = (100 * (parseInt(secondsSinceLast) + 1)) / parseInt(totalExp);
       progress = progress % 100;
       progress = progress.toString();
       roundedSecondsSinceLast = intSecondsSinceLast % totalExp;
+      if (roundedSecondsSinceLast == 0){
+        handleFullProgressBar($(this));
+      }
       $(this).css('width', progress + "%");
       $(this).text( roundedSecondsSinceLast.toString() + '/' + totalExp);
 
@@ -53,7 +53,10 @@ $(document).ready(function(){
   }
 
   function handleFullProgressBar(bar){
-
+    var production = bar.data('production_per_tick');
+    var data = {'gained_resources': JSON.parse(production), 'used_resources': {}};
+    console.log(data);
+    update_resources(data)
   }
 
 });
