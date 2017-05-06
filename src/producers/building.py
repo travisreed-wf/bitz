@@ -35,9 +35,37 @@ class Building(resource.Resource):
         return self.size_per_building * self.count
 
     @property
+    def seconds_between_ticks(self):
+        return self.minutes_between_ticks * 60
+
+    @property
     def minutes_between_ticks(self):
         minutes_per_day = 1440
         return minutes_per_day / self.ticks_per_day
+
+    @property
+    def seconds_since_last_tick(self):
+        if hasattr(self, "_seconds_since_last_tick"):
+            return self._seconds_since_last_tick
+
+        now = datetime.now().replace(microsecond=0)
+        seconds_passed_today = (
+            now - now.replace(hour=0, minute=0, second=0)).seconds
+        self._seconds_since_last_tick = \
+            seconds_passed_today % (self.minutes_between_ticks * 60)
+        return self._seconds_since_last_tick
+
+    @property
+    def minutes_since_last_tick(self):
+        if hasattr(self, "_minutes_since_last_tick"):
+            return self._minutes_since_last_tick
+
+        now = datetime.now().replace(second=0, microsecond=0)
+        seconds_passed_today = (now - now.replace(hour=0, minute=0)).seconds
+        minutes_passed_today = seconds_passed_today / 60
+        self._minutes_since_last_tick = \
+            minutes_passed_today % self.minutes_between_ticks
+        return self._minutes_since_last_tick
 
     def get_max_discounted_buildings(self, map_class):
         available_space = self.get_total_designated_space(map_class) - \
@@ -75,10 +103,7 @@ class Building(resource.Resource):
         return production
 
     def should_produce(self):
-        now = datetime.now().replace(second=0, microsecond=0)
-        seconds_passed_today = (now - now.replace(hour=0, minute=0)).seconds
-        minutes_passed_today = seconds_passed_today / 60
-        return (minutes_passed_today % self.minutes_between_ticks == 0)
+        return self.minutes_since_last_tick == 0
 
 
 class Library(Building):

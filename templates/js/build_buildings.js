@@ -23,3 +23,37 @@ var build = function(btn){
       }
     });
 };
+
+$(document).ready(function(){
+  window.setInterval(updateProgressBars, 1000);
+
+  function updateProgressBars(){
+    var secondsSinceLast;
+    var progress;
+    var totalExp;
+    var intSecondsSinceLast;
+    var roundedSecondsSinceLast;
+    $('.tick-progress').each(function(){
+      secondsSinceLast = $(this).data('seconds_since_last_tick');
+      intSecondsSinceLast = parseInt(secondsSinceLast);
+      intSecondsSinceLast += 1;
+      $(this).data('seconds_since_last_tick', intSecondsSinceLast.toString());
+      totalExp = $(this).data('seconds_between_ticks');
+      if (intSecondsSinceLast.toString() == totalExp){
+        handleFullProgressBar(self);
+      }
+      progress = (100 * (parseInt(secondsSinceLast) + 1)) / parseInt(totalExp);
+      progress = progress % 100;
+      progress = progress.toString();
+      roundedSecondsSinceLast = intSecondsSinceLast % totalExp;
+      $(this).css('width', progress + "%");
+      $(this).text( roundedSecondsSinceLast.toString() + '/' + totalExp);
+
+    });
+  }
+
+  function handleFullProgressBar(bar){
+
+  }
+
+});

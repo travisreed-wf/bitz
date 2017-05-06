@@ -13,7 +13,7 @@
       <tr>
         <th>Name</th>
         <th>Production per tick</th>
-        <th>Minutes between ticks</th>
+        <th>Progress toward tick</th>
         <th>Production per day</th>
         <th>Cost</th>
         <th>Count</th>
@@ -32,7 +32,17 @@
             <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px; padding-bottom: 5px"> <span>x {{ resource.count }}</span>
           {% endfor %}
         </td>
-        <td style="vertical-align:middle">{{ building.minutes_between_ticks }}</td>
+        <td style="vertical-align:middle">
+          {% set progress = (100 * building.seconds_since_last_tick) / building.seconds_between_ticks %}
+          <div class="progress">
+            <div class="progress-bar tick-progress" role="progressbar" aria-valuenow="{{ progress }}"
+              aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%"
+              data-seconds_since_last_tick="{{building.seconds_since_last_tick}}"
+              data-seconds_between_ticks="{{ building.seconds_between_ticks}}">
+              {{ building.seconds_since_last_tick }} / {{ building.seconds_between_ticks }}
+            </div>
+          </div>
+        </td>
         <td style="vertical-align:middle">
           {% for resource in building.production_per_tick %}
             <img src="/static/img/resources/{{resource.name}}.png" style="width:30px;height:30px; padding-bottom: 5px"> <span>x {{ resource.count * building.ticks_per_day }}</span>
