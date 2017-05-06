@@ -74,23 +74,29 @@
               <ul class="dropdown-menu dropdown-menu-right">
                   {% for notification in notifications %}
                     <li class="notification" data-id="{{ notification.key.id() }}">
-                      <div class="media">
-                        <div class="media-left">
-                          <div class="media-object">
-                            <img src="/static/img/{{notification.icon_path}}" class="img-circle" alt="Name">
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <div class="media">
+                            <div class="media-left">
+                              <div class="media-object">
+                                <img src="/static/img/{{notification.icon_path}}" class="img-circle" alt="Name" style="width:100%">
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        <div class="media-body">
-                          <strong class="notification-title">{{ notification.title }}</strong>
+                        <div class="col-md-9">
+                          <div class="media-body">
+                            <strong class="notification-title">{{ notification.title }}</strong>
 
-                          <p class="notification-desc">{{ notification.message }}</p>
+                            <p class="notification-desc">{{ notification.message }}</p>
 
-                          <div class="notification-meta">
-                            <small class="timestamp">{{ notification.time }}</small>
+                            <div class="notification-meta">
+                              <small class="timestamp">{{ notification.time }}</small>
+                            </div>
                           </div>
                         </div>
                       </div>
-                  </li>
+                    </li>
                   {% endfor %}
               </ul>
 
@@ -128,7 +134,7 @@
       <div class="col-md-2 col-sm-2">
         <h4>Resources</h4>
         {% set organized_resources = player.organized_resources %}
-        {% for resource_type in ["basic", "earned", 'skill_point'] %}
+        {% for resource_type in ["basic", "earned"] %}
           {% set resources = organized_resources.get(resource_type, []) %}
           <h5>{{ resource_type | capitalize }}s</h5>
           {% for resource in resources %}
@@ -137,6 +143,14 @@
             </span>
             <br>
           {% endfor %}
+        {% endfor %}
+        {% set resources = organized_resources.get('follower', []) %}
+        <h5>Followers</h5>
+        {% for resource in resources %}
+          <span style="padding-bottom: 5px">
+            <img src="/static/img/followers/{{resource.name}}.png" style="width:30px;height:30px; padding-bottom: 5px">  {{ resource.name }}: <span id="resource-{{resource.name}}">{{ resource.count }}</span>
+          </span>
+          <br>
         {% endfor %}
       </div>
       <div class="col-md-9 col-sm-9">

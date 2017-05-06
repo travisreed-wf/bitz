@@ -108,7 +108,8 @@ class ExplorationMedal(Medal):
         self.tile_name = tile_name
         self.tiers = config.STANDARD_EXPLORATION_TIERS
         if not rewards:
-            rewards = [[config.DUMMY_REWARD]] * 15
+            reward = 'Great%sScout' % tile_name
+            rewards = config.generate_follower_progression_two(reward)
         self.rewards = rewards
 
     @property

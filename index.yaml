@@ -9,3 +9,4 @@ indexes:
   properties:
   - name: player_key
   - name: time
+    direction: desc

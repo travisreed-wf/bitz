@@ -49,6 +49,13 @@ class ClashRoyaleWins(Resource):
         return ClashRoyaleWins(resource_type="earned", count=count)
 
 
+class BGAWins(Resource):
+
+    @staticmethod
+    def create(count=0):
+        return BGAWins(resource_type="earned", count=count)
+
+
 class Dart(Resource):
 
     @staticmethod

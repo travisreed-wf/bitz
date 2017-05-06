@@ -51,7 +51,8 @@ class Worker(polymodel.PolyModel):
                     resource_to_add.resource_type == 'earned':
                 deferred.defer(
                     notification.create_new_earned_resource_notification,
-                    self.key, resource_to_add.name, resource_to_add.count)
+                    self.key, resource_to_add.name, resource_to_add.count,
+                    reason=reason)
 
     @ndb.transactional
     def add_follower(self, follower, is_free, reason=''):
@@ -214,7 +215,7 @@ class Player(Worker):
 
         self._recent_notifications = \
             Notification.query(Notification.player_key == self.key).order(
-                Notification.time).fetch(limit=10)
+                -Notification.time).fetch(limit=10)
         return self._recent_notifications
 
     def get_recent_unread_notifications(self):

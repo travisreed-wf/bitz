@@ -86,6 +86,17 @@ def _generate_follower_progression_one(
     l += [[r1, r2, r3]] * 3
     return l
 
+
+def generate_follower_progression_two(first_class_name):
+    r1 = {
+        'reward_type': 'follower',
+        'name': first_class_name,
+        'description': 'Increase odds of generating %s' % first_class_name
+    }
+    l = []
+    l += [[r1]] * 9
+    return l
+
 DUMMY_REWARD = {
     'reward_type': '',
     'name': 'TBA',

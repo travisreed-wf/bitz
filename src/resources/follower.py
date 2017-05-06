@@ -60,3 +60,23 @@ class GreatSwordsman(Follower):
 
 class GreatLongSwordsman(Follower):
     pass
+
+
+class GreatHillsScout(Follower):
+    pass
+
+
+class GreatRiverScout(Follower):
+    pass
+
+
+class GreatMountainScout(Follower):
+    pass
+
+
+class GreatGrasslandScout(Follower):
+    pass
+
+
+class GreatTreesScout(Follower):
+    pass

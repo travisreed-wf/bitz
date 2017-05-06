@@ -25,10 +25,12 @@ class Notification(ndb.model.Model):
 
     @staticmethod
     def create_new_earned_resource_notification(player_key, resource_name,
-                                                resource_count):
+                                                resource_count, reason=''):
         icon_path = 'resources/%s.png' % resource_name
         message = 'Congrats! You have earned %s new %s' % (
             resource_count, resource_name)
+        if reason:
+            message += ' because %s' % reason
         notification = Notification(player_key=player_key, icon_path=icon_path,
                                     message=message,
                                     title='New Earned Resource')
@@ -41,6 +43,6 @@ def create_new_follower_notification(player_key, follower_name, reason):
 
 
 def create_new_earned_resource_notification(
-        player_key, resource_name, resource_count):
+        player_key, resource_name, resource_count, reason=''):
     Notification.create_new_earned_resource_notification(
-        player_key, resource_name, resource_count)
+        player_key, resource_name, resource_count, reason=reason)

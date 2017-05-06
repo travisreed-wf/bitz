@@ -79,3 +79,36 @@ class LeagueOfLegends(ExternalData):
                 self.count += int(summary['wins'])
             elif summary.get('playerStatSummaryType') in self.DOUBLE_WEIGHTING:
                 self.count += int(summary['wins'] * 2)
+
+
+class BGAData(ExternalData):
+    DOUBLE_WEIGHTING = ['ThroughTheAges']
+
+    full_payload = ndb.JsonProperty()
+
+    def calculate_count(self):
+        self.count = 0
+        for game_name, wins in self.full_payload.iteritems():
+            if game_name in self.DOUBLE_WEIGHTING:
+                self.count += wins * 2
+            else:
+                self.count += wins
+
+    def determine_new_games_won(self, old_game):
+        new_wins = []
+
+        if old_game:
+            old_data = old_game.full_payload
+        else:
+            old_data = {}
+
+        for game_name, wins in self.full_payload.iteritems():
+            if not wins:
+                continue
+            if game_name not in old_data:
+                new_wins.append(game_name)
+                continue
+
+            if wins > old_data[game_name]:
+                new_wins.append(game_name)
+        return new_wins

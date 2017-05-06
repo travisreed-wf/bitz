@@ -3,7 +3,7 @@
 
   "name": "BitzGame",
   "description": "Bitz Game",
-  "version": "0.1",
+  "version": "0.2",
 
   "browser_action": {
     "default_icon": "static/images/Bitz.png",
@@ -17,12 +17,17 @@
     "tabs",
     "https://starfi.re/*",
     "https://bitz-game.appspot.com/*",
-    "https://bitz-game-staging.appspot.com/*"
+    "https://bitz-game-staging.appspot.com/*",
+    "https://en.boardgamearena.com/*"
   ],
   "content_scripts": [
     {
       "matches": ["https://starfi.re/"],
       "js": ["static/js/jquery-2.1.1.min.js", "updateClash.js"]
+    },
+    {
+      "matches": ["https://en.boardgamearena.com/*"],
+      "js": ["static/js/jquery-2.1.1.min.js", "updateBGA.js"]
     }
   ]
 }
