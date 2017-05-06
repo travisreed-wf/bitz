@@ -1,13 +1,9 @@
-import logging
 import requests
 
-from bs4 import BeautifulSoup
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import polymodel
 
-from src.exceptions import InsufficientResourcesException
-from src.resources import resource
-from src.transactions.transaction import Transaction
+from src.settings import Settings
 
 
 class ExternalData(polymodel.PolyModel):
@@ -26,6 +22,29 @@ class ExternalData(polymodel.PolyModel):
 
 class ClashRoyaleData(ExternalData):
     pass
+
+
+class FitbitData(ExternalData):
+
+    @staticmethod
+    def update():
+        data = FitbitData._get_data()
+        entity = FitbitData()
+        entity._calculate_count(data)
+        entity.put()
+        return entity
+
+    @staticmethod
+    def _get_data():
+        url = 'https://api.fitbit.com/1/user/-/activities.json'
+        token = Settings.get_setting_value('FITBIT_TOKEN')
+        headers = {"Authorization": "Bearer %s" % token}
+
+        r = requests.get(url, headers=headers)
+        return r.json()
+
+    def _calculate_count(self, data):
+        self.count = data['lifetime']['total']['steps']
 
 
 class LeagueOfLegends(ExternalData):

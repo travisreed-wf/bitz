@@ -7,6 +7,7 @@ from src.external_data import external_data
 from src.medals.medal import Medal
 from src.resources import resource
 from src.resources.follower import Follower
+from src.settings import Settings
 from src.workers.worker import Worker, Player
 
 
@@ -147,6 +148,7 @@ class DataRefreshCron(MethodView):
     def get(self):
         self.player = Player.get_by_id('Travis Reed')
         self._update_league_of_legends()
+        self._update_fitbit()
         return 'success', 200
 
     def _update_league_of_legends(self):
@@ -157,6 +159,17 @@ class DataRefreshCron(MethodView):
             current_count = 0
         new = external_data.LeagueOfLegends.update()
         r = resource.LeagueOfLegendsWin.create(
+            count=(new.count - current_count))
+        self.player.add_resource(r)
+
+    def _update_fitbit(self):
+        current = external_data.FitbitData.get_previous_entity()
+        if current:
+            current_count = current.count
+        else:
+            current_count = 0
+        new = external_data.FitbitData.update()
+        r = resource.Step.create(
             count=(new.count - current_count))
         self.player.add_resource(r)
 

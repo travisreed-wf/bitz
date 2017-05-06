@@ -38,3 +38,9 @@ class Notification(ndb.model.Model):
 def create_new_follower_notification(player_key, follower_name, reason):
     Notification.create_new_follower_notification(player_key, follower_name,
                                                   reason)
+
+
+def create_new_earned_resource_notification(
+        player_key, resource_name, resource_count):
+    Notification.create_new_earned_resource_notification(
+        player_key, resource_name, resource_count)

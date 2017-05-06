@@ -38,6 +38,24 @@ class ClashWinsView(MethodView):
         self.player.add_resource(r)
 
 
+class FitbitView(MethodView):
+
+    def __init__(self):
+        self.new_count = 0
+        self.player = None
+
+    def get(self):
+        print request.args
+        print request.form
+        return 'success'
+
+    def post(self):
+        print request.get_json()
+        return 'success'
+
+
 def setup_urls(app):
     app.add_url_rule('/extension/clash_wins/',
                      view_func=ClashWinsView.as_view('clash_wins'))
+    app.add_url_rule('/extension/fitbit/',
+                     view_func=FitbitView.as_view('fitbit'))

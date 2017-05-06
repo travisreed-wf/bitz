@@ -49,8 +49,9 @@ class Worker(polymodel.PolyModel):
             deferred.defer(self._add_transaction, resource_to_add, reason)
             if resource_to_add.count > 0 and \
                     resource_to_add.resource_type == 'earned':
-                deferred.defer(notification.create_new_follower_notification,
-                    self.key, resource.name, resource.count)
+                deferred.defer(
+                    notification.create_new_earned_resource_notification,
+                    self.key, resource_to_add.name, resource_to_add.count)
 
     @ndb.transactional
     def add_follower(self, follower, is_free, reason=''):
