@@ -16,7 +16,7 @@ class FollowerCron(MethodView):
         self.player = Player.get_by_id("Travis Reed")
         self.possible_followers = []
         self.followers = []
-        self.reason = 'attracted by medals'
+        self.reason = 'it was attracted by your medals.'
         self.is_free = False
 
     def get(self):
@@ -53,7 +53,7 @@ class FollowerCronForNewMedals(FollowerCron):
 
     def __init__(self):
         super(FollowerCronForNewMedals, self).__init__()
-        self.reason = "awarded for new medal!"
+        self.reason = "you received a new medal!"
         self.is_free = True
 
     def _determine_followers_to_award(self):
@@ -62,7 +62,10 @@ class FollowerCronForNewMedals(FollowerCron):
         for possible_follower in set(self.possible_followers):
             follower = self.player.get_resource_by_name(
                 possible_follower)
-            current_free_count = follower.count - follower.lifespan_count
+            if follower:
+                current_free_count = follower.count - follower.lifespan_count
+            else:
+                current_free_count = 0
             exp_count = self.possible_followers.count(possible_follower)
 
             if current_free_count < exp_count:

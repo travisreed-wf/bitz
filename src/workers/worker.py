@@ -25,7 +25,7 @@ class Worker(polymodel.PolyModel):
 
     @ndb.transactional
     def add_resources(self, resources_to_add, reason=''):
-        from src.notifications.notification import Notification
+        from src.notifications import notification
 
         fresh_worker = self.key.get()
         for resource_to_add in resources_to_add:
@@ -49,12 +49,12 @@ class Worker(polymodel.PolyModel):
             deferred.defer(self._add_transaction, resource_to_add, reason)
             if resource_to_add.count > 0 and \
                     resource_to_add.resource_type == 'earned':
-                deferred.defer(Notification.create_new_follower_notification(
-                    self.key, resource.name, resource.count))
+                deferred.defer(notification.create_new_follower_notification,
+                    self.key, resource.name, resource.count)
 
     @ndb.transactional
     def add_follower(self, follower, is_free, reason=''):
-        from src.notifications.notification import Notification
+        from src.notifications import notification
 
         fresh_worker = self.key.get()
         r = fresh_worker.get_resource_by_name(follower.name)
@@ -71,8 +71,9 @@ class Worker(polymodel.PolyModel):
         fresh_worker.put()
         self.resources = fresh_worker.resources
         deferred.defer(self._add_transaction, follower, reason)
-        deferred.defer(Notification.create_new_follower_notification(
-            self.key, follower.name, reason))
+        deferred.defer(
+            notification.create_new_follower_notification,
+            self.key, follower.name, reason)
 
     def _add_transaction(self, resource_to_add, reason):
         if resource_to_add.count == 0:

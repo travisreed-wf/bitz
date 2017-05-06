@@ -33,3 +33,8 @@ class Notification(ndb.model.Model):
                                     message=message,
                                     title='New Earned Resource')
         notification.put()
+
+
+def create_new_follower_notification(player_key, follower_name, reason):
+    Notification.create_new_follower_notification(player_key, follower_name,
+                                                  reason)
