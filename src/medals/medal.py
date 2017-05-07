@@ -85,7 +85,6 @@ class TotalResourceMedal(Medal):
     def get_count(self, player):
         if hasattr(self, "_count"):
             return self._count
-
         r = player.get_resource_by_name(self.resource_name)
         self._count = r.lifespan_count if r else 0
         return self._count
@@ -123,7 +122,6 @@ class ExplorationMedal(Medal):
     def get_count(self, player):
         if hasattr(self, "_count"):
             return self._count
-
         tile_class = eval('location.%s' % self.tile_name)
-        self._count = tile_class.query(tile_class.is_explored==True).count()
+        self._count = tile_class.query(tile_class.is_explored == True).count()
         return self._count

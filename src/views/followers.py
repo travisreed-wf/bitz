@@ -22,7 +22,8 @@ class FollowersReactView(MethodView):
         for r in self.player.resources:
             if r.resource_type == 'follower':
                 d[r.name] = {
-                    'description': r.description
+                    'description': r.description,
+                    'actions': r.actions
                 }
         return d
 

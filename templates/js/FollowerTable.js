@@ -28,6 +28,11 @@ var FollowerTable = React.createClass({
     return {};
   },
 
+  _clickHandler: function(actionIndex, followerName){
+    console.log(actionIndex);
+    console.log(followerName);
+  },
+
   _getFollowerComponents: function() {
     var components = [];
     var followers = this._getFollowers()
@@ -39,7 +44,8 @@ var FollowerTable = React.createClass({
           <FollowerRow
             follower={follower}
             count={count}
-            data={this._getFollowerData(follower)}/>
+            data={this._getFollowerData(follower)}
+            actionHandler={this._clickHandler}/>
         )
       }
     }
@@ -60,6 +66,7 @@ var FollowerTable = React.createClass({
                 <th>Name</th>
                 <th>Description</th>
                 <th>Count</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
