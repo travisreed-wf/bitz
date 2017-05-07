@@ -4,7 +4,6 @@ var BuildingTable = React.createClass({
 
     var buildings = JSON.parse('{{ serialized_buildings }}');
     var playerResources = JSON.parse('{{ serialized_player_resources }}');
-    console.log(buildings);
     return {
       buildings: buildings,
       playerResources: playerResources
