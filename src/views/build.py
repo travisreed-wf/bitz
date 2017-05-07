@@ -76,6 +76,39 @@ class BuildBuildingsView(MethodView):
         })
 
 
+class BuildBuildingsReactView(MethodView):
+
+    def get(self):
+        map = Earth()
+        player = Player.get_by_id("Travis Reed")
+        serialized_buildings = []
+        for b in player.ordered_buildings:
+            discounted_cost = {}
+            for r in b.get_discounted_cost():
+                discounted_cost[r.name] = r.count
+            undiscounted_cost = {}
+            for r in b.get_undiscounted_cost():
+                undiscounted_cost[r.name] = r.count
+
+            serialized_buildings.append({
+                "seconds_since_last_tick": b.seconds_since_last_tick,
+                "seconds_between_ticks": b.seconds_between_ticks,
+                "production_per_tick_dict": b.production_per_tick_dict,
+                "total_space_in_use": b.total_space_in_use,
+                "name": b.name,
+                "ticks_per_day": b.ticks_per_day,
+                "discounted_cost": discounted_cost,
+                "undiscounted_cost": undiscounted_cost,
+                "total_designated_space": b.get_total_designated_space(map),
+                "percent_of_cost_available": player.percent_of_cost_available(
+                    b.get_cost(map))
+            })
+
+        return render_template(
+            'build_buildings_2.html', player=player, map=map,
+            serialized_buildings=json.dumps(serialized_buildings))
+
+
 def setup_urls(app):
     app.add_url_rule('/build/tools/',
                      view_func=BuildToolsView.as_view('build_tools_get'))
@@ -86,3 +119,7 @@ def setup_urls(app):
 
     app.add_url_rule('/build/buildings/', view_func=BuildBuildingsView.as_view(
         'build_buildings'))
+    app.add_url_rule(
+        '/build/buildings_react/',
+        view_func=BuildBuildingsReactView.as_view('react_buildings'))
+

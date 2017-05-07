@@ -16,8 +16,17 @@ class Building(resource.Resource):
     ticks_per_day = ndb.IntegerProperty(indexed=True, required=True)
     size_per_building = ndb.IntegerProperty(default=1, indexed=True)
 
+    def get_discounted_cost(self):
+        raise NotImplementedError()
+
+    def get_undiscounted_cost(self):
+        raise NotImplementedError()
+
     def get_cost(self, map_class):
-        raise NotImplementedError('subclass must implement')
+        if self.get_max_discounted_buildings(map_class) > 0:
+            return self.get_discounted_cost()
+        else:
+            return self.get_undiscounted_cost()
 
     @classmethod
     def build(cls, player, map_class, count=0):
@@ -46,10 +55,14 @@ class Building(resource.Resource):
 
     @property
     def production_per_tick_json_dict(self):
+       return json.dumps(self.production_per_tick_dict)
+
+    @property
+    def production_per_tick_dict(self):
         d = {}
         for r in self.production_per_tick:
             d[r.name] = r.count
-        return json.dumps(d)
+        return d
 
     @property
     def seconds_since_last_tick(self):
@@ -123,11 +136,11 @@ class Library(Building):
                        ticks_per_day=24,
                        production_per_tick=ppt)
 
-    def get_cost(self, map_class):
-        if self.get_max_discounted_buildings(map_class) > 0:
-            return [resource.Production.create(72)]
-        else:
-            return [resource.Production.create(144)]
+    def get_discounted_cost(self):
+        return [resource.Production.create(72)]
+
+    def get_undiscounted_cost(self):
+        return [resource.Production.create(144)]
 
 
 class Mine(Building):
@@ -139,11 +152,11 @@ class Mine(Building):
                     ticks_per_day=6 * 24,
                     production_per_tick=ppt)
 
-    def get_cost(self, map_class):
-        if self.get_max_discounted_buildings(map_class) > 0:
-            return [resource.Production.create(72)]
-        else:
-            return [resource.Production.create(500)]
+    def get_discounted_cost(self):
+        return [resource.Production.create(72)]
+
+    def get_undiscounted_cost(self):
+        return [resource.Production.create(500)]
 
 
 class Granary(Building):
@@ -155,16 +168,19 @@ class Granary(Building):
                        ticks_per_day=6 * 24,
                        production_per_tick=ppt)
 
-    def get_cost(self, map_class):
-        if self.get_max_discounted_buildings(map_class) > 0:
-            return [resource.Production.create(50)]
-        else:
-            return [resource.Production.create(100)]
+    def get_undiscounted_cost(self):
+        return [resource.Production.create(100)]
+
+    def get_discounted_cost(self):
+        return [resource.Production.create(50)]
 
 
 class Capital(Building):
 
-    def get_cost(self, map_class):
+    def get_discounted_cost(self):
+        return [resource.Gold.create(sys.maxint)]
+
+    def get_undiscounted_cost(self):
         return [resource.Gold.create(sys.maxint)]
 
     @staticmethod

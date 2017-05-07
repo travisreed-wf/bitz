@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block header_css %}
+  <head>
+      <title>Build Buildings</title>
+  </head>
+  {{ super() }}
+  <link rel="stylesheet" href="/static/DataTables-1.10.11/media/css/dataTables.bootstrap.min.css">
+
+{% endblock %}
+{% block body %}
+  <div id="reactContainer"></div>
+{% endblock body %}}
+{% block js_bottom %}
+  {{ super() }}
+  <script src="/static/DataTables-1.10.11/media/js/jquery.dataTables.min.js"></script>
+  <script src="/static/DataTables-1.10.11/media/js/dataTables.bootstrap.min.js"></script>
+
+  <script src="/static/babel-6.22.1/babel.min.js"></script>
+  <script src="/static/react-15.3.2/react.min.js"></script>
+  <script src="/static/react-15.3.2/react-dom.min.js"></script>
+  <script type="text/babel">
+    {% include '/js/build_buildings_2.js' %}
+  </script>
+{% endblock %}

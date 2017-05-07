@@ -2,3 +2,20 @@
     width: 90%;
     margin: 0 auto;
 }
+
+.building-resource-image {
+    width: 50px;
+    height: 50px;
+    padding-bottom: 5px
+}
+
+.resource-image-with-count {
+    width:30px;
+    height:30px;
+    padding-bottom: 5px
+}
+
+.extra-cost-asterisk {
+    color: darkred;
+    font-size: x-large
+}
