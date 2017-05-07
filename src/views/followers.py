@@ -14,7 +14,17 @@ class FollowersReactView(MethodView):
 
         return render_template(
             'followers.html', player=self.player, map=self.map,
-            organized_resources=json.dumps(self._get_organized_resources()))
+            organized_resources=json.dumps(self._get_organized_resources()),
+            follower_data=json.dumps(self._get_follower_data()))
+
+    def _get_follower_data(self):
+        d = {}
+        for r in self.player.resources:
+            if r.resource_type == 'follower':
+                d[r.name] = {
+                    'description': r.description
+                }
+        return d
 
     def _get_organized_resources(self):
         resource_dict = {}

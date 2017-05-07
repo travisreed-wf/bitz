@@ -9,7 +9,7 @@ var FollowerRow = React.createClass({
           <img className='follower-resource-image' src={"/static/img/followers/" + this.props.follower + ".png"} /> <span>{this.props.follower}</span>
         </td>
         <td>
-          <span>Improves the performance of</span>
+          <span>{this.props.data.description}</span>
         </td>
         <CountComponent
           count={this.props.count} />

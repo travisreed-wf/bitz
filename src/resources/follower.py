@@ -15,88 +15,169 @@ class Follower(resource.Resource):
 
 
 class GreatArcher(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of Archers'
 
 
 class GreatSlinger(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of ' \
+               'Slingers'
 
 
 class GreatCompositeBowman(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of ' \
+               'Composite Bowmen'
 
 
 class GreatSpearman(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of ' \
+               'Spearmen'
 
 
 class GreatPikeman(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of ' \
+               'Pikemen'
 
 
 class GreatLancer(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of ' \
+               'Lancers'
 
 
 class Tactician(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of your ' \
+               'entire Army'
 
 
 class Strategist(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of your ' \
+               'entire Army'
 
 
 class Commander(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of your ' \
+               'entire Army'
 
 
 class GreatWarrior(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of ' \
+               'Warriors'
 
 
 class GreatSwordsman(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of ' \
+               'Swordsmen'
 
 
 class GreatLongSwordsman(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of ' \
+               'LongSwordsmen'
 
 
 class GreatHillsScout(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the tile bonus for 1 tile'
 
 
 class GreatRiverScout(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the tile bonus for 1 tile'
 
 
 class GreatMountainScout(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the tile bonus for 1 tile'
 
 
 class GreatGrasslandScout(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the tile bonus for 1 tile'
 
 
 class GreatTreesScout(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the tile bonus for 1 tile'
 
 
 class GreatScout(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the tile bonus for 1 tile'
 
 
 class GreatScientist(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to research a technology or permanently ' \
+               'increase your <b>science output</b>'
 
 
 class GreatEngineer(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to build a great wonder or permanently ' \
+               'increase your <b>production</b>'
 
 
 class GreatLaborer(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance of ' \
+               'your mines'
 
 
 class GreatFarmer(Follower):
-    pass
+
+    @property
+    def description(self):
+        return 'Can be spent to permanently improve the performance ' \
+               'of your granaries'

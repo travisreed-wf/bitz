@@ -2,8 +2,11 @@ var FollowerTable = React.createClass({
 
   getInitialState: function() {
     var organizedResources = JSON.parse('{{ organized_resources }}');
+    var followerData = JSON.parse('{{ follower_data }}');
+
     return {
-      organizedResources: organizedResources
+      organizedResources: organizedResources,
+      followerData: followerData
     };
   },
 
@@ -18,9 +21,16 @@ var FollowerTable = React.createClass({
     return []
   },
 
+  _getFollowerData: function(followerName){
+    if (this.state.followerData.hasOwnProperty(followerName)){
+      return this.state.followerData[followerName];
+    }
+    return {};
+  },
+
   _getFollowerComponents: function() {
     var components = [];
-    var followers = this._getFollowers();
+    var followers = this._getFollowers()
     var count;
     for (var follower in followers){
       if (followers.hasOwnProperty(follower)) {
@@ -28,7 +38,8 @@ var FollowerTable = React.createClass({
         components.push(
           <FollowerRow
             follower={follower}
-            count={count}/>
+            count={count}
+            data={this._getFollowerData(follower)}/>
         )
       }
     }

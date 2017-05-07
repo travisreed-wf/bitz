@@ -6,6 +6,7 @@ import json
 from src.exceptions import InsufficientResourcesException
 from src.locations.location import Tile
 from src.locations.map import Earth
+from src.producers import building  # used in eval
 from src.workers.worker import Player
 
 
