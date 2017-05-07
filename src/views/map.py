@@ -27,11 +27,11 @@ class ExploreView(MethodView):
         tile_id = int(tile_id)
         tile = Tile.get_by_id(tile_id)
         player = Player.get_by_id("Travis Reed")
-        cost = tile.get_discounted_cost_to_explore(player)
+        discout, reason = tile.get_discounted_cost_to_explore(player)
 
         data = {
-            'tile_name': tile.name,
-            'discounted_cost': cost
+            'discount': discout,
+            'reason': reason
         }
         return json.dumps(data)
 

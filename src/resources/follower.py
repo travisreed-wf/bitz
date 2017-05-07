@@ -113,7 +113,7 @@ class GreatHillsScout(Follower):
 
     @property
     def description(self):
-        return 'Can be spent to permanently improve the tile bonus for 1 tile'
+        return 'Reduces the exploration cost when passing through Hills'
 
     @property
     def discounted_tile(self):
@@ -124,7 +124,7 @@ class GreatRiverScout(Follower):
 
     @property
     def description(self):
-        return 'Can be spent to permanently improve the tile bonus for 1 tile'
+        return 'Reduces the exploration cost when passing through River'
 
     @property
     def discounted_tile(self):
@@ -135,7 +135,7 @@ class GreatMountainScout(Follower):
 
     @property
     def description(self):
-        return 'Can be spent to permanently improve the tile bonus for 1 tile'
+        return 'Reduces the exploration cost when passing through Mountain'
 
     @property
     def discounted_tile(self):
@@ -146,7 +146,7 @@ class GreatGrasslandScout(Follower):
 
     @property
     def description(self):
-        return 'Can be spent to permanently improve the tile bonus for 1 tile'
+        return 'Reduces the exploration cost when passing through Grassland'
 
     @property
     def discounted_tile(self):
@@ -157,7 +157,7 @@ class GreatTreesScout(Follower):
 
     @property
     def description(self):
-        return 'Can be spent to permanently improve the tile bonus for 1 tile'
+        return 'Reduces the exploration cost when passing through Trees'
 
     @property
     def discounted_tile(self):
@@ -168,7 +168,7 @@ class GreatScout(Follower):
 
     @property
     def description(self):
-        return 'Can be spent to permanently improve the tile bonus for 1 tile'
+        return ''
 
 
 class GreatScientist(Follower):
@@ -176,7 +176,7 @@ class GreatScientist(Follower):
     @property
     def description(self):
         return 'Can be spent to research a technology or permanently ' \
-               'increase your <b>science output</b>'
+               'increase your science output'
 
 
 class GreatEngineer(Follower):
@@ -184,7 +184,7 @@ class GreatEngineer(Follower):
     @property
     def description(self):
         return 'Can be spent to build a great wonder or permanently ' \
-               'increase your <b>production</b>'
+               'increase your production'
 
 
 class GreatLaborer(Follower):

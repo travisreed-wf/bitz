@@ -14,7 +14,7 @@
   {% set resources = organized_resources.get('follower', []) %}
   <h5>Followers</h5>
   {% for resource in resources %}
-    {% if resource.count %}
+    {% if resource.count and 'Scout' not in resource.name %}
       <span style="padding-bottom: 5px">
         <img src="/static/img/followers/{{resource.name}}.png" style="width:30px;height:39px; padding-bottom: 5px">  {{ resource.name }}: <span id="resource-{{resource.name}}">{{ resource.count }}</span>
       </span>

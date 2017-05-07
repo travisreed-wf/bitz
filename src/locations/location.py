@@ -24,6 +24,9 @@ class Tile(polymodel.PolyModel):
 
     def explore(self, player):
         cost = self.cost_to_explore
+        discount, _ = self.get_discounted_cost_to_explore(player)
+        for c in cost:
+            c.count = int(c.count * discount)
         player.remove_resources(cost)
         self.is_explored = True
         self.put()
@@ -75,25 +78,24 @@ class Tile(polymodel.PolyModel):
     def get_discounted_cost_to_explore(self, player):
         discounted_tiles = player.discounted_tiles
         tiles = self.get_path_from_origin()
-        cost = self.cost_to_explore
+        tiles = [t.name for t in tiles if t.key != self.key]
+        discount = 1.0
 
         for tile in tiles:
-            if tile.key == self.key:
-                continue
-            if tile.name in discounted_tiles:
-                for c in cost:
-                    for x in xrange(0, discounted_tiles[tile.name]):
-                        c.count *= .9
+            if tile in discounted_tiles:
+                for x in xrange(0, discounted_tiles[tile]):
+                    discount *= .9
 
         reason = ""
         for tile, count in discounted_tiles.iteritems():
-            reason += "<br>%s x%s" % (tile, count)
+            if tile in tiles:
+                reason += "<br>%s x%s" % (tile, count)
 
         if reason:
-            reason = "Because you have earned discounts on the following " \
+            reason = "because you have earned discounts on the following " \
                      "tiles" + reason
 
-        return cost, reason
+        return discount, reason
 
     def get_path_from_origin(self):
         origin = Tile.query(Tile.str_coordinate == "4x4").get()

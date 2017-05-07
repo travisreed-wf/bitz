@@ -34,7 +34,7 @@ function getResourceComponent(organizedResources){
       for (resource in resources){
         if (resources.hasOwnProperty(resource)){
           count = resources[resource];
-          if (count > 0){
+          if (count > 0 && !resource.includes('Scout')){
             components.push(
               <div>
                 <SpanCountComponentWithName

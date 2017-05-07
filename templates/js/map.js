@@ -37,19 +37,46 @@ $('#exploreModal').on('show.bs.modal', function (event) {
   modal.find('button').show();
   var html = '';
   var tileCoord = button.data('tile-str-coord');
+  var tileID = button.data('tile-id');
   var tileCost = parseInt(button.data('tile-cost'));
+  updateCostToExplore(modal, tileID, tileCost);
   tileCost = numberWithCommas(tileCost);
   var tileDistance = button.data('tile-distance');
-  var tileID = button.data('tile-id');
-    html += (
-    '<span id="tileSpan" data-tile-id="' + tileID + '">' +
-    'Are you sure that you want to explore the tile at ' + tileCoord + '?' +
-    '<br>Because it is ' + tileDistance + ' tiles from the middle, it will cost ' +
-    '<img src="/static/img/resources/Food.png" style="width:30px;height:30px; padding-bottom: 5px"> <span>x ' + tileCost + '</span> ' +
-    'to explore.</span>');
+
+  html += (
+  '<span id="tileSpan" data-tile-id="' + tileID + '">' +
+  'Are you sure that you want to explore the tile at ' + tileCoord + '?' +
+  '<br>Because it is ' + tileDistance + ' tiles from the middle, it will cost ' +
+  '<img src="/static/img/resources/Food.png" style="width:30px;height:30px; padding-bottom: 5px"> <span id="tileCost">x ' + tileCost + '</span> ' +
+  'to explore.</span>');
 
   modal.find('.modal-body').html(html);
 });
+
+function updateCostToExplore(modal, tileID, originalCost){
+ $.ajax({
+    url: '/explore/' + tileID + '/',
+    method: 'GET',
+    success: function(resp) {
+      var data = $.parseJSON(resp);
+      var reason = data['reason'];
+      var discount = data['discount'];
+      var tileCost = originalCost * discount;
+      var html = '';
+      if (discount > 0){
+        var discountPercent = 100 * (1.0 - discount);
+        html = (
+          '<br><br>' +
+          '<div class="alert alert-info" role="alert">' +
+            'You are receiving a discount of ' + discountPercent.toFixed(2).toString() + '% ' + reason +
+          '</div>');
+        modal.find('#tileCost').text('x ' + numberWithCommas(tileCost.toFixed(0)));
+        modal.find('.modal-body').append(html);
+      }
+    }
+  });
+
+}
 
 var explore = function(btn){
   btn = $(btn);
