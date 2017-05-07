@@ -115,12 +115,20 @@ class GreatHillsScout(Follower):
     def description(self):
         return 'Can be spent to permanently improve the tile bonus for 1 tile'
 
+    @property
+    def discounted_tile(self):
+        return 'Hills'
+
 
 class GreatRiverScout(Follower):
 
     @property
     def description(self):
         return 'Can be spent to permanently improve the tile bonus for 1 tile'
+
+    @property
+    def discounted_tile(self):
+        return 'River'
 
 
 class GreatMountainScout(Follower):
@@ -129,6 +137,10 @@ class GreatMountainScout(Follower):
     def description(self):
         return 'Can be spent to permanently improve the tile bonus for 1 tile'
 
+    @property
+    def discounted_tile(self):
+        return 'Mountain'
+
 
 class GreatGrasslandScout(Follower):
 
@@ -136,12 +148,20 @@ class GreatGrasslandScout(Follower):
     def description(self):
         return 'Can be spent to permanently improve the tile bonus for 1 tile'
 
+    @property
+    def discounted_tile(self):
+        return 'Grassland'
+
 
 class GreatTreesScout(Follower):
 
     @property
     def description(self):
         return 'Can be spent to permanently improve the tile bonus for 1 tile'
+
+    @property
+    def discounted_tile(self):
+        return 'Trees'
 
 
 class GreatScout(Follower):

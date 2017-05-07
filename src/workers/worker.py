@@ -191,6 +191,16 @@ class Player(Worker):
         return [r for r in self.resources if r.resource_type == 'building']
 
     @property
+    def discounted_tiles(self):
+        tiles = {}
+        for r in self.resources:
+            if r.resource_type == 'follower' and hasattr(r, "discounted_tile"):
+                if r.discounted_tile not in tiles:
+                    tiles[r.discounted_tile] = 0
+                tiles[r.discounted_tile] += int(r.count)
+        return tiles
+
+    @property
     def ordered_buildings(self):
         return sorted(self.buildings, key=lambda b: b.name)
 

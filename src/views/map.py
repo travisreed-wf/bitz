@@ -23,6 +23,18 @@ class MapView(MethodView):
 
 class ExploreView(MethodView):
 
+    def get(self, tile_id):
+        tile_id = int(tile_id)
+        tile = Tile.get_by_id(tile_id)
+        player = Player.get_by_id("Travis Reed")
+        cost = tile.get_discounted_cost_to_explore(player)
+
+        data = {
+            'tile_name': tile.name,
+            'discounted_cost': cost
+        }
+        return json.dumps(data)
+
     def post(self, tile_id):
         tile_id = int(tile_id)
         tile = Tile.get_by_id(tile_id)

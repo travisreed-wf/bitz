@@ -1,6 +1,7 @@
 import math
 import sys
 
+from bresenham import bresenham
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import polymodel
 
@@ -46,6 +47,11 @@ class Tile(polymodel.PolyModel):
         return [resource.Food.create(int(count))]
 
     @property
+    def bresenham_coordinate(self):
+        # TODO make work across locations
+        return self.coordinate
+
+    @property
     def distance_from_middle(self):
         middle_coordinate = 4, 4
 
@@ -66,6 +72,44 @@ class Tile(polymodel.PolyModel):
     def size(self):
         return 50
 
+    def get_discounted_cost_to_explore(self, player):
+        discounted_tiles = player.discounted_tiles
+        tiles = self.get_path_from_origin()
+        cost = self.cost_to_explore
+
+        for tile in tiles:
+            if tile.key == self.key:
+                continue
+            if tile.name in discounted_tiles:
+                for c in cost:
+                    for x in xrange(0, discounted_tiles[tile.name]):
+                        c.count *= .9
+
+        reason = ""
+        for tile, count in discounted_tiles.iteritems():
+            reason += "<br>%s x%s" % (tile, count)
+
+        if reason:
+            reason = "Because you have earned discounts on the following " \
+                     "tiles" + reason
+
+        return cost, reason
+
+    def get_path_from_origin(self):
+        origin = Tile.query(Tile.str_coordinate == "4x4").get()
+        origin_coords = origin.bresenham_coordinate
+        self_coords = self.bresenham_coordinate
+
+        path = list(bresenham(
+            origin_coords[0],
+            origin_coords[1],
+            self_coords[0],
+            self_coords[1]))
+        tiles = []
+        for coord in path:
+            tiles.append(Tile.get_by_bresenham_coordinate(coord))
+        return tiles
+
     @classmethod
     def create(cls):
         available_buildings = cls.DEFAULT_AVAILABLE_BUILDING_NAMES
@@ -74,6 +118,12 @@ class Tile(polymodel.PolyModel):
     @staticmethod
     def get_class_by_name(name):
         return getattr(sys.modules[__name__], name)
+
+    @staticmethod
+    def get_by_bresenham_coordinate(bresenham_coordinate):
+        x, y = bresenham_coordinate
+        str_coord = "%sx%s" % (x, y)
+        return Tile.query(Tile.str_coordinate == str_coord).get()
 
 
 class Trees(Tile):
