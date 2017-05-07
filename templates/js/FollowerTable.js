@@ -6,7 +6,8 @@ var FollowerTable = React.createClass({
 
     return {
       organizedResources: organizedResources,
-      followerData: followerData
+      followerData: followerData,
+      selectedAction: {}
     };
   },
 
@@ -32,24 +33,9 @@ var FollowerTable = React.createClass({
     console.log(actionIndex);
     console.log(followerName);
     var action = this._getFollowerData(followerName)['actions'][actionIndex];
-    if (action['info_needed']){
-      var modal = $('#followerModal');
-      var options = [];
-      var infoNeeded = action['info_needed'];
-      if (infoNeeded && infoNeeded.hasOwnProperty('options')){
-        var actionOptions = infoNeeded['options'];
-      }
-      else {
-        actionOptions = [];
-      }
-      for (var i=0; i<actionOptions.length; i++){
-        var actionOption = actionOptions[i];
-        var option = '<option value="' + actionOption + '">' + actionOption + '</option>';
-        options.push(option);
-      }
-      modal.find('select').html(options);
-      modal.modal("show");
-    }
+    var modal = $('#followerModal');
+    this.setState({selectedAction: action});
+    modal.modal("show");
   },
 
   _getFollowerComponents: function() {
@@ -93,6 +79,8 @@ var FollowerTable = React.createClass({
             </tbody>
           </table>
         </div>
+        <FollowerModal
+          selectedAction={this.state.selectedAction} />
       </div>
     );
   }
