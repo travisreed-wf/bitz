@@ -86,6 +86,7 @@ class BuildBuildingsReactView(MethodView):
 
         return render_template(
             'build_buildings_2.html', player=self.player, map=self.map,
+            organized_resources=json.dumps(self._get_organized_resources()),
             serialized_buildings=json.dumps(serialized_buildings),
             serialized_player_resources=json.dumps(player_resources))
 
@@ -93,6 +94,15 @@ class BuildBuildingsReactView(MethodView):
         resource_dict = {}
         for r in self.player.resources:
             resource_dict[r.name] = r.count
+        return resource_dict
+
+    def _get_organized_resources(self):
+        resource_dict = {}
+        for resource_type, resources in \
+                self.player.organized_resources.iteritems():
+            resource_dict[resource_type] = {}
+            for resource in resources:
+                resource_dict[resource_type][resource.name] = resource.count
         return resource_dict
 
     def _get_serialized_buildings(self):

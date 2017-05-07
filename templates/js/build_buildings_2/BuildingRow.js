@@ -1,46 +1,3 @@
-var CountComponent = React.createClass({
-
-  getInitialState: function () {
-
-    return {
-      backgroundColor: ''
-    };
-  },
-
-  _getStyle: function () {
-    if (this.state.backgroundColor){
-      return {verticalAlign:'middle', backgroundColor:this.state.backgroundColor};
-    }
-    else {
-      return {verticalAlign:'middle'};
-    }
-  },
-
-  render: function(){
-    return (
-      <td style={ this._getStyle() }>
-        <span>{this.props.count}</span>
-      </td>
-    )
-  },
-
-  componentDidUpdate(prevProps, prevState){
-    if (prevProps.count < this.props.count){
-      this.setState({
-        backgroundColor: '#5cb85c'
-      })
-    }
-    else if (prevProps.count > this.props.count){
-      this.setState({
-        backgroundColor: '#d9534f'
-      })
-    }
-    else if (this.state.backgroundColor != '') {
-      this.state.backgroundColor = '';
-    }
-  }
-});
-
 var BuildingRow = React.createClass({
 
   componentDidMount() {
@@ -79,17 +36,23 @@ var BuildingRow = React.createClass({
     var availableCount = 0;
     var costToUse = this._determineCostToUse();
     var count;
+    var playerResources;
     for (var resource in costToUse){
       if (costToUse.hasOwnProperty(resource)){
         count = costToUse[resource];
-        if (this.props.playerResources.hasOwnProperty(resource)){
-          var playerCount = this.props.playerResources[resource];
-          if (playerCount > 0){
-            if (playerCount > count){
-              availableCount += count;
-            }
-            else {
-              availableCount += playerCount;
+        for (var resourceType in this.props.organizedResources){
+          if (this.props.organizedResources.hasOwnProperty(resourceType)){
+            playerResources = this.props.organizedResources[resourceType];
+            if (playerResources.hasOwnProperty(resource)){
+              var playerCount = playerResources[resource];
+              if (playerCount > 0){
+                if (playerCount > count){
+                  availableCount += count;
+                }
+                else {
+                  availableCount += playerCount;
+                }
+              }
             }
           }
         }

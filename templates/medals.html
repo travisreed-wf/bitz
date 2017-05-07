@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% from "resource_table.html" import resource_table %}
 {% block header_css %}
   <head>
     <title>Medals</title>
@@ -25,7 +26,11 @@
   {{ super() }}
 {% endblock %}
 {% block body %}
-  <div class="row">
+  <div class="col-md-2 col-sm-2">
+    {{ resource_table( player) }}
+  </div>
+  <div class="col-md-9 col-sm-9">
+    <div class="row">
     <div class="row center">
       <h2>Medals - {{ player.name }}</h2>
     </div>
@@ -73,6 +78,7 @@
       </tr>
     </table>
 
+  </div>
   </div>
 {% endblock body %}
 {% block js_bottom %}

@@ -1,12 +1,11 @@
 var BuildingTable = React.createClass({
 
   getInitialState: function() {
-
     var buildings = JSON.parse('{{ serialized_buildings }}');
-    var playerResources = JSON.parse('{{ serialized_player_resources }}');
+    var organizedResources = JSON.parse('{{ organized_resources }}');
     return {
       buildings: buildings,
-      playerResources: playerResources
+      organizedResources: organizedResources
     };
   },
 
@@ -16,11 +15,62 @@ var BuildingTable = React.createClass({
       components.push(
         <BuildingRow
           building={this.state.buildings[i]}
-          playerResources={this.state.playerResources}
+          organizedResources={this.state.organizedResources}
           newBuildingClickHandler={this.handleNewBuildingClick}
           tickHandler={this.tickHandler}
           buildingIndex={i}/>
       )
+    }
+    return components;
+  },
+
+  _getResourceComponents: function() {
+    var components = [];
+    var resourceTypes = ['basic', 'earned'];
+    var resources = [];
+    var resourceType;
+    var resource;
+    var count;
+    for (var i=0; i<resourceTypes.length; i++){
+      resourceType = resourceTypes[i];
+      if (this.state.organizedResources.hasOwnProperty(resourceType)){
+        resources = this.state.organizedResources[resourceType];
+        components.push(<h5>{resourceType}</h5>);
+        for (resource in resources){
+          if (resources.hasOwnProperty(resource)){
+            count = resources[resource];
+            components.push(
+              <div>
+                <SpanCountComponentWithName
+                  count={count}
+                  resource={resource}
+                  resourceType='resources'/>
+              </div>);
+          }
+        }
+      }
+    }
+    resourceTypes = ['follower'];
+    for (var i=0; i<resourceTypes.length; i++){
+      resourceType = resourceTypes[i];
+      if (this.state.organizedResources.hasOwnProperty(resourceType)){
+        resources = this.state.organizedResources[resourceType];
+        components.push(<h5>{resourceType}</h5>);
+        for (resource in resources){
+          if (resources.hasOwnProperty(resource)){
+            count = resources[resource];
+            if (count > 0){
+              components.push(
+                <div>
+                  <SpanCountComponentWithName
+                    count={count}
+                    resource={resource}
+                    resourceType='followers'/>
+                </div>);
+            }
+          }
+        }
+      }
     }
     return components;
   },
@@ -40,18 +90,25 @@ var BuildingTable = React.createClass({
       var resourceName;
       var buildings = prevState.buildings;
       buildings[buildingIndex].count += 1;
-      var playerResources = prevState.playerResources;
+      var organizedResources = prevState.organizedResources;
+        var resourceType;
       for (resourceName in respData['used_resources']){
         if (respData['used_resources'].hasOwnProperty(resourceName)){
-          if (playerResources.hasOwnProperty(resourceName)){
-            playerResources[resourceName] -= respData['used_resources'][resourceName];
+          for (resourceType in organizedResources){
+            if (organizedResources.hasOwnProperty(resourceType)){
+              var playerResources = organizedResources[resourceType];
+              if (playerResources.hasOwnProperty(resourceName)){
+                playerResources[resourceName] -= respData['used_resources'][resourceName];
+              }
+            }
           }
+
         }
       }
 
       return {
         buildings: buildings,
-        playerResources: playerResources
+        organizedResources: organizedResources
       }
     });
   },
@@ -82,23 +139,31 @@ var BuildingTable = React.createClass({
 
   render: function() {
     return (
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Production per tick</th>
-            <th>Progress toward tick</th>
-            <th>Production per day</th>
-            <th>Cost</th>
-            <th>Count</th>
-            <th>Used Space</th>
-            <th>Build</th>
-          </tr>
-        </thead>
-        <tbody>
-         { this._getBuildingComponents()}
-        </tbody>
-      </table>
+      <div>
+        <div className="col-md-2 col-sm-2">
+          <h4>Resources</h4>
+          { this._getResourceComponents() }
+        </div>
+        <div className="col-md-9 col-sm-9">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Production per tick</th>
+                <th>Progress toward tick</th>
+                <th>Production per day</th>
+                <th>Cost</th>
+                <th>Count</th>
+                <th>Used Space</th>
+                <th>Build</th>
+              </tr>
+            </thead>
+            <tbody>
+             { this._getBuildingComponents()}
+            </tbody>
+          </table>
+        </div>
+      </div>
     );
   }
 

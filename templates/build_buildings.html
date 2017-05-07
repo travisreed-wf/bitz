@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% from "resource_table.html" import resource_table %}
 {% block header_css %}
   <head>
       <title>Build Buildings</title>
@@ -8,7 +9,11 @@
 
 {% endblock %}
 {% block body %}
-  <table class="table">
+  <div class="col-md-2 col-sm-2">
+    {{ resource_table(player) }}
+  </div>
+  <div class="col-md-9 col-sm-9">
+    <table class="table">
     <thead>
       <tr>
         <th>Name</th>
@@ -96,6 +101,7 @@
     {% endfor %}
     </tbody>
   </table>
+  </div>
 {% endblock body %}}
 {% block js_bottom %}
   {{ super() }}
