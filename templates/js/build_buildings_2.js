@@ -47,29 +47,48 @@ var ResourceImageWithCount = React.createClass({
 
 var BuildingRow = React.createClass({
 
-  //getInitialState: function() {
-  //
-  //  return {
-  //    seconds_since_last_tick: this.props.building.seconds_since_last_tick,
-  //    seconds_between_ticks: this.props.building.seconds_between_ticks,
-  //    production_per_tick_dict: this.props.building.production_per_tick_dict,
-  //    total_space_in_use: this.props.building.total_space_in_use,
-  //    ticks_per_day: this.props.building.ticks_per_day,
-  //    discounted_cost: this.props.building.discounted_cost,
-  //    undiscounted_cost: this.props.building.undiscounted_cost,
-  //    total_designated_space: this.props.building.total_designated_space || 0,
-  //    percent_of_cost_available: this.props.building.percent_of_cost_available
-  //  }
-  //},
+  getInitialState: function() {
 
+    return {
+      seconds_since_last_tick: this.props.building.seconds_since_last_tick,
+      seconds_between_ticks: this.props.building.seconds_between_ticks,
+      production_per_tick_dict: this.props.building.production_per_tick_dict,
+      total_space_in_use: this.props.building.total_space_in_use,
+      ticks_per_day: this.props.building.ticks_per_day,
+      discounted_cost: this.props.building.discounted_cost,
+      undiscounted_cost: this.props.building.undiscounted_cost,
+      total_designated_space: this.props.building.total_designated_space || 0,
+      percent_of_cost_available: this.props.building.percent_of_cost_available
+    }
+  },
 
+  componentDidMount() {
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
+  },
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  },
+
+  tick: function() {
+    console.log('ticking');
+    this.setState(function(prevState) {
+      console.log(this.state.seconds_since_last_tick);
+      return {
+        seconds_since_last_tick: prevState.seconds_since_last_tick + 1
+      };
+    });
+  },
 
   _getProductionPerTickComponents: function(){
     var components = [];
     var count;
-    for (var resource in this.props.building.production_per_tick_dict){
-      if (this.props.building.production_per_tick_dict.hasOwnProperty(resource)){
-        count = this.props.building.production_per_tick_dict[resource];
+    for (var resource in this.state.production_per_tick_dict){
+      if (this.state.production_per_tick_dict.hasOwnProperty(resource)){
+        count = this.state.production_per_tick_dict[resource];
       }
       components.push(
         <ResourceImageWithCount
@@ -84,9 +103,9 @@ var BuildingRow = React.createClass({
   _getProductionPerDayComponents: function(){
     var components = [];
     var count;
-    for (var resource in this.props.building.production_per_tick_dict){
-      if (this.props.building.production_per_tick_dict.hasOwnProperty(resource)){
-        count = this.props.building.production_per_tick_dict[resource] * this.props.building.ticks_per_day;
+    for (var resource in this.state.production_per_tick_dict){
+      if (this.state.production_per_tick_dict.hasOwnProperty(resource)){
+        count = this.state.production_per_tick_dict[resource] * this.state.ticks_per_day;
       }
       components.push(
         <ResourceImageWithCount
@@ -99,13 +118,13 @@ var BuildingRow = React.createClass({
   },
 
   _getActionDiv: function(){
-    if (this.props.building.percent_of_cost_available >= 100){
+    if (this.state.percent_of_cost_available >= 100){
       return <button className="btn btn-success" type='button' style={ {width: "100%"} } data-toggle='tooltip' onclick='build(this);'>Build { this.props.building.name }</button>;
     }
     else {
       return (
         <ProgressBarComponent
-          leftNumber={ this.props.building.percent_of_cost_available}
+          leftNumber={ this.state.percent_of_cost_available}
           rightNumber={100} />
       )
     }
@@ -117,12 +136,12 @@ var BuildingRow = React.createClass({
     var count;
     var cost_to_use;
     var asterisk;
-    if (this.props.building.total_designated_space > this.props.building.total_space_in_use){
-      cost_to_use = this.props.building.discounted_cost;
+    if (this.state.total_designated_space > this.state.total_space_in_use){
+      cost_to_use = this.state.discounted_cost;
     }
     else {
       asterisk = <span className='extra-cost-asterisk' data-toggle="tooltip" title="Cost increased because no suitable tiles are assigned to this building">*</span>;
-      cost_to_use = this.props.building.undiscounted_cost;
+      cost_to_use = this.state.undiscounted_cost;
     }
     for (var resource in cost_to_use){
       if (cost_to_use.hasOwnProperty(resource)){
@@ -152,8 +171,8 @@ var BuildingRow = React.createClass({
         </td>
         <td style={ {verticalAlign:'middle'} }>
           <ProgressBarComponent
-            leftNumber={this.props.building.seconds_since_last_tick}
-            rightNumber={this.props.building.seconds_between_ticks}/>
+            leftNumber={this.state.seconds_since_last_tick}
+            rightNumber={this.state.seconds_between_ticks}/>
         </td>
         <td style={ {verticalAlign:'middle'} }>
           { this._getProductionPerDayComponents()}
@@ -162,12 +181,12 @@ var BuildingRow = React.createClass({
           { this._getCostComponents() }
         </td>
         <td style={ {verticalAlign:'middle'} }>
-          <span>{this.props.building.count}</span>
+          <span>{this.state.count}</span>
         </td>
         <td style={ {verticalAlign:'middle'} }>
           <ProgressBarComponent
-          leftNumber={this.props.building.total_space_in_use}
-          rightNumber={this.props.building.total_designated_space}
+          leftNumber={this.state.total_space_in_use}
+          rightNumber={this.state.total_designated_space}
           extraClassWhenFull='progress-bar-danger' />
         </td>
         <td style={ {verticalAlign:'middle'} }>
