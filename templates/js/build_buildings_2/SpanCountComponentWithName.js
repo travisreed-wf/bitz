@@ -10,7 +10,6 @@ var SpanCountComponentWithName = React.createClass({
 
   _getStyle: function () {
     if (this.state.backgroundColor){
-      console.log(this.state.backgroundColor);
       return {paddingBottom: "5px", backgroundColor:this.state.backgroundColor};
     }
     else {

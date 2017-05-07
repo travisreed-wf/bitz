@@ -104,7 +104,7 @@ var BuildingTable = React.createClass({
           if (organizedResources.hasOwnProperty(resourceType)){
             playerResources = organizedResources[resourceType];
             if (playerResources.hasOwnProperty(resourceName)){
-              playerResources[resourceName] -= respData['used_resources'][resourceName];
+              playerResources[resourceName] -= data['used_resources'][resourceName];
             }
           }
         }
@@ -170,7 +170,7 @@ var BuildingTable = React.createClass({
           { this._getResourceComponents() }
         </div>
         <div className="col-md-9 col-sm-9">
-          <table className="table">
+          <table className="table table-responsive">
             <thead>
               <tr>
                 <th>Name</th>

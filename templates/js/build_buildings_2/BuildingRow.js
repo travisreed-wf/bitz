@@ -27,7 +27,8 @@ var BuildingRow = React.createClass({
           resource_name={resource}
           count={count}
           separator=' x'/>
-      )
+      );
+      components.push(<br className=".visible-xs-block" />);
     }
     return components;
   },
@@ -101,7 +102,8 @@ var BuildingRow = React.createClass({
           resource_name={resource}
           count={count}
           separator=' x'/>
-      )
+      );
+      components.push(<br className=".visible-xs-block" />);
     }
     return components;
   },
