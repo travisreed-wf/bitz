@@ -1,20 +1,10 @@
 var ProgressBarComponent = React.createClass({
 
-  getInitialState: function() {
-
-    return {
-      extraClassWhenFull: this.props.extraClassWhenFull,
-      leftNumber: this.props.leftNumber,
-      rightNumber: this.props.rightNumber
-    }
-
-  },
-
   getWidth: function() {
-    if (this.state.rightNumber == 0){
+    if (this.props.rightNumber == 0){
       return 100
     }
-    return 100 * this.state.leftNumber / this.state.rightNumber;
+    return (100 * this.props.leftNumber / this.props.rightNumber) % 100;
   },
 
   _getStrWidth: function() {
@@ -22,8 +12,8 @@ var ProgressBarComponent = React.createClass({
   },
 
   _getExtraClass: function() {
-    if (this.state.leftNumber >= this.state.rightNumber){
-      return this.state.extraClassWhenFull
+    if (this.props.leftNumber >= this.props.rightNumber){
+      return this.props.extraClassWhenFull
     }
     return '';
   },
@@ -33,8 +23,7 @@ var ProgressBarComponent = React.createClass({
       <div className="progress">
         <div className={"progress-bar " + this._getExtraClass()} role="progressbar" aria-valuenow={this._getStrWidth()}
           aria-valuemin="0" aria-valuemax="100" style={ {width: this._getStrWidth() + "%" } }>
-          {this.state.leftNumber} / {this.state.rightNumber}
-
+          {this.props.leftNumber % this.props.rightNumber} / {this.props.rightNumber}
         </div>
       </div>
     )
@@ -44,19 +33,12 @@ var ProgressBarComponent = React.createClass({
 
 var ResourceImageWithCount = React.createClass({
 
-  getInitialState: function() {
-
-    return {
-      count: this.props.count
-    }
-
-  },
 
   render: function() {
     return (
       <span>
         <img className="resource-image-with-count" src={"/static/img/resources/" + this.props.resource_name + ".png"} />
-        <span>{this.props.separator} {this.state.count}</span>
+        <span>{this.props.separator} {this.props.count}</span>
       </span>
     )
   }
@@ -78,6 +60,27 @@ var BuildingRow = React.createClass({
       total_designated_space: this.props.building.total_designated_space || 0,
       percent_of_cost_available: this.props.building.percent_of_cost_available
     }
+  },
+
+  componentDidMount() {
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
+  },
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  },
+
+  tick: function() {
+    console.log('ticking');
+    this.setState(function(prevState) {
+      console.log(this.state.seconds_since_last_tick);
+      return {
+        seconds_since_last_tick: prevState.seconds_since_last_tick + 1
+      };
+    });
   },
 
   _getProductionPerTickComponents: function(){
