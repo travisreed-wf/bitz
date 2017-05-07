@@ -25,56 +25,7 @@ var BuildingTable = React.createClass({
   },
 
   _getResourceComponents: function() {
-    var components = [];
-    var resourceTypes = ['basic', 'earned'];
-    var resources = [];
-    var resourceType;
-    var resource;
-    var count;
-    for (var i=0; i<resourceTypes.length; i++){
-      resourceType = resourceTypes[i];
-      if (this.state.organizedResources.hasOwnProperty(resourceType)){
-        resources = this.state.organizedResources[resourceType];
-        components.push(<h5>{resourceType}</h5>);
-        for (resource in resources){
-          if (resources.hasOwnProperty(resource)){
-            count = resources[resource];
-            components.push(
-              <div>
-                <SpanCountComponentWithName
-                  count={count}
-                  resource={resource}
-                  resourceType='resources'
-                  className='resource-image-with-count'/>
-              </div>);
-          }
-        }
-      }
-    }
-    resourceTypes = ['follower'];
-    for (var i=0; i<resourceTypes.length; i++){
-      resourceType = resourceTypes[i];
-      if (this.state.organizedResources.hasOwnProperty(resourceType)){
-        resources = this.state.organizedResources[resourceType];
-        components.push(<h5>{resourceType}</h5>);
-        for (resource in resources){
-          if (resources.hasOwnProperty(resource)){
-            count = resources[resource];
-            if (count > 0){
-              components.push(
-                <div>
-                  <SpanCountComponentWithName
-                    count={count}
-                    resource={resource}
-                    resourceType='followers'
-                    className='follower-image-with-count'/>
-                </div>);
-            }
-          }
-        }
-      }
-    }
-    return components;
+    return getResourceComponent(this.state.organizedResources);
   },
 
   tickHandler: function(building_index) {
@@ -85,7 +36,7 @@ var BuildingTable = React.createClass({
       var organizedResources = prevState.organizedResources;
       if (building.seconds_since_last_tick == building.seconds_between_ticks){
         var data = {'gained_resources': building.production_per_tick_dict};
-        this._updateResources(data, organizedResources);
+        updateResources(data, organizedResources);
       }
       return {
         buildings: buildings,
@@ -94,44 +45,12 @@ var BuildingTable = React.createClass({
     });
   },
 
-  _updateResources: function(data, organizedResources){
-    var resourceType;
-    var resourceName;
-    var playerResources;
-    for (resourceName in data['used_resources']){
-      if (data['used_resources'].hasOwnProperty(resourceName)){
-        for (resourceType in organizedResources){
-          if (organizedResources.hasOwnProperty(resourceType)){
-            playerResources = organizedResources[resourceType];
-            if (playerResources.hasOwnProperty(resourceName)){
-              playerResources[resourceName] -= data['used_resources'][resourceName];
-            }
-          }
-        }
-
-      }
-    }
-    for (resourceName in data['gained_resources']){
-      if (data['gained_resources'].hasOwnProperty(resourceName)){
-        for (resourceType in organizedResources){
-          if (organizedResources.hasOwnProperty(resourceType)){
-            playerResources = organizedResources[resourceType];
-            if (playerResources.hasOwnProperty(resourceName)){
-              playerResources[resourceName] += data['gained_resources'][resourceName];
-            }
-          }
-        }
-
-      }
-    }
-  },
-
   _addBuildingAndRemoveResources: function(buildingIndex, respData){
     this.setState(function(prevState) {
       var buildings = prevState.buildings;
       buildings[buildingIndex].count += 1;
       var organizedResources = prevState.organizedResources;
-      this._updateResources(respData, organizedResources);
+      updateResources(respData, organizedResources);
       return {
         buildings: buildings,
         organizedResources: organizedResources

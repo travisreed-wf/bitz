@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block header_css %}
   <head>
-      <title>Build Buildings</title>
+      <title>Followers</title>
   </head>
   {{ super() }}
   <link rel="stylesheet" href="/static/DataTables-1.10.11/media/css/dataTables.bootstrap.min.css">
@@ -21,12 +21,10 @@
   <script src="/static/react-15.3.2/react.min.js"></script>
   <script src="/static/react-15.3.2/react-dom.min.js"></script>
   <script type="text/babel">
-    {% include '/js/build_buildings_2/ProgressBarComponent.js' %}
-    {% include '/js/build_buildings_2/ResourceImageWithCount.js' %}
     {% include '/js/build_buildings_2/CountComponent.js' %}
     {% include '/js/build_buildings_2/SpanCountComponentWithName.js' %}
     {% include '/js/babel_helpers.js' %}
-    {% include '/js/build_buildings_2/BuildingRow.js' %}
-    {% include '/js/build_buildings_2/BuildingTable.js' %}
+    {% include '/js/FollowerRow.js' %}
+    {% include '/js/FollowerTable.js' %}
   </script>
 {% endblock %}

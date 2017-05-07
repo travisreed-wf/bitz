@@ -9,6 +9,12 @@
     padding-bottom: 5px
 }
 
+.follower-resource-image {
+    width: 50px;
+    height: 63px;
+    padding-bottom: 5px
+}
+
 .resource-image-with-count {
     width:30px;
     height:30px;
