@@ -44,7 +44,7 @@ var ProgressBarComponent = React.createClass({
   render: function() {
     return (
       <div className="progress">
-        <div className={"progress-bar progress-bar-striped active " + this._getExtraClass()} role="progressbar" aria-valuenow={this._getStrWidth()}
+        <div className={"progress-bar" + this._getExtraClass()} role="progressbar" aria-valuenow={this._getStrWidth()}
           aria-valuemin="0" aria-valuemax="100" style={ {width: this._getStrWidth() + "%" } }>
           {this._getLeftText()} / {this.props.rightNumber}
         </div>
