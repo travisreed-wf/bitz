@@ -79,10 +79,25 @@ class BuildBuildingsView(MethodView):
 class BuildBuildingsReactView(MethodView):
 
     def get(self):
-        map = Earth()
-        player = Player.get_by_id("Travis Reed")
+        self.map = Earth()
+        self.player = Player.get_by_id("Travis Reed")
+        serialized_buildings = self._get_serialized_buildings()
+        player_resources = self._get_player_resources()
+
+        return render_template(
+            'build_buildings_2.html', player=self.player, map=self.map,
+            serialized_buildings=json.dumps(serialized_buildings),
+            serialized_player_resources=json.dumps(player_resources))
+
+    def _get_player_resources(self):
+        resource_dict = {}
+        for r in self.player.resources:
+            resource_dict[r.name] = r.count
+        return resource_dict
+
+    def _get_serialized_buildings(self):
         serialized_buildings = []
-        for b in player.ordered_buildings:
+        for b in self.player.ordered_buildings:
             discounted_cost = {}
             for r in b.get_discounted_cost():
                 discounted_cost[r.name] = r.count
@@ -91,22 +106,21 @@ class BuildBuildingsReactView(MethodView):
                 undiscounted_cost[r.name] = r.count
 
             serialized_buildings.append({
+                "count": b.count,
                 "seconds_since_last_tick": b.seconds_since_last_tick,
                 "seconds_between_ticks": b.seconds_between_ticks,
                 "production_per_tick_dict": b.production_per_tick_dict,
-                "total_space_in_use": b.total_space_in_use,
+                "size_per_building": b.size_per_building,
                 "name": b.name,
                 "ticks_per_day": b.ticks_per_day,
                 "discounted_cost": discounted_cost,
                 "undiscounted_cost": undiscounted_cost,
-                "total_designated_space": b.get_total_designated_space(map),
-                "percent_of_cost_available": player.percent_of_cost_available(
-                    b.get_cost(map))
+                "total_designated_space":
+                    b.get_total_designated_space(self.map),
+                "percent_of_cost_available":
+                    self.player.percent_of_cost_available(b.get_cost(self.map))
             })
-
-        return render_template(
-            'build_buildings_2.html', player=player, map=map,
-            serialized_buildings=json.dumps(serialized_buildings))
+        return serialized_buildings
 
 
 def setup_urls(app):

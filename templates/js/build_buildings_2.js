@@ -4,7 +4,17 @@ var ProgressBarComponent = React.createClass({
     if (this.props.rightNumber == 0){
       return 100
     }
-    return (100 * this.props.leftNumber / this.props.rightNumber) % 100;
+    var width = (100 * this.props.leftNumber / this.props.rightNumber);
+    if (this.props.wrapAutomatically) {
+      return width % 100
+    }
+    else if (width > 100){
+      return 100;
+    }
+    else {
+      return width;
+    }
+
   },
 
   _getStrWidth: function() {
@@ -18,12 +28,25 @@ var ProgressBarComponent = React.createClass({
     return '';
   },
 
+  _getLeftText: function() {
+    if (this.props.rightNumber == 0){
+      return this.props.leftNumber;
+    }
+    if (this.props.wrapAutomatically) {
+      return this.props.leftNumber % this.props.rightNumber;
+    }
+    else {
+      return this.props.leftNumber;
+    }
+
+  },
+
   render: function() {
     return (
       <div className="progress">
         <div className={"progress-bar " + this._getExtraClass()} role="progressbar" aria-valuenow={this._getStrWidth()}
           aria-valuemin="0" aria-valuemax="100" style={ {width: this._getStrWidth() + "%" } }>
-          {this.props.leftNumber % this.props.rightNumber} / {this.props.rightNumber}
+          {this._getLeftText()} / {this.props.rightNumber}
         </div>
       </div>
     )
@@ -48,17 +71,16 @@ var ResourceImageWithCount = React.createClass({
 var BuildingRow = React.createClass({
 
   getInitialState: function() {
-
     return {
       seconds_since_last_tick: this.props.building.seconds_since_last_tick,
       seconds_between_ticks: this.props.building.seconds_between_ticks,
       production_per_tick_dict: this.props.building.production_per_tick_dict,
-      total_space_in_use: this.props.building.total_space_in_use,
       ticks_per_day: this.props.building.ticks_per_day,
       discounted_cost: this.props.building.discounted_cost,
       undiscounted_cost: this.props.building.undiscounted_cost,
       total_designated_space: this.props.building.total_designated_space || 0,
-      percent_of_cost_available: this.props.building.percent_of_cost_available
+      count: this.props.building.count,
+      size_per_building: this.props.building.size_per_building
     }
   },
 
@@ -76,11 +98,41 @@ var BuildingRow = React.createClass({
   tick: function() {
     console.log('ticking');
     this.setState(function(prevState) {
-      console.log(this.state.seconds_since_last_tick);
       return {
         seconds_since_last_tick: prevState.seconds_since_last_tick + 1
       };
     });
+  },
+
+  handleNewBuildingClick() {
+    var _this = this;
+    var data = {
+      'building': this.props.building.name,
+      'count': 1
+    };
+    $.ajax({
+      url: '/build/buildings/',
+      method: 'POST',
+      data: JSON.stringify(data),
+      contentType: 'application/json',
+      success: function(resp) {
+        console.log('attempting update');
+        _this.setState(function(prevState) {
+          return {
+            count: prevState.count + 1
+          };
+        });
+        //update_resources($.parseJSON(resp));
+      },
+      error: function(resp) {
+        window.alert(resp.responseText || 'Unknown Error');
+      }
+    });
+
+  },
+
+  _getTotalSpaceInUse: function(){
+    return this.state.size_per_building * this.state.count;
   },
 
   _getProductionPerTickComponents: function(){
@@ -98,6 +150,57 @@ var BuildingRow = React.createClass({
       )
     }
     return components;
+  },
+
+  _calculateCostAvailable: function() {
+    var availableCount = 0;
+    var costToUse = this._determineCostToUse();
+    var count;
+    for (var resource in costToUse){
+      if (costToUse.hasOwnProperty(resource)){
+        count = costToUse[resource];
+        if (this.props.playerResources.hasOwnProperty(resource)){
+          var playerCount = this.props.playerResources[resource];
+          if (playerCount > 0){
+            if (playerCount > count){
+              availableCount += count;
+            }
+            else {
+              availableCount += playerCount;
+            }
+          }
+        }
+      }
+    }
+    return availableCount
+
+  },
+
+  _determineCostToUse: function(){
+    if (this.state.total_designated_space > this._getTotalSpaceInUse()){
+      return this.state.discounted_cost;
+    }
+    else {
+      return this.state.undiscounted_cost;
+    }
+  },
+
+  _calculateTotalCost: function() {
+    var costToUse = this._determineCostToUse();
+    var totalCostCount = 0;
+
+    for (var resource in costToUse) {
+      if (costToUse.hasOwnProperty(resource)) {
+        var count = costToUse[resource];
+
+        if (count <= 0) {
+          continue;
+        }
+
+        totalCostCount += count;
+      }
+    }
+    return totalCostCount;
   },
 
   _getProductionPerDayComponents: function(){
@@ -118,14 +221,15 @@ var BuildingRow = React.createClass({
   },
 
   _getActionDiv: function(){
-    if (this.state.percent_of_cost_available >= 100){
-      return <button className="btn btn-success" type='button' style={ {width: "100%"} } data-toggle='tooltip' onclick='build(this);'>Build { this.props.building.name }</button>;
+    if (this._calculateCostAvailable() >= this._calculateTotalCost()){
+      return <button className="btn btn-success" type='button' style={ {width: "100%"} } data-toggle='tooltip' onClick={this.handleNewBuildingClick}>Build { this.props.building.name }</button>;
     }
     else {
       return (
         <ProgressBarComponent
-          leftNumber={ this.state.percent_of_cost_available}
-          rightNumber={100} />
+          leftNumber={ this._calculateCostAvailable()}
+          rightNumber={ this._calculateTotalCost()}
+          wrapAutomatically={false}/>
       )
     }
   },
@@ -136,7 +240,7 @@ var BuildingRow = React.createClass({
     var count;
     var cost_to_use;
     var asterisk;
-    if (this.state.total_designated_space > this.state.total_space_in_use){
+    if (this.state.total_designated_space > this._getTotalSpaceInUse()){
       cost_to_use = this.state.discounted_cost;
     }
     else {
@@ -172,7 +276,8 @@ var BuildingRow = React.createClass({
         <td style={ {verticalAlign:'middle'} }>
           <ProgressBarComponent
             leftNumber={this.state.seconds_since_last_tick}
-            rightNumber={this.state.seconds_between_ticks}/>
+            rightNumber={this.state.seconds_between_ticks}
+            wrapAutomatically={true}/>
         </td>
         <td style={ {verticalAlign:'middle'} }>
           { this._getProductionPerDayComponents()}
@@ -185,9 +290,10 @@ var BuildingRow = React.createClass({
         </td>
         <td style={ {verticalAlign:'middle'} }>
           <ProgressBarComponent
-          leftNumber={this.state.total_space_in_use}
+          leftNumber={this._getTotalSpaceInUse()}
           rightNumber={this.state.total_designated_space}
-          extraClassWhenFull='progress-bar-danger' />
+          extraClassWhenFull='progress-bar-danger'
+          wrapAutomatically={false} />
         </td>
         <td style={ {verticalAlign:'middle'} }>
           { this._getActionDiv() }
@@ -202,15 +308,24 @@ var BuildingTable = React.createClass({
   getInitialState: function() {
 
     var buildings = JSON.parse('{{ serialized_buildings }}');
+    var playerResources = JSON.parse('{{ serialized_player_resources }}');
+    console.log(buildings);
     return {
-      buildings: buildings
+      buildings: buildings,
+      playerResources: playerResources
     };
   },
 
   _getBuildingComponents: function() {
-    return this.state.buildings.map((building) =>
-      <BuildingRow building={building} />
-    );
+    var components = [];
+    for (var i=0; i< this.state.buildings.length; i++){
+      components.push(
+        <BuildingRow
+          building={this.state.buildings[i]}
+          playerResources={this.state.playerResources}/>
+      )
+    }
+    return components;
   },
 
   render: function() {
@@ -237,10 +352,7 @@ var BuildingTable = React.createClass({
 
 });
 
-
-
 ReactDOM.render(
   <BuildingTable />,
   document.getElementById('reactContainer')
 );
-
