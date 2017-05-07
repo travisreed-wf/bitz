@@ -15,6 +15,12 @@
     padding-bottom: 5px
 }
 
+.follower-image-with-count {
+    width:30px;
+    height:39px;
+    padding-bottom: 5px
+}
+
 .extra-cost-asterisk {
     color: darkred;
     font-size: x-large

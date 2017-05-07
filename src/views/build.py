@@ -82,19 +82,11 @@ class BuildBuildingsReactView(MethodView):
         self.map = Earth()
         self.player = Player.get_by_id("Travis Reed")
         serialized_buildings = self._get_serialized_buildings()
-        player_resources = self._get_player_resources()
 
         return render_template(
             'build_buildings_2.html', player=self.player, map=self.map,
             organized_resources=json.dumps(self._get_organized_resources()),
-            serialized_buildings=json.dumps(serialized_buildings),
-            serialized_player_resources=json.dumps(player_resources))
-
-    def _get_player_resources(self):
-        resource_dict = {}
-        for r in self.player.resources:
-            resource_dict[r.name] = r.count
-        return resource_dict
+            serialized_buildings=json.dumps(serialized_buildings))
 
     def _get_organized_resources(self):
         resource_dict = {}

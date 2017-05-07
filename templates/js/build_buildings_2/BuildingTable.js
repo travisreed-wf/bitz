@@ -44,7 +44,8 @@ var BuildingTable = React.createClass({
                 <SpanCountComponentWithName
                   count={count}
                   resource={resource}
-                  resourceType='resources'/>
+                  resourceType='resources'
+                  className='resource-image-with-count'/>
               </div>);
           }
         }
@@ -65,7 +66,8 @@ var BuildingTable = React.createClass({
                   <SpanCountComponentWithName
                     count={count}
                     resource={resource}
-                    resourceType='followers'/>
+                    resourceType='followers'
+                    className='follower-image-with-count'/>
                 </div>);
             }
           }
@@ -78,34 +80,58 @@ var BuildingTable = React.createClass({
   tickHandler: function(building_index) {
     this.setState(function(prevState) {
       var buildings = prevState.buildings;
-      buildings[building_index].seconds_since_last_tick += 1;
+      var building = buildings[building_index];
+      building.seconds_since_last_tick += 1;
+      var organizedResources = prevState.organizedResources;
+      if (building.seconds_since_last_tick == building.seconds_between_ticks){
+        var data = {'gained_resources': building.production_per_tick_dict};
+        this._updateResources(data, organizedResources);
+      }
       return {
-        buildings: buildings
+        buildings: buildings,
+        organizedResources: organizedResources
       }
     });
   },
 
+  _updateResources: function(data, organizedResources){
+    var resourceType;
+    var resourceName;
+    var playerResources;
+    for (resourceName in data['used_resources']){
+      if (data['used_resources'].hasOwnProperty(resourceName)){
+        for (resourceType in organizedResources){
+          if (organizedResources.hasOwnProperty(resourceType)){
+            playerResources = organizedResources[resourceType];
+            if (playerResources.hasOwnProperty(resourceName)){
+              playerResources[resourceName] -= respData['used_resources'][resourceName];
+            }
+          }
+        }
+
+      }
+    }
+    for (resourceName in data['gained_resources']){
+      if (data['gained_resources'].hasOwnProperty(resourceName)){
+        for (resourceType in organizedResources){
+          if (organizedResources.hasOwnProperty(resourceType)){
+            playerResources = organizedResources[resourceType];
+            if (playerResources.hasOwnProperty(resourceName)){
+              playerResources[resourceName] += data['gained_resources'][resourceName];
+            }
+          }
+        }
+
+      }
+    }
+  },
+
   _addBuildingAndRemoveResources: function(buildingIndex, respData){
     this.setState(function(prevState) {
-      var resourceName;
       var buildings = prevState.buildings;
       buildings[buildingIndex].count += 1;
       var organizedResources = prevState.organizedResources;
-        var resourceType;
-      for (resourceName in respData['used_resources']){
-        if (respData['used_resources'].hasOwnProperty(resourceName)){
-          for (resourceType in organizedResources){
-            if (organizedResources.hasOwnProperty(resourceType)){
-              var playerResources = organizedResources[resourceType];
-              if (playerResources.hasOwnProperty(resourceName)){
-                playerResources[resourceName] -= respData['used_resources'][resourceName];
-              }
-            }
-          }
-
-        }
-      }
-
+      this._updateResources(respData, organizedResources);
       return {
         buildings: buildings,
         organizedResources: organizedResources
@@ -126,7 +152,6 @@ var BuildingTable = React.createClass({
       data: JSON.stringify(data),
       contentType: 'application/json',
       success: function(resp) {
-        console.log('attempting update');
         _this._addBuildingAndRemoveResources(buildingIndex, JSON.parse(resp));
         //update_resources($.parseJSON(resp));
       },
@@ -150,7 +175,7 @@ var BuildingTable = React.createClass({
               <tr>
                 <th>Name</th>
                 <th>Production per tick</th>
-                <th>Progress toward tick</th>
+                <th>Progress toward tick (s)</th>
                 <th>Production per day</th>
                 <th>Cost</th>
                 <th>Count</th>
