@@ -32,6 +32,7 @@ class GreatArcher(Follower):
     def actions(self):
         return [{
             'name': 'Improve Archers',
+            'info_needed': {}
         }]
 
 
@@ -46,6 +47,7 @@ class GreatSlinger(Follower):
     def actions(self):
         return [{
             'name': 'Improve Slingers',
+            'info_needed': {}
         }]
 
 
@@ -60,6 +62,7 @@ class GreatCompositeBowman(Follower):
     def actions(self):
         return [{
             'name': 'Improve CompositeBowmen',
+            'info_needed': {}
         }]
 
 
@@ -74,6 +77,7 @@ class GreatSpearman(Follower):
     def actions(self):
         return [{
             'name': 'Improve Spearmen',
+            'info_needed': {}
         }]
 
 
@@ -88,6 +92,7 @@ class GreatPikeman(Follower):
     def actions(self):
         return [{
             'name': 'Improve Pikemen',
+            'info_needed': {}
         }]
 
 
@@ -102,6 +107,7 @@ class GreatLancer(Follower):
     def actions(self):
         return [{
             'name': 'Improve Lancers',
+            'info_needed': {}
         }]
 
 
@@ -154,6 +160,7 @@ class GreatSwordsman(Follower):
     def actions(self):
         return [{
             'name': 'Improve Swordsmen',
+            'info_needed': {}
         }]
 
 
@@ -168,6 +175,7 @@ class GreatLongSwordsman(Follower):
     def actions(self):
         return [{
             'name': 'Improve LongSwordsmen',
+            'info_needed': {}
         }]
 
 
@@ -245,9 +253,17 @@ class GreatScientist(Follower):
         return [
             {
                 'name': 'Research Technology',
+                'info_needed': {
+                    'name': 'Technology Name',
+                    'options': []
+                }
             },
             {
-                'name': 'Improve Science Building'
+                'name': 'Improve Science Building',
+                'info_needed': {
+                    'name': 'Science Building Name',
+                    'options': ['Library']
+                }
             }
         ]
 
@@ -263,10 +279,18 @@ class GreatEngineer(Follower):
     def actions(self):
         return [
             {
-                'name': 'Research Technology',
+                'name': 'Build Wonder',
+                'info_needed': {
+                    'name': 'Wonder Name',
+                    'options': ['Great Library']
+                }
             },
             {
-                'name': 'Improve Industrial Building'
+                'name': 'Improve Industrial Building',
+                'info_needed': {
+                    'name': 'Building Name',
+                    'options': ['Mine']
+                }
             }
         ]
 
@@ -282,7 +306,8 @@ class GreatLaborer(Follower):
     def actions(self):
         return [
             {
-                'name': 'Improve Mines'
+                'name': 'Improve Mines',
+                'info_needed': {}
             }
         ]
 
@@ -298,9 +323,7 @@ class GreatFarmer(Follower):
     def actions(self):
         return [
             {
-                'name': 'Research Technology',
-            },
-            {
-                'name': 'Improve Granary'
+                'name': 'Improve Granary',
+                'info_needed': {}
             }
         ]

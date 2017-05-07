@@ -31,6 +31,25 @@ var FollowerTable = React.createClass({
   _clickHandler: function(actionIndex, followerName){
     console.log(actionIndex);
     console.log(followerName);
+    var action = this._getFollowerData(followerName)['actions'][actionIndex];
+    if (action['info_needed']){
+      var modal = $('#followerModal');
+      var options = [];
+      var infoNeeded = action['info_needed'];
+      if (infoNeeded && infoNeeded.hasOwnProperty('options')){
+        var actionOptions = infoNeeded['options'];
+      }
+      else {
+        actionOptions = [];
+      }
+      for (var i=0; i<actionOptions.length; i++){
+        var actionOption = actionOptions[i];
+        var option = '<option value="' + actionOption + '">' + actionOption + '</option>';
+        options.push(option);
+      }
+      modal.find('select').html(options);
+      modal.modal("show");
+    }
   },
 
   _getFollowerComponents: function() {

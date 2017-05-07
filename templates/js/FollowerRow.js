@@ -10,8 +10,9 @@ var FollowerRow = React.createClass({
           style={ {width: "100%"} }
           data-toggle='tooltip'
           onClick={() => actionHandler(i, follower)}
-          >{actions[i].name}</button>)
-      buttons.push(<br>);
+          >{actions[i].name}</button>);
+
+      buttons.push(<br />);
     }
     return buttons;
   },
