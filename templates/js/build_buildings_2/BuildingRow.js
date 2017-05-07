@@ -1,4 +1,3 @@
-var CSSTransitionGroup = require('react-transition-group/CSSTransitionGroup') // ES5 with npm
 var BuildingRow = React.createClass({
 
   componentDidMount() {
