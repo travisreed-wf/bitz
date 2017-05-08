@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from src.views import build, clicks, extension_connectors, factorio, map, \
-    transaction, medals, data_entry, notifications, followers
+    transaction, medals, data_entry, notifications, followers, technologies
 from src.crons import hourly
 
 
@@ -23,3 +23,4 @@ medals.setup_urls(app)
 data_entry.setup_urls(app)
 notifications.setup_urls(app)
 followers.setup_urls(app)
+technologies.setup_urls(app)

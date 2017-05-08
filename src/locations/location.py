@@ -78,7 +78,9 @@ class Tile(polymodel.PolyModel):
     def get_discounted_cost_to_explore(self, player):
         discounted_tiles = player.discounted_tiles
         tiles = self.get_path_from_origin()
-        tiles = [t.name for t in tiles if t.key != self.key]
+        tiles = [
+            t.name for t in tiles if (t.key != self.key and t.is_explored)
+        ]
         discount = 1.0
 
         for tile in tiles:

@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% from "resource_table.html" import resource_table %}
+{% block header_css %}
+  <head>
+      <title>Technologies</title>
+  </head>
+  {{ super() }}
+  <link rel="stylesheet" href="/static/DataTables-1.10.11/media/css/dataTables.bootstrap.min.css">
+
+{% endblock %}
+{% block body %}
+  <div class="col-md-2 col-sm-2">
+    {{ resource_table(player) }}
+  </div>
+  <div class="col-md-9 col-sm-9">
+    <table class="table table-responsive">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Research</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for tech in techs %}
+      <tr>
+        <td style="vertical-align:middle">
+          {{ tech.name }}
+        </td>
+        <td style="vertical-align:middle">
+          {{ tech.description }}
+        </td>
+        <td style="vertical-align:middle">
+          {% set percent_of_cost_available = player.percent_of_cost_available(tech.cost) %}
+          {% if percent_of_cost_available >= 100 %}
+            <button class="btn btn-success" type='button' style="width: 100%" data-count=1 data-technology="{{ tech.name }}" data-toggle='tooltip' onclick='research(this);'>Research {{ tech.name }}</button>
+          {% else %}
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="{{ percent_of_cost_available }}"
+              aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_of_cost_available }}%">
+              {{ percent_of_cost_available }}%
+            </div>
+          </div>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+{% endblock body %}}
+{% block js_bottom %}
+  {{ super() }}
+  <script src="/static/DataTables-1.10.11/media/js/jquery.dataTables.min.js"></script>
+  <script src="/static/DataTables-1.10.11/media/js/dataTables.bootstrap.min.js"></script>
+
+  <script type='application/javascript'>
+    {% include '/js/technologies.js' %}
+  </script>
+{% endblock %}
