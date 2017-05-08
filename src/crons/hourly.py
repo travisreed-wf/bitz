@@ -64,7 +64,7 @@ class FollowerCronForNewMedals(FollowerCron):
             follower = self.player.get_resource_by_name(
                 possible_follower)
             if follower:
-                current_free_count = follower.count - follower.lifespan_count
+                current_free_count = follower.free_count
             else:
                 current_free_count = 0
             exp_count = self.possible_followers.count(possible_follower)
@@ -85,7 +85,9 @@ class DailyFollowerCron(FollowerCron):
         for possible_follower in set(self.possible_followers):
             follower = self.player.get_resource_by_name(
                 possible_follower)
-            odds_index = follower.lifespan_count if follower else 0
+            current_randomly_awarded_count = \
+                follower.current_randomly_awarded_count if follower else 0
+            odds_index = current_randomly_awarded_count
             follower_points = self.possible_followers.count(possible_follower)
             odds_index -= follower_points
 
@@ -93,10 +95,11 @@ class DailyFollowerCron(FollowerCron):
                 odds_index = 0
 
             follower_specifc_odd = pattern[int(odds_index)]
+
             logging.info('Because you have {current_count} {name}s and '
                          'have earned {follower_points} {name} points, '
                          'the odds of attracting a new {name} are {odds}'.
-                         format(current_count=follower.lifespan_count,
+                         format(current_count=current_randomly_awarded_count,
                                 name=follower.name,
                                 follower_points=follower_points,
                                 odds=follower_specifc_odd))

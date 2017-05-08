@@ -1,9 +1,25 @@
-from flask import render_template
+from flask import render_template, request
 from flask.views import MethodView
 import json
 
+from src.resources import follower
 from src.locations.map import Earth
 from src.workers.worker import Player
+
+
+class FollowersActionView(MethodView):
+
+    def post(self):
+        data = request.get_json()
+        self.player = Player.get_by_id("Travis Reed")
+        self.follower = self.player.get_resource_by_name(data['follower'])
+        action = data['action']
+        option = data.get('option')
+        if option:
+            eval('self.follower.%s(self.player, option)' % action)
+        else:
+            eval('self.follower.%s(self.player)' % action)
+        return "Success"
 
 
 class FollowersReactView(MethodView):
@@ -41,3 +57,6 @@ def setup_urls(app):
     app.add_url_rule(
         '/followers/',
         view_func=FollowersReactView.as_view('followers.react'))
+    app.add_url_rule(
+        '/followers/action/',
+        view_func=FollowersActionView.as_view('followers.action'))

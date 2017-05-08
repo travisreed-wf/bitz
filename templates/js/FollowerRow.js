@@ -14,28 +14,38 @@ var FollowerRow = React.createClass({
 
       buttons.push(<br />);
     }
-    return buttons;
+    if (buttons.length > 0){
+      return buttons;
+    }
+    else {
+      return <span>------</span>;
+    }
   },
 
   render: function() {
 
-    return (
-      <tr>
-        <td style={ {verticalAlign:'middle'} }>
-          <img className='follower-resource-image' src={"/static/img/followers/" + this.props.follower + ".png"} /> <span>{this.props.follower}</span>
-        </td>
-        <td>
-          <span>{this.props.data.description}</span>
-        </td>
-        <CountComponent
-          count={this.props.count} />
-        <td>
-          {this._getFollowerActionComponents(
-            this.props.follower, this.props.data.actions, this.props.actionHandler
-          )}
-        </td>
-      </tr>
-    );
+    if (this.props.count > 0){
+      return (
+        <tr>
+          <td style={ {verticalAlign:'middle'} }>
+            <img className='follower-resource-image' src={"/static/img/followers/" + this.props.follower + ".png"} /> <span>{this.props.follower}</span>
+          </td>
+          <td>
+            <span>{this.props.data.description}</span>
+          </td>
+          <CountComponent
+            count={this.props.count} />
+          <td>
+            {this._getFollowerActionComponents(
+              this.props.follower, this.props.data.actions, this.props.actionHandler
+            )}
+          </td>
+        </tr>
+      );
+    }
+    else {
+      return null;
+    }
   }
 
 });

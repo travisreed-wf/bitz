@@ -62,12 +62,14 @@ class Worker(polymodel.PolyModel):
         r = fresh_worker.get_resource_by_name(follower.name)
         if r:
             r.count += follower.count
-            if not is_free:
-                r.lifespan_count += follower.count
+            r.lifespan_count += follower.count
+            if is_free:
+                r.free_count += follower.count
         else:
             r_copy = follower.clone()
-            if not is_free:
-                r_copy.lifespan_count = follower.count
+            r_copy.lifespan_count = follower.count
+            if is_free:
+                r_copy.free_count = follower.count
             fresh_worker.resources.append(r_copy)
 
         fresh_worker.put()
@@ -76,6 +78,23 @@ class Worker(polymodel.PolyModel):
         deferred.defer(
             notification.create_new_follower_notification,
             self.key, follower.name, reason, _transactional=True)
+
+    @ndb.transactional
+    def improve_building(self, building_name):
+        fresh_worker = self.key.get()
+        b = fresh_worker.get_resource_by_name(building_name)
+        if b:
+            new_ticks = int(b.ticks_per_day / .8)
+            if new_ticks > 1440:
+                raise InsufficientResourcesException(
+                    'Building is ticking too fast')
+            b.ticks_per_day = new_ticks
+        else:
+            raise InsufficientResourcesException('You dont have that building')
+
+        fresh_worker.put()
+        self.resources = fresh_worker.resources
+        deferred.defer(self._add_transaction_for_improvement, building_name)
 
     def _add_transaction(self, resource_to_add, reason):
         if resource_to_add.count == 0:
@@ -90,6 +109,11 @@ class Worker(polymodel.PolyModel):
             description += ' because %s' % reason
         Transaction(
             count=resource_to_add.count, description=description,).put()
+
+    def _add_transaction_for_improvement(self, building):
+
+        description = "%s improved" % (building)
+        Transaction(count=0, description=description).put()
 
     def percent_of_cost_available(self, cost):
         total_cost_count = 0

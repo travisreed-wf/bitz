@@ -7,7 +7,8 @@ var FollowerTable = React.createClass({
     return {
       organizedResources: organizedResources,
       followerData: followerData,
-      selectedAction: {}
+      selectedAction: {},
+      selectedFollower: ''
     };
   },
 
@@ -30,19 +31,75 @@ var FollowerTable = React.createClass({
   },
 
   _clickHandler: function(actionIndex, followerName){
-    console.log(actionIndex);
-    console.log(followerName);
     var action = this._getFollowerData(followerName)['actions'][actionIndex];
     var modal = $('#followerModal');
-    this.setState({selectedAction: action});
+    this.setState(
+      {
+        selectedAction: action,
+        selectedFollower: followerName
+      });
     modal.modal("show");
+  },
+
+  _modalSubmit: function() {
+    var _this = this;
+    var modal = $('#followerModal');
+    var optionVal = modal.find('#option').val();
+    var selectedAction = _this.state.selectedAction;
+    var data = {
+      'action': selectedAction['function_name'],
+      'option': optionVal,
+      'follower': this.state.selectedFollower
+    };
+    $.ajax({
+      url: '/followers/action/',
+      method: 'POST',
+      data: JSON.stringify(data),
+      contentType: 'application/json',
+      success: function() {
+        _this.setState(function(prevState) {
+          var organizedResources = prevState.organizedResources;
+          organizedResources['follower'][_this.state.selectedFollower] -= 1;
+          return {
+            organizedResources: organizedResources,
+            selectedAction: {},
+            selectedFollower: ''
+          }
+        });
+        //update_resources($.parseJSON(resp));
+      },
+      error: function(resp) {
+        window.alert(resp.responseText || 'Unknown Error');
+      }
+    });
+
+    modal.modal("hide");
   },
 
   _getFollowerComponents: function() {
     var components = [];
-    var followers = this._getFollowers()
+    var followers = this._getFollowers();
     var count;
-    for (var follower in followers){
+    var follower;
+    for (follower in followers){
+      if (follower.includes('Scout')){
+        continue
+      }
+      if (followers.hasOwnProperty(follower)) {
+        count = followers[follower];
+        components.push(
+          <FollowerRow
+            follower={follower}
+            count={count}
+            data={this._getFollowerData(follower)}
+            actionHandler={this._clickHandler}/>
+        )
+      }
+    }
+    for (follower in followers){
+      if (!follower.includes('Scout')){
+        continue
+      }
       if (followers.hasOwnProperty(follower)) {
         count = followers[follower];
         components.push(
@@ -80,7 +137,8 @@ var FollowerTable = React.createClass({
           </table>
         </div>
         <FollowerModal
-          selectedAction={this.state.selectedAction} />
+          selectedAction={this.state.selectedAction}
+          modalClickHandler={this._modalSubmit} />
       </div>
     );
   }
