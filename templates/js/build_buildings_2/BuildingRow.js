@@ -97,11 +97,13 @@ var BuildingRow = React.createClass({
       if (this.props.building.production_per_tick_dict.hasOwnProperty(resource)){
         count = this.props.building.production_per_tick_dict[resource] * this.props.building.ticks_per_day;
       }
+      var toolTip = count.toString() + ' per day';
       components.push(
         <ResourceImageWithCount
           resource_name={resource}
           count={count}
-          separator=' x'/>
+          separator=' x'
+          tooltip={toolTip}/>
       );
       components.push(<br className=".visible-xs-block" />);
     }

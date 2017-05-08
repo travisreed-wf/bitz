@@ -19,10 +19,7 @@ class Technology(polymodel.PolyModel):
         return getattr(sys.modules[__name__], cls_name)
 
     @staticmethod
-    def create_from_config(start=None):
-        if not start:
-            start = config.TECHS
-
+    def create_from_config(start):
         for k, v in start.iteritems():
             _id = 'TravisReed-%s' % k
             exists = Technology.get_by_id(_id)
@@ -31,8 +28,7 @@ class Technology(polymodel.PolyModel):
                 if k == 'Civilization':
                     t.can_research = True
                     t.put()
-            for tree in v:
-                Technology.create_from_config(tree)
+            Technology.create_from_config(v)
 
     @classmethod
     def create(cls):

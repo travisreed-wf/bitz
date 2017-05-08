@@ -2,7 +2,7 @@ TECHS = {
     'Civilization': {
         'GreatLibraryTechnology': {},
         'Wheel': {
-            'Waterwheel': {},
+            'WaterWheel': {},
             'Roads': {}
         },
         'ResourceManagement': {

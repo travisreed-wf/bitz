@@ -35,7 +35,13 @@ var BuildingTable = React.createClass({
       building.seconds_since_last_tick += 1;
       var organizedResources = prevState.organizedResources;
       if (building.seconds_since_last_tick == building.seconds_between_ticks){
-        var data = {'gained_resources': building.production_per_tick_dict};
+        var gainedResources = building.production_per_tick_dict;
+        for (var resourceName in gainedResources){
+          if (gainedResources.hasOwnProperty(resourceName)){
+            gainedResources[resourceName] *= building.count;
+          }
+        }
+        var data = {'gained_resources': gainedResources};
         updateResources(data, organizedResources);
       }
       return {
