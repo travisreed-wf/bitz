@@ -37,6 +37,10 @@ class Building(resource.Resource):
         return cost
 
     @staticmethod
+    def get_class_by_name(cls_name):
+        return getattr(sys.modules[__name__], cls_name)
+
+    @staticmethod
     def create(count=0):
         raise NotImplementedError('subclass must implement')
 

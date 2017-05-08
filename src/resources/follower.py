@@ -1,6 +1,10 @@
 import sys
 
 from google.appengine.ext import ndb
+
+from src.exceptions import InsufficientResourcesException
+from src.locations.map import Earth
+from src.producers import building
 from src.resources import resource
 
 
@@ -35,6 +39,10 @@ class Follower(resource.Resource):
         player.add_resource(f, reason='Spent to improve %s' % building)
         return
 
+    def improve_unit(self, player, unit):
+        # TODO
+        raise NotImplementedError("coming soon!")
+
 
 class GreatArcher(Follower):
 
@@ -46,8 +54,12 @@ class GreatArcher(Follower):
     def actions(self):
         return [{
             'name': 'Improve Archers',
-            'info_needed': {}
+            'info_needed': {},
+            'function_name': 'improve_archers'
         }]
+
+    def improve_archers(self, player):
+        self.improve_unit(player, 'Archer')
 
 
 class GreatSlinger(Follower):
@@ -61,8 +73,12 @@ class GreatSlinger(Follower):
     def actions(self):
         return [{
             'name': 'Improve Slingers',
-            'info_needed': {}
+            'info_needed': {},
+            'function_name': 'improve_slingers'
         }]
+
+    def improve_slingers(self, player):
+        self.improve_unit(player, 'Slinger')
 
 
 class GreatCompositeBowman(Follower):
@@ -76,8 +92,12 @@ class GreatCompositeBowman(Follower):
     def actions(self):
         return [{
             'name': 'Improve CompositeBowmen',
-            'info_needed': {}
+            'info_needed': {},
+            'function_name': 'improve_composite_bowmen'
         }]
+
+    def improve_composite_bowmen(self, player):
+        self.improve_unit(player, 'CompositeBowman')
 
 
 class GreatSpearman(Follower):
@@ -91,8 +111,12 @@ class GreatSpearman(Follower):
     def actions(self):
         return [{
             'name': 'Improve Spearmen',
-            'info_needed': {}
+            'info_needed': {},
+            'function_name': 'improve_spearmen'
         }]
+
+    def improve_spearmen(self, player):
+        self.improve_unit(player, 'Spearman')
 
 
 class GreatPikeman(Follower):
@@ -106,8 +130,12 @@ class GreatPikeman(Follower):
     def actions(self):
         return [{
             'name': 'Improve Pikemen',
-            'info_needed': {}
+            'info_needed': {},
+            'function_name': 'improve_pikemen'
         }]
+
+    def improve_pikemen(self, player):
+        self.improve_unit(player, 'Pikeman')
 
 
 class GreatLancer(Follower):
@@ -121,8 +149,12 @@ class GreatLancer(Follower):
     def actions(self):
         return [{
             'name': 'Improve Lancers',
-            'info_needed': {}
+            'info_needed': {},
+            'function_name': 'improve_lancers'
         }]
+
+    def improve_lancers(self, player):
+        self.improve_unit(player, 'Lancer')
 
 
 class Tactician(Follower):
@@ -160,7 +192,12 @@ class GreatWarrior(Follower):
     def actions(self):
         return [{
             'name': 'Improve Warriors',
+            'info_needed': {},
+            'function_name': 'improve_warriors'
         }]
+
+    def improve_warriors(self, player):
+        self.improve_unit(player, 'Warrior')
 
 
 class GreatSwordsman(Follower):
@@ -174,8 +211,12 @@ class GreatSwordsman(Follower):
     def actions(self):
         return [{
             'name': 'Improve Swordsmen',
-            'info_needed': {}
+            'info_needed': {},
+            'function_name': 'improve_swordsmen'
         }]
+
+    def improve_swordsmen(self, player):
+        self.improve_unit(player, 'Swordsman')
 
 
 class GreatLongSwordsman(Follower):
@@ -189,8 +230,12 @@ class GreatLongSwordsman(Follower):
     def actions(self):
         return [{
             'name': 'Improve LongSwordsmen',
-            'info_needed': {}
+            'info_needed': {},
+            'function_name': 'improve_longswordmen'
         }]
+
+    def improve_longswordsmen(self, player):
+        self.improve_unit(player, 'Longswordsmen')
 
 
 class GreatHillsScout(Follower):
@@ -283,8 +328,9 @@ class GreatScientist(Follower):
             }
         ]
 
-    def research_technology(self):
-        return
+    def research_technology(self, player, technology):
+        # TODO
+        raise NotImplementedError("coming soon!")
 
 
 class GreatEngineer(Follower):
@@ -315,7 +361,16 @@ class GreatEngineer(Follower):
             }
         ]
 
-    def build_wonder(self):
+    def build_wonder(self, player, wonder_name):
+        map = Earth
+        wonder = building.Building.get_class_by_name(wonder_name).create(
+            count=1)
+        if wonder.get_max_discounted_buildings(map) < 1:
+            raise InsufficientResourcesException(
+                "You havent assigned any space for this wonder")
+
+        player.add_resource(
+            wonder, reason='Used great engineer to build %s' % wonder_name)
         return
 
 
