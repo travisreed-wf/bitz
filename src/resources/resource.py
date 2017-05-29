@@ -66,7 +66,7 @@ class Dart(Resource):
     def create_based_on_results(wins=0, bulls=0, gotchas=0, game_type='301'):
         if game_type == '301':
             count = wins * .75 + gotchas * .25
-        elif game_type == 'cricket':
+        elif game_type == 'Cricket':
             count = wins + bulls * .25
         else:
             count = wins * .75

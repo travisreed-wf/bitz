@@ -15,7 +15,7 @@ class AddDartsView(MethodView):
         data = request.form
         wins = int(data.get('wins') or 0)
         bulls = int(data.get('bulls') or 0)
-        game_type = int(data.get('game_type') or 0)
+        game_type = data.get('game_type')
         gotchas = int(data.get('gotchas') or 0)
         r = resource.Dart.create_based_on_results(
             wins=wins, bulls=bulls, gotchas=gotchas, game_type=game_type)

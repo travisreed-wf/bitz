@@ -4,7 +4,7 @@ from google.appengine.ext import ndb
 from google.appengine.ext.ndb import polymodel
 
 from src.resources.resource import Science
-from src.technologies import config
+from src.producers import wonder
 
 
 class Technology(polymodel.PolyModel):
@@ -44,7 +44,7 @@ class Technology(polymodel.PolyModel):
         player_name = player.key.id().replace(' ', '')
         return cls.get_by_id('%s-%s' % (player_name, cls.__name__))
 
-    def process_researched(self):
+    def process_researched(self, player):
         return  # TODO for all subclasses
 
     def research(self, player):
@@ -55,7 +55,7 @@ class Technology(polymodel.PolyModel):
             child.can_research = True
             child.put()
         self.put()
-        self.process_researched()
+        self.process_researched(player)
         return self.cost
 
 
@@ -74,18 +74,26 @@ class GreatLibraryTechnology(Technology):
 
     @property
     def description(self):
-        return "Unlocks building the GreatLibrary"
+        return "Unlocks building the 'GreatLibrary' which provides a " \
+               "free 'GreatScientist'"
 
     @property
     def cost(self):
         return [Science.create(count=15000)]
+
+    def process_researched(self, player):
+        r = wonder.GreatLibrary.create(count=0)
+        player.add_resource(r)
+
+
 
 
 class Wheel(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Reveals 'grain' and allows the production of a 'mill' " \
+               "which provides food"
 
     @property
     def cost(self):
@@ -96,29 +104,31 @@ class WaterWheel(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Allow you to build watermills on river tiles, which " \
+               "generate production and food"
 
     @property
     def cost(self):
-        return [Science.create(count=75000)]
+        return [Science.create(count=150000)]
 
 
 class Roads(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Allow you to build roads on tiles to reduce " \
+               "the movement cost through them"
 
     @property
     def cost(self):
-        return [Science.create(count=75000)]
+        return [Science.create(count=150000)]
 
 
 class ResourceManagement(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Reveal 'horses' on some grassland tiles"
 
     @property
     def cost(self):
@@ -128,40 +138,44 @@ class ResourceManagement(Technology):
 class AnimalHusbandry(Technology):
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Allows the creation of pastures on horse tiles. " \
+               "Pastures generate production"
 
     @property
     def cost(self):
-        return [Science.create(count=75000)]
+        return [Science.create(count=150000)]
 
 
 class Trapping(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Reveals rabbits on the map, which can be hunted for Food"
 
     @property
     def cost(self):
-        return [Science.create(count=250000)]
+        return [Science.create(count=1000000)]
 
 
 class StackBonuses(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Adds stack bonuses if a tile is completely full of buildings"
 
     @property
     def cost(self):
-        return [Science.create(count=75000)]
+        return [Science.create(count=150000)]
 
 
 class Stoneworking(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Reveals 'Stone' on your map if you have also researched " \
+               "'ResourceManagement'. Stone automatically reduces " \
+               "the production cost of buildings on that tile by 30%. " \
+               "Certain buildings can only be built on stone."
 
     @property
     def cost(self):
@@ -172,63 +186,67 @@ class Axes(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Allows you to chop down trees to make grassland or plains"
 
     @property
     def cost(self):
-        return [Science.create(count=75000)]
+        return [Science.create(count=150000)]
 
 
 class PickAxes(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Improves each of your mines to double their production"
 
     @property
     def cost(self):
-        return [Science.create(count=250000)]
+        return [Science.create(count=1000000)]
 
 
 class PyramidTechnology(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Unlocks the wonder 'Pyramids' for production. " \
+               "Pyramids provide a free GreatLaborer"
 
     @property
     def cost(self):
-        return [Science.create(count=500000)]
+        return [Science.create(count=5000000)]
 
 
 class StonehengeTechnology(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Unlocks the wonder Stonehenge for production. " \
+               "Stonehenge provides the ability to research alien technology"
 
     @property
     def cost(self):
-        return [Science.create(count=500000)]
+        return [Science.create(count=5000000)]
 
 
 class BronzeWorking(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Reveals 'bronze' on your map if you have also researched " \
+               "'ResourceManagement' Bronze improves the production of " \
+               "your mines significantly"
 
     @property
     def cost(self):
-        return [Science.create(count=500000)]
+        return [Science.create(count=5000000)]
 
 
 class Archery(Technology):
 
     @property
     def description(self):
-        return "TBD... it will be cool though"
+        return "Unlocks archers and hunter camps"
 
     @property
     def cost(self):
-        return [Science.create(count=75000)]
+        return [Science.create(count=150000)]

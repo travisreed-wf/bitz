@@ -1,4 +1,6 @@
 from google.appengine.ext import ndb
+
+from src.habitica.habitica import Habitica
 from src.workers.worker import Player
 
 
@@ -46,3 +48,5 @@ def create_new_earned_resource_notification(
         player_key, resource_name, resource_count, reason=''):
     Notification.create_new_earned_resource_notification(
         player_key, resource_name, resource_count, reason=reason)
+
+    Habitica.update_habit(resource_name, resource_count, reason=reason)
