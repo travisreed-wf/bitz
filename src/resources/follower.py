@@ -10,7 +10,7 @@ from src.resources import resource
 
 class Follower(resource.Resource):
 
-    free_count = ndb.IntegerProperty(default=0)
+    free_count = ndb.FloatProperty(default=0.0)
 
     @classmethod
     def create(cls, count=0):

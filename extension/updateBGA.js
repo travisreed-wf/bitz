@@ -1,6 +1,6 @@
 $(document).ready(function(){
   console.log("Travis was here");
-  setTimeout(checkForGameData, 5000);
+  setTimeout(checkForGameData, 10000);
 });
 function checkForGameData() {
   var gameDivs = $('.palmares_game');
@@ -20,18 +20,21 @@ function checkForGameData() {
 
   });
   console.log(data);
-  $.ajax({
-    url: 'https://bitz-game-staging.appspot.com/extension/bga_wins/',
-    type: 'POST',
-    data: JSON.stringify(data),
-    contentType: 'application/json'
-  });
+  if (Object.keys(data).length > 0){
+    $.ajax({
+        url: 'https://bitz-game-staging.appspot.com/extension/bga_wins/',
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json'
+    });
 
-  $.ajax({
-    url: 'https://bitz-game.appspot.com/extension/bga_wins/',
-    type: 'POST',
-    data: JSON.stringify(data),
-    contentType: 'application/json'
-  });
+    $.ajax({
+      url: 'https://bitz-game.appspot.com/extension/bga_wins/',
+      type: 'POST',
+      data: JSON.stringify(data),
+      contentType: 'application/json'
+    });
+  }
+
 }
 
