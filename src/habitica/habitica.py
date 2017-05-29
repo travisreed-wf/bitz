@@ -1,6 +1,7 @@
 import requests
 
 from src.settings import Settings
+from src.workers.worker import Player
 
 
 class Habitica(object):
@@ -18,5 +19,12 @@ class Habitica(object):
         data = {
             'scoreNotes': reason
         }
-        for count in xrange(0, resource_count):
+
+        player = Player.query().get()
+        resource = player.get_resource_by_name(resource_name)
+        c = resource.count - resource_count
+        unaccounted_for = float(c) % resource.habitica_ratio
+        resource_count += unaccounted_for
+
+        for count in xrange(0, int(resource_count)):
             requests.post(url, headers=headers, data=data)

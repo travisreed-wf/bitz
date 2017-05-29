@@ -13,6 +13,10 @@ class Resource(polymodel.PolyModel):
         return self._class_name()
 
     @property
+    def habitica_ratio(self):
+        return 1
+
+    @property
     def serialize(self):
         d = self.to_dict()
         d['name'] = self.name
@@ -152,6 +156,10 @@ class Step(Resource):
     @staticmethod
     def create(count=0):
         return Step(resource_type="earned", count=count)
+
+    @property
+    def habitica_ratio(self):
+        return 10000
 
 
 class GitCommit(Resource):
